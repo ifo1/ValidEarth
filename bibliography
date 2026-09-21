@@ -1,0 +1,48 @@
+@article{dziewonski_1981_prem,
+  title={{Preliminary Reference Earth Model}},
+  author={Dziewonski, Adam M. and Anderson, Don L.},
+  journal={Physics of the Earth and Planetary Interiors},
+  volume={25},
+  number={4},
+  pages={297-356},
+  year={1981},
+  publisher={Elsevier},
+  doi={10.1016/0031-9201(81)90046-7}
+}
+
+
+@article{10.1111/j.1365-246X.1995.tb03540.x,
+    author = {Kennett, B. L. N. and Engdahl, E. R. and Buland, R.},
+    title = {{Constraints on seismic velocities in the Earth from traveltimes}},
+    journal = {Geophysical Journal International},
+    volume = {122},
+    number = {1},
+    pages = {108-124},
+    year = {1995},
+    month = {07},
+    abstract = {New empirical traveltime curves for the major seismic phases have been derived from the catalogues of the International Seismological Centre by relocating events by using P readings, depth phases and the iasp91 traveltimes, and then re-associating phase picks. A smoothed set of traveltime tables is extracted by a robust procedure which gives estimates of the variance of the traveltimes for each phase branch. This set of smoothed empirical times is then used to construct a range of radial velocity profiles, which are assessed against a number of different measures of the level of fit between the empirical times and the predictions of the models. These measures are constructed from weighted sums of L2 misfits for individual phases. The weights are chosen to provide a measure of the probable reliability of the picks for the different phases.A preferred model, ak135, is proposed which gives a significantly better fit to a broad range of phases than is provided by the iasp91 and sp6 models. The differences in velocity between ak135 and these models are generally quite small except at the boundary of the inner core, where reduced velocity gradients are needed to achieve satisfactory performance for PKP differential time data.The potential resolution of velocity structure has been assessed with the aid of a non-linear search procedure in which 5000 models have been generated in bounds about ak135. Misfit calculations are performed for each of the phases in the empirical traveltime sets, and the models are then sorted using different overall measures of misfit. The best 100 models for each criterion are displayed in a model density plot which indicates the consistency of the different models. The interaction of information from different phases can be analysed by comparing the different misfit measures. Structure in the mantle is well resolved except at the base, and ak135 provides a good representation of core velocities.},
+    issn = {0956-540X},
+    doi = {10.1111/j.1365-246X.1995.tb03540.x},
+    url = {https://doi.org/10.1111/j.1365-246X.1995.tb03540.x},
+    eprint = {https://academic.oup.com/gji/article-pdf/122/1/108/1543667/122-1-108.pdf},
+}
+
+
+@article{10.1111/j.1365-246X.1996.tb06548.x,
+    author = {Montagner, J.-P. and Kennett, B. L. N.},
+    title = {{How to reconcile body-wave and normal-mode reference Earth models}},
+    journal = {Geophysical Journal International},
+    volume = {125},
+    number = {1},
+    pages = {229-248},
+    year = {1996},
+    month = {04},
+    abstract = {Reference earth models can be retrieved from either body waves or normal-mode eigenperiods. However, there is a large discrepancy between different reference earth models, which arises partly from the type of data set used in their construction and partly from differences in parametrization. Reference models derived from body-wave observations do not give access to density, attenuation factor and radial anisotropy. Conversely, reference models derived from normal modes cannot provide the correct locations for the depth of seismic discontinuities, nor the associated velocity jump. Eigenperiods derived from reference models constructed using body-wave data together with classifical attenuation models differ significantly from the observed eigenperiods.The body-wave and normal-mode approaches can be reconciled. The V' and V, velocities given by body-wave models are considered as constraints, and an inversion is performed for parameters that cannot be extracted from body waves in the context of a radially anisotropic model, i.e. The density p, the quality factor Q, and the anisotropy parameters 5, (b and q. The influence of anelasticity is very large, although insufficient by itself to reconcile the two types of model. However, by including in the inversion procedure the density and the three anisotropic parameters, body-wave models can be brought into complete agreement with eigenperiod data. A number of reference models derived from body waves were tested and used as starting models: iasp91, sp6, and two new models ak303 and ak135. A number of robust features can be extracted from the inversions based on these different models. The quality factor Q, is found to be much larger in the lower mantle than in previous models (e.g. prern). Anisotropy, in the form of transverse isotropy with a vertical symmetry axis, is significant in the whole upper mantle, but very small in the lower mantle except in the lower transition zone (between the 660 km discontinuity and 1000 km depth) and in the D'-layer. Compared with prem there is an increase of density in the D'-layer and a decrease in the lower transition zone. The attenuation estimates have been derived using velocity dispersion information, but are in agreement with available direct measurements of normal-mode attenuation. Such attenuation data are still of limited quality, and the present results emphasize the need for improved attenuation measurements.},
+    issn = {0956-540X},
+    doi = {10.1111/j.1365-246X.1996.tb06548.x},
+    url = {https://doi.org/10.1111/j.1365-246X.1996.tb06548.x},
+    eprint = {https://academic.oup.com/gji/article-pdf/125/1/229/5891238/125-1-229.pdf},
+}
+
+
+
