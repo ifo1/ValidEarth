@@ -45,4 +45,19 @@
 }
 
 
+﻿@Article{Andrault2018,
+author={Andrault, Denis and Pesce, Giacomo and Manthilake, Geeth and Monteux, Julien and Bolfan-Casanova, Nathalie and Chantel, Julien and Novella, Davide and Guignot, Nicolas and King, Andrew and Iti{\'e}, Jean-Paul and Hennet, Louis},
+title={{Deep and persistent melt layer in the Archaean mantle}},
+journal={Nature Geoscience},
+year={2018},
+month={Feb},
+day={01},
+volume={11},
+number={2},
+pages={139-143},
+abstract={The transition from the Archaean to the Proterozoic eon ended a period of great instability at the Earth's surface. The origin of this transition could be a change in the dynamic regime of the Earth's interior. Here we use laboratory experiments to investigate the solidus of samples representative of the Archaean upper mantle. Our two complementary in situ measurements of the melting curve reveal a solidus that is 200--250 K lower than previously reported at depths higher than about 100{\thinspace}km. Such a lower solidus temperature makes partial melting today easier than previously thought, particularly in the presence of volatiles (H2O and CO2). A lower solidus could also account for the early high production of melts such as komatiites. For an Archaean mantle that was 200--300{\thinspace}K hotter than today, significant melting is expected at depths from 100-150 km to more than 400 km. Thus, a persistent layer of melt may have existed in the Archaean upper mantle. This shell of molten material may have progressively disappeared because of secular cooling of the mantle. Crystallization would have increased the upper mantle viscosity and could have enhanced mechanical coupling between the lithosphere and the asthenosphere. Such a change might explain the transition from surface dynamics dominated by a stagnant lid on the early Earth to modern-like plate tectonics with deep slab subduction.},
+issn={1752-0908},
+doi={10.1038/s41561-017-0053-9},
+url={https://doi.org/10.1038/s41561-017-0053-9}
+}
 
