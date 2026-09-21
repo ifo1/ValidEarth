@@ -61,3 +61,19 @@ doi={10.1038/s41561-017-0053-9},
 url={https://doi.org/10.1038/s41561-017-0053-9}
 }
 
+
+@article{Herzberg_Zhang_1996,
+author = {Herzberg, Claude and Zhang, Jianzhong},
+title = {Melting experiments on anhydrous peridotite KLB-1: Compositions of magmas in the upper mantle and transition zone},
+journal = {Journal of Geophysical Research: Solid Earth},
+volume = {101},
+number = {B4},
+pages = {8271-8295},
+doi = {https://doi.org/10.1029/96JB00170},
+url = {https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/96JB00170},
+eprint = {https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1029/96JB00170},
+abstract = {Electron microprobe results are reported for liquid and crystalline phases that were synthesized at 5–22.5 GPa in multianvil experiments on anhydrous peridotite KLB-1 [Zhang and Herzberg, 1994]. The results provide information on the partitioning of TiO2, Al2O3, Cr2O3, FeO, MnO, MgO, Na2O, and NiO among liquid and the crystalline phases olivine, modified spinel, garnet, magnesiowustite, and magnesium perovskite. Uncertainties in these partition coefficients stem from quenching problems and from the effects of thermal migration of liquid in a temperature gradient. We have, however, exploited the temperature gradients by determining how the crystalline phase chemistry varies throughout the melting interval from the liquidus to the solidus. This has permitted new constraints to be obtained on the compositions of liquids along the anhydrous peridotite solidus at low melt fractions and at pressures in the 5–18 GPa range. It is demonstrated that the wide range of Al2O3 and CaO/Al2O3 contents in picrites and komatiites can be explained by melt segregation at upper mantle pressures that ranged from 3 to ∼10 GPa. These magmas could have formed by anhydrous melting in plumes with temperatures that were only 100°–200°C higher than ambient mantle below ridges, demonstrating that unusually hot conditions are not required to form komatiites. Primary igneous MgO contents in excess of 26\% should be rare, and those that do exist in some komatiites can be explained by advanced melting during adiabatic or superadiabatic ascent, by low Na2O in the source, or by melting in hot plumes from the transition zone and lower mantle. Evidence for deep melting in hot plumes is rather conjectural, but it may be contained in some 2700 Myr komatiites that have high MgO and mantle-like CaO/Al2O3.},
+year = {1996}
+}
+
+
