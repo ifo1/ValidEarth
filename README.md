@@ -1,20 +1,22 @@
 # ValidEarth
 
-ValidEarth is a toolkit for verifying whether vertical profiles of Earth's physical properties are consistent with established reference models. The assessable properties include key parameters such as density, temperature, bulk and shear seismic velocities and their ratio, chemical composition of the mantle. This list can be easily extended using new modules.
+ValidEarth is a geophysical Quality-Assurance toolkit for Deep Earth studies. Its core purpose is to assess differences between provided Earth physical-property profiles and established regional or global reference models. By simultaneously checking a wide range of parameters, the toolkit automates much of the routine work involved in data validation and helps identify genuine anomalies - or signals - that may indicate previously unrecognised features in the data.
 
-For each parameter, ValidEarth comes with a set of well-established reference models based on experimental and seismic data, with all sources documented in the **bibliography**. Each reference data point is associated with an independent relative or absolute uncertainty, allowing the comparison to account for the expected variability and uncertainty of the reference models. The tool reports the differences that are greater than three sigmas; for the parameters with more than reference models provided (for example, geotherms for different geological settings), the tool looks for the best matching profile automatically.
+The assessable properties include key parameters such as density, temperature, bulk and shear seismic velocities and their ratio, and the chemical composition of the mantle. The toolkit can be readily extended to support additional physical quantities and reference models.
+
+For each parameter, ValidEarth provides a set of well-established reference models based on experimental and seismic data, with all sources documented in the bibliography. Each reference data point is associated with an independent relative or absolute uncertainty, allowing comparisons to account for the expected variability and uncertainty of the reference models. By default, the tool reports differences exceeding three standard deviations (3σ). When multiple reference models are available for a parameter - for example, geotherms corresponding to different geological settings - the toolkit automatically identifies the best-matching reference profile.
 
 # Input Data Format
 
-A valid input file should contain following sections:
+A valid input file should contain the following sections:
 
-- Optional Keywords and Values
-- Column Headers
-- Data Table
+- Optional keywords and values
+- Column headers
+- Data table
 
-Optional keywords include Name (an arbitrary string without whitespace), CoordinateSystem (Geographic or Cartesian), Longitude, and Latitude. Each keyword must be on a separate line.
+Optional keywords include Name (an arbitrary string without whitespace), CoordinateSystem (Geographic or Cartesian), Longitude, and Latitude. Each keyword must be specified on a separate line.
 
-The first Column Header must be **Depth**. It can be followed by any of the following **Headers**:
+The first column header must be **Depth**. It can be followed by any of the following headers:
 - **Temperature**, K
 - **Vp**, m/sec
 - **Vs**, m/sec
@@ -27,62 +29,73 @@ The first Column Header must be **Depth**. It can be followed by any of the foll
 - **CaO**, wt.%
 - **MgNum** or Mg#, mol.%
 
-This line should be followed by a datatable with values to verify. By default, ValidEarth treats (almost) all the physical quantities as being expressed in SI units, unless specified. Some automated unit conversions can be enabled using the command line options.
+The header line must be followed by a data table containing the values to be validated. By default, ValidEarth assumes that physical quantities are expressed in SI units unless otherwise specified. Selected automatic unit conversions can be enabled using command-line options.
 
-Notice: the code will automatically compute the mutually depending quantities in case they are not supplied such as Vp/Vs from Vp and Vs, or Vp from Vp/Vs and Vs.
+ValidEarth automatically calculates mutually dependent quantities when they are not explicitly provided. For example, it can calculate Vp/Vs from Vp and Vs, or Vp from Vp/Vs and Vs.
 
-The code also allows specific tags for distinct geological domains (layers). They should appear as the last entry for each data row; an auxilliary word "Type" can be used to mark this column. Currently the code recongnises the following keywords:
-- **soil**: for all the layers representing soils
-- **regolith**: for all the unconsolidated sediments such as sands, gravels and so on
-- **sediments**: consolidated sediments like sandstone, limestone, and so on
-- **crustupper**: the upper layer of crystalline crust
-- **crustmiddle**: the middle layer of crystalline crust
-- **crustlower**: the lower layer of crystalline crust
+The input format also supports tags identifying distinct geological domains or layers. These tags should appear as the last entry in each data row. The optional header Type can be used to identify this column.
+
+Currently, ValidEarth recognises the following layer types (internally referred as golden nails to highlight their role as layer bottom markers):
+
+- **water**: water bodies
+- **soil**: soils
+- **regolith**: unconsolidated sediments such as sand or gravel
+- **sediments**: consolidated sediments such as sandstone or limestone
+- **crustupper**: upper crystalline crust bottom
+- **crustmiddle**: middle crystalline crust bottom
+- **crustlower**: tlower crystalline crust bottom
 - **Moho**: an alternative keyword with the same meaning as crustlower
 - **mantlelitho**: the lithospheric mantle
 - **LAB**: an alternative keyword with the same meaning as mantlelitho
-- **mantleupper**: the sublithospheric mantle above the 410 discontinuity 
-- **410km**: the actual depth of 410 km discontinuity, an alternative to mantleupper
-- **mantlemtz**: the mantle transition zone
-- **670km**: an alternative keyword with the same meaning as mantlemtz
-- **mantlelower**: lower mantle 
+- **mantleupper**: the sublithospheric mantle above the 410 discontinuity
+- **410km**: an alternative keyword with the same meaning as mantleupper, the actual depth of 410 km discontinuity
+- **mantlemtz**: mantle transition zone
+- **670km**: an alternative keyword with the same meaning as mantlemtz, the actual depth of 670 km discontinuity
+- **mantlelower**: lower mantle
 
-Notice: these keywords might be used for every data row, or mark the last one representing the given layer. Each of these layers must be continuous (without any other layers between its start and end points).
+These keywords can either be assigned to every data row within a layer or used only on the final row of a layer. In the latter case, they serve as markers identifying the bottom of the corresponding layer. Each layer must be continuous, with no other layer types occurring between its upper and lower boundaries.
 
-All lines starting with #, /, % and ! are treated as comments and ignored.
+All lines beginning with #, /, %, or ! are treated as comments and ignored.
 
 # Profile Validation
 
-There are two main methods of profile validation:
+ValidEarth provides two main methods for profile validation:
 
-- signalling if the value is outside a feasible range. **ParameterMin** and **ParameterMax** columns must be provided in the model reference file to utilise it 
-- signalling if the value is too far from an expected value. In that case, the reference model must contain Parameter and **ParameterSigma** columns (or ParameterSigma+ and ParameterSigma- to apply different standard deviations for values above and below the reference one). Alternatively, the reference model can contain Parameter and **Parameter%** columns (or Parameter%+ and Parameter%-).
+- Range validation: flags values outside a physically feasible range. The reference model must provide ParameterMin and ParameterMax columns for this type of validation.
 
-For each assessable record in the input data table, a corresponding reference parameter value is linearly interpolated to the provided depth levels. If the depth value is above the uppermost reference value or it is below the lowermost available value, two first (last) points of the reference profile are used to interpolate the value. 
+- Reference-value validation: flags values that differ significantly from an expected value. The reference model must provide Parameter and ParameterSigma columns, or ParameterSigma+ and ParameterSigma- to specify different standard deviations above and below the reference value. Alternatively, the reference model can provide Parameter and Parameter% columns, with Parameter%+ and Parameter%- available for asymmetric relative uncertainties.
 
-An additional test scenario is provided to check whether any **melting** may occur along the profile. In that case, the code will report any temperature above the **solidus** and **liquidus**. 
+For each assessable record in the input data table, the corresponding reference parameter value is linearly interpolated to the provided depth. If a depth lies above the uppermost reference point or below the lowermost reference point, the first or last two reference points, respectively, are used for linear extrapolation.
 
-Notice: a reference model can use Pressure or Depth as an input field. In the former case, the pressures will be converted to depths according to a supplied model. 
+An additional test is provided to assess whether melting may occur within the profile. In this case, ValidEarth reports temperatures exceeding the solidus and liquidus temperatures.
+
+A reference model may use either Pressure or Depth as its independent variable. When pressure is used, it is converted to depth according to a supplied pressure-depth model.
 
 # Available Options
 
-Type validearth.py --help to check the possible runtime options.
+Run:
+
+python validearth.py --help
+
+to display the available command-line options.
 
 # Future Work
 
-Planned extensions of the toolkit include
+Planned development of the toolkit include:
 
-- Assessment of gradients between adjacent vertical profiles, enabling the identification of spatial variations and potentially anomalous transitions between neighbouring profiles.
+- Plotting tools to visualise differences between observed data and reference profiles.
 
-- 3D reference models that will allow to assess the data with respect to its geological setting.
+- Gradient analysis between adjacent vertical profiles, enabling the identification of spatial variations and potentially anomalous transitions between neighbouring profiles.
+- 3D reference models for assessing data in the context of its geological setting.
 
 # Bibliography
 
 Refer to the bibliography.bib file in the root directory for all the reference models.
 
-# Standards
+# Requirements
 
-The code is written using Python 3.10 standard
+- Python 3.10
+- modules termcolor, numpy, time, os, argparse
 
 # Authorship
 

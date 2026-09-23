@@ -1,15 +1,16 @@
 from termcolor import colored
-use numpy as np
+import numpy as np
 
-import error, warning, highlight from colouredstrings
-import read_value from extract_prof
+from colouredstrings import error, warning, highlight
+from datachecks import read_value
+
 
 def linear_interp(xi, xarr, yarr):
     # linear interpolation for numpy vectors
     # implies non-decreasing xarr
     yi = np.nan
     # extrapolate below the first value using the first slope
-    if xi =< xarr[0]:
+    if xi <= xarr[0]:
         yi = yarr[0] - (xarr[0] - xi) * (yarr[1] - yarr[0]) / (xarr[1] - xarr[0])
     # extrapolate above the last value using the last slope
     elif xi >= xarr[-1]:
@@ -18,12 +19,87 @@ def linear_interp(xi, xarr, yarr):
     # however, the PREM profile is non-decreasing rather than increasing
     else:
         for i in range (xarr.size-1):
-            if xi =< xarr[i+1]:
+            if xi <= xarr[i+1]:
                 yi = yarr[i] + (xi - xarr[i]) * (yarr[i+1] - yarr[i]) / (xarr[i+1] - xarr[i])
 
     if not np.isfinite(yi): print (error() + "Cannot interpolate linearly for x = " + str(xi))
 
     return yi
+
+
+class goldennaildata:
+    def __init__ (self):
+        self.water = -1
+        # crustal section
+        self.crust_soil = -1
+        self.crust_regolith = -1
+        self.crust_sediment = -1
+        self.crust_upper = -1
+        self.crust_middle = -1
+        self.crust_lower = -1
+        # lithospheric mantle section
+        self.mantle_litho = -1
+        # sublithospheric mantle section above 410 km (MTZ)
+        self.mantle_sublitho = -1
+        # Mantle Transition Zone
+        self.mantle_mtz = -1
+        # Lower Mantle
+        self.mantle_lower = -1
+
+    def assign_gn(self, tag, n):
+        # assign the provided tag index to a corresponding variable 
+        value = tag.lower()
+        match value:
+            case "water":
+                self.water = n
+            case "soil":
+                self.crust_soil = n
+            case "regolith":
+                self.crust_regolith = n
+            case "sediments":
+                self.crust_sediment = n
+            case "crustupper":
+                self.crust_upper = n
+            case "crustmiddle":
+                self.crust_middle = n
+            case "crustlower":
+                self.crust_lower = n
+            case "moho":
+                self.crust_lower = n
+            case "mantlelitho":
+                self.mantle_litho = n
+            case "lab":
+                self.mantle_litho = n
+            case "mantleupper":
+                self.mantle_sublitho = n
+            case "410km":
+                self.mantle_sublitho = n
+            case "mantlemtz":
+                self.mantle_mtz = n
+            case "670km":
+                self.mantle_mtz = n
+            case "mantlelower":
+                self.mantle_lower = n
+            case default:
+                print (warning() + "type " + value + " is not known")
+
+
+    def report_gn(self, depth):
+        if self.water >= 0 or self.crust_soil >= 0 or self.crust_regolith >= 0 or self.crust_sediment >= 0 or \
+            self.crust_upper >= 0 or self.crust_middle >= 0 or self.crust_lower >= 0 or \
+            self.mantle_litho >= 0 or self.mantle_sublitho >= 0 or self.mantle_mtz >= 0 or self.mantle_lower >= 0:
+            print ("The following golden nails are used")
+        if self.water >= 0:           print (" - Water layer ends at depth " + str(depth[self.water]) + " (node " + str(self.water+1) + ")")
+        if self.crust_soil >= 0:      print (" - Soil layer ends at depth " + str(depth[self.crust_soil]) + " (node " + str(self.crust_soil+1) + ")")
+        if self.crust_regolith >= 0:  print (" - Regolith layer ends at depth " + str(depth[self.crust_regolith]) + " (node " + str(self.crust_regolith+1) + ")")
+        if self.crust_sediment >= 0:  print (" - Sedimentary layer ends at depth " + str(depth[self.crust_sediment]) + " (node " + str(self.crust_sediment+1) + ")")
+        if self.crust_upper >= 0:     print (" - Upper crust ends at depth " + str(depth[self.crust_upper]) + " (node " + str(self.crust_upper+1) + ")")
+        if self.crust_middle >= 0:    print (" - Middle crust ends at depth " + str(depth[self.crust_middle]) + " (node " + str(self.crust_middle+1) + ")")
+        if self.crust_lower >= 0:     print (" - Lower crust ends at depth " + str(depth[self.crust_lower]) + " (node " + str(self.crust_lower+1) + ")")
+        if self.mantle_litho >= 0:    print (" - Lithospheric mantle ends at depth " + str(depth[self.mantle_litho]) + " (node " + str(self.mantle_litho+1) + ")")
+        if self.mantle_sublitho >= 0: print (" - Sublithospheric mantle ends at depth " + str(depth[self.mantle_sublitho]) + " (node " + str(self.mantle_sublitho+1) + ")")
+        if self.mantle_mtz >= 0:      print (" - Mantle Transition zone ends at depth " + str(depth[self.mantle_mtz]) + " (node " + str(self.mantle_mtz+1) + ")")
+        if self.mantle_lower >= 0:    print (" - Lower mantle ends at depth " + str(depth[self.mantle_lower]) + " (node " + str(self.mantle_lower+1) + ")")
 
 
 class columndata:
@@ -53,6 +129,9 @@ class columndata:
         self.Vs      = []
         self.VpVs    = []
         self.density = []
+        self.gn     = goldennaildata()
+
+
 
 class referencecolumn:
     def __init__ (self, keyword, filename):
@@ -70,8 +149,9 @@ class referencecolumn:
         # alternatively, max and min bounds
         self.maximum = []
         self.minimum = []
+        self.gn = goldennaildata()
 
-    def refmodel_reader()
+    def refmodel_reader(self):
         # read the reference model from a supplied file
         print ("reading " + self.filename)
 
@@ -93,7 +173,7 @@ class referencecolumn:
 
                     if tmp[0] == "Name":
                         self.name = tmp[1]
-                        print ("Using " + message(self.name) " as a reference for " + self.parameter)
+                        print ("Using " + highlight(self.name) + " as a reference for " + self.parameter)
 
                     elif tmp[0] == "Citation":
                         self.citation = tmp[1]
@@ -101,8 +181,13 @@ class referencecolumn:
                     elif tmp[0] == "Depth" or tmp[0] == "Presure":
                         columns = tmp
                         header = False
+                        if columns[-1] != "Type":
+                            columns.append("Type")
 
                 else:
+                    # pad the Type column with None
+                    if len(tmp) == len(column.columns)-1:
+                        tmp.append(None)
 
                     # read the actual data table
                     for field, value in zip (columns, tmp):
@@ -140,22 +225,25 @@ class referencecolumn:
                                 print (error(self.depths[-1]) + " the relative uncertainty column must be after the actual parameter reference column")
                                 exit()
                             self.sigmaminus.append( read_value(value) * self.reference[-1] / 100 )
+                        elif field == "Type":
+                            if value is not None: self.gn.assign_gn(value, len(self.depth))
 
-        if self.name is not None: print ("Using " + colored(self.name , 'cyan') " as a pressure-depth dependency model")
+
+        if self.name is not None: print ("Using " + highlight(self.name) + " as a pressure-depth dependency model")
 
         column.depths = np.asarray(column.depths)
         column.pressures  = np.asarray(column.pressures)
 
 
 class pressuredepth:
-    def __init__(self,filename)
+    def __init__(self,filename):
         self.filename = filename
         self.name = None
         self.citation = None
         self.depths = []
         self.pressures = []
 
-    def read_pressure_model():
+    def read_pressure_model(self):
         print ("Reading Pressure-Depth parametrisation from " + self.filename)
 
         with open (self.filename, 'r') as myfile:
@@ -176,7 +264,7 @@ class pressuredepth:
 
                     if tmp[0] == "Name":
                         self.name = tmp[1]
-                        print ("Using " + message(self.name) " as a pressure-depth dependency model")
+                        print ("Using " + message(self.name) + " as a pressure-depth dependency model")
 
                     elif tmp[0] == "Citation":
                         self.citation = tmp[1]
@@ -198,7 +286,7 @@ class pressuredepth:
         column.pressures  = np.asarray(column.pressures)
 
 
-    def pressure_to_depth(pressures):
+    def pressure_to_depth(self, pressures):
 
         p_arr = np.asarray(pressures)
 

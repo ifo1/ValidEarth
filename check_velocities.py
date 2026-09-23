@@ -1,5 +1,5 @@
-use numpy as np
-import error, warning from colouredstrings
+import numpy as np
+from colouredstrings import error, warning
 
 # velocity assesment constants
 

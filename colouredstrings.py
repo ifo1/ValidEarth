@@ -2,15 +2,15 @@ from termcolor import colored
 
 def warning(depth = None):
     if depth is None:
-        return colored ("Warning: ", 'yellow')
+        return colored ("Warning: ", 'yellow', attrs=["bold"])
     else:
-        return colored ("Warning: ", 'yellow') + " at the depth of " + colored (str(depth), 'yellow') + " "
+        return colored ("Warning: ", 'yellow', attrs=["bold"]) + " at the depth of " + colored (str(depth), 'yellow', attrs=["bold"]) + " "
 
 def error(depth = None):
     if depth is None:
-        return colored ("Error: ", 'yellow')
+        return colored ("Error: ", 'red', attrs=["bold"])
     else:
-        return colored ("Error: ", 'yellow') + " at the depth of " + colored (str(depth), 'yellow') + " "
+        return colored ("Error: ", 'red', attrs=["bold"]) + " at the depth of " + colored (str(depth), 'red', attrs=["bold"]) + " "
 
 def highlight(message):
-    return colored ("Error: ", 'cyan')
+    return colored (str(message), 'cyan', attrs=["bold"])
