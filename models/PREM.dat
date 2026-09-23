@@ -1,5 +1,5 @@
-PREM
-# Dziewonski, A. M., & Anderson, D. L. (1981). Preliminary reference Earth model. Physics of the Earth and Planetary Interiors, 25(4), 297-356
+Name PREM
+Citation Dziewonski, A. M., & Anderson, D. L. (1981). Preliminary reference Earth model. Physics of the Earth and Planetary Interiors, 25(4), 297-356
 Depth	Vp	Vs	Density	ShearQualityFactor	BulkQualityFactor	Pressure
 # m, m/sec, m/sec, kg/m3, 1, 1, Pa
 0	1450	0	1020	0	57823	0

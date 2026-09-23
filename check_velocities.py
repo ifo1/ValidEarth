@@ -1,4 +1,5 @@
 use numpy as np
+import error, warning from colouredstrings
 
 # velocity assesment constants
 
@@ -37,6 +38,9 @@ def check_velocities(Depth, Vp, Vs, VpVs, Crust, Mantle):
 
             if np.isfinite(Vp[i]) and np.isfinite(Vs[i]) and Vs[i] > 0.0:
                 VpVs[i] = Vp[i] / Vs[i]
+
+
+    # check velocities according to the 
 
 
     return Vp, Vs, VpVs

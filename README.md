@@ -76,3 +76,8 @@ Refer to the bibliography.bib file in the root directory for all the reference m
 # Standards
 
 The code is written using Python 3.10 standard
+
+# Authorship
+
+This code was written by Ilya Fomin
+(C) Ilya Fomin, 2026

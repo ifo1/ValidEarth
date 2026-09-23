@@ -15,13 +15,14 @@ import columndata from classes
 # read command line arguments
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-i", dest="inputfile", help="Input file to verify")
+parser.add_argument("-i", dest="inputfile", help="An input file with structure to verify")
 parser.add_argument("-d", dest="delimiter", default=None, help="Delimiter between all columns")
 parser.add_argument("-utemp", dest="utemp", default="K", help="Temperature units: K [default] or C")
 parser.add_argument("-uvp", dest="uvp", default="m/s", help="Vp units: m/s [default] or km/s")
 parser.add_argument("-uvs", dest="uvs", default="m/s", help="Vs units: m/s [default] or km/s")
 parser.add_argument("-udepth", dest="udepth", default="m", help="Depth units: m [default] or km")
 parser.add_argument("-udens", dest="udens", default="kg/m3", help="Density units: kg/m3 [default] or g/cm3")
+parser.add_argument("-pressuremodel", dest="file_pressure", default="models/PREM.dat", help="A file with columns Pressure and Depth that will be used to calculate depths from pressures for those reference models calibrated for pressure")
 args = parser.parse_args()
 
 # verify the input file exists
@@ -61,14 +62,12 @@ with open(args.inputfile) as myfile:
 
     for line in myfile:
 
-        # split the line into a list of strings
-
         # skip empty lines and comments
         if len(line.strip()) == 0: continue
         char = line.strip()[0]
-        if char == "#" or char == "!" or char == "/": continue
+        if char == "#" or char == "!" or char == "/" or char == "%": continue
 
-        # get a list of values from the line
+        # split the line into a list of strings
         if args.delimiter is not None:
             tmp = line.strip().split(args.delimiter)
         else:
@@ -232,6 +231,10 @@ else:
 
 print ("Checking the following properties:")
 print (" - ".join(column.columns)
+
+# reading pressure model
+
+file_pressure
 
 # actual data checks
 
