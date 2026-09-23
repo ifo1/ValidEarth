@@ -1,3 +1,6 @@
+import error, warning from colouredstrings
+use numpy as np
+
 # this file contains only data checks during column reading
 
 def read_field(fieldname, pair, default=None):
@@ -8,8 +11,8 @@ def read_field(fieldname, pair, default=None):
 
     if fieldname != pair[0]: return default
 
-    if len(pair) < 2: print ("Warning: no value for " + fieldname + " was provided")
-    if len(pair) > 2: print ("Warning: multiple values for " + fieldname + " were provided")
+    if len(pair) < 2: print (warning() + "no value for " + fieldname + " was provided")
+    if len(pair) > 2: print (warning() + "multiple values for " + fieldname + " were provided")
 
     print (fieldname + ": " + pair[1])
     return pair[1]
@@ -29,23 +32,23 @@ def read_float(fieldname, pair, minval = None, maxval = None, default=None):
 
     if fieldname != pair[0]: return default, False
 
-    if len(pair) < 2: print ("Warning: no value for " + fieldname + " was provided")
-    if len(pair) > 2: print ("Warning: multiple values for " + fieldname + " were provided")
+    if len(pair) < 2: print (warning() + "no value for " + fieldname + " was provided")
+    if len(pair) > 2: print (warning() + "multiple values for " + fieldname + " were provided")
 
     try:
         value = float(pair[1])
     except ValueError:
-        print ("Error: the value supplied for " + fieldname + " is not a valid number!")
+        print (error() + "the value supplied for " + fieldname + " is not a valid number!")
 
     print (fieldname + ": " + str(value))
 
     if minval is not None:
         if value < minval:
-            print ("Error: the value supplied for " + fieldname + " is less than the minimum bound " + str(minval))
+            print (error() + "the value supplied for " + fieldname + " is less than the minimum bound " + str(minval))
 
     if maxval is not None:
         if value > maxval:
-            print ("Error: the value supplied for " + fieldname + " is greater than the maximum bound " + str(maxval))
+            print (error() + "the value supplied for " + fieldname + " is greater than the maximum bound " + str(maxval))
 
     return value, True
 
@@ -56,13 +59,13 @@ def read_value(fieldname, value):
     # value     - a value in the input file
 
     if len(value) < 1:
-        print ("Warning: data for " + fieldname + " was not supplied")
-        return None
+        print (warning() + "data for " + fieldname + " was not supplied")
+        return np.nan
 
-    if value == "NaN": return None
+    if value == "NaN": return np.nan
 
     try:
         return float(value)
     except ValueError:
-        print ("Error: the value supplied for " + fieldname + " is not a valid number!")
+        print (error() + "the value supplied for " + fieldname + " is not a valid number!")
 

@@ -2,10 +2,15 @@ use numpy as np
 import time
 import os.path
 import argparse
+from termcolor import colored
 
 # local modules
 import read_field, read_float, read_value from extract_prof
+import error, warning from colouredstrings
 import check_velocities from check_velocities
+
+# local classes
+import columndata from classes
 
 # read command line arguments
 
@@ -25,52 +30,28 @@ if not os.path.isfile(args.inputfile):
     print ("Fatal error: input file "+inputfile+" does not exist!")
     exit()
 
-# initialise a data structure for the inputs
-
-class columndata:
-   def __init__ (self):
-      # column location and specification
-      self.name      = None
-      self.coordsys  = "Geographic"
-      self.longitude = None
-      self.latitude  = None
-      self.x = None
-      self.y = None
-      # the last entry describing the crust; the mantle begins with Moho+1
-      self.Moho  = 0
-      # the last entry describing the lithosphere; the sublithosphere begins with LAB+1 
-      self.LAB  = 0
-      # column profiles
-      self.columns = []
-      self.depth = []
-      self.SiO2  = []
-      self.Al2O3 = []
-      self.MgNum = []
-      self.MgO   = []
-      self.FeO   = []
-      self.CaO   = []
-      self.temperature = []
-      self.Vp      = []
-      self.Vs      = []
-      self.VpVs    = []
-      self.density = []
-
+# initialise a class for the inputs
 column = columndata
 
 # read the file
 
 # flag data section
 datatable = False
-# flag crustal section
-crust = True
+# flags for crustal section
+i_crust_soil = False
+i_crust_regolith = False
+i_crust_sediment = False
+i_crust_upper = False
+i_crust_middle = False
+i_crust_lower = False
 # flag lithospheric mantle section
-mantle_litho = False
+i_mantle_litho = False
 # flag sublithospheric mantle section above 410 km (MTZ)
-mantle_sublitho = False
+i_mantle_sublitho = False
 # flag the Mantle Transition Zone
-mantle_mtz = False
+i_mantle_mtz = False
 # flag the Lower Mantle
-mantle_lower = False
+i_mantle_lower = False
 
 # read the input file
 
@@ -117,48 +98,93 @@ with open(args.inputfile) as myfile:
                 print ("The coordinate system was not recognised: " + column.coordsys)
                 exit()
 
+            # read headers
+            if tmp[0] == "Depth":
+
+                # there can be only one data section
+                if datatable:
+                    print (error() + "there can be only one data section in file")
+                    exit()
+
+                datatable = True
+
+                column.columns = tmp
+
+                if column.columns[-1] != "Type":
+                    column.columns.append("Type")
+
+            # skip data table section
+            continue
+
         # if execution reached this point, it is reading the actual data table (vertical profiles)
 
-        # read headers
-        if tmp[0] == "Depth":
-
-            # there can be only one data section
-            if datatable:
-                print ("Error: there can be only one data section in file")
-                exit()
-
-            datatable = True
-
-            column.columns = tmp
+        # pad the Type column with None if it exists
+        if len(tmp) == len(column.columns-1):
+            tmp.append(None)
 
         # read the actual data
         for field, value in zip (column.columns, tmp):
             if field == "Depth":
                 column.depth.append( read_value(value) )
-            elif field == "Temperature"
+            elif field == "Temperature":
                 column.temperature.append( read_value(value) )
-            elif field == "Vp"
+            elif field == "Vp":
                 column.Vp.append( read_value(value) )
-            elif field == "Vs"
+            elif field == "Vs":
                 column.Vs.append( read_value(value) )
-            elif field == "Density"
+            elif field == "Density":
                 column.density.append( read_value(value) )
-            elif field == "VpVs"
+            elif field == "VpVs":
                 column.VpVs.append( read_value(value) )
-            elif field == "SiO2"
+            elif field == "SiO2":
                 column.SiO2.append( read_value(value) )
-            elif field == "Al2O3"
+            elif field == "Al2O3":
                 column.Al2O3.append( read_value(value) )
-            elif field == "MgO"
+            elif field == "MgO":
                 column.MgO.append( read_value(value) )
-            elif field == "FeO"
+            elif field == "FeO":
                 column.FeO.append( read_value(value) )
-            elif field == "CaO"
+            elif field == "CaO":
                 column.CaO.append( read_value(value) )
-            elif field == "MgNum"
+            elif field == "MgNum" or field == "Mg#":
                 column.MgNum.append( read_value(value) )
+            elif field == "Type":
+                if value is not None:
+                    # assign the provided tag index to a corresponding variable 
+                    value = value.lower()
+                    n = len(column.depth)
+                    match value:
+                        case "soil":
+                            i_crust_soil = n
+                        case "regolith":
+                            i_crust_regolith = n
+                        case "sediments":
+                            i_crust_sediment = n
+                        case "crustupper":
+                            i_crust_upper = n
+                        case "crustmiddle":
+                            i_crust_middle = n
+                        case "crustlower":
+                            i_crust_lower = n
+                        case "Moho":
+                            i_crust_lower = n
+                        case "mantlelitho":
+                            i_mantle_litho = n
+                        case "LAB":
+                            i_mantle_litho = n
+                        case "mantleupper":
+                            i_mantle_sublitho = n
+                        case "410km":
+                            i_mantle_sublitho = n
+                        case "mantlemtz":
+                            i_mantle_mtz = n
+                        case "670km":
+                            i_mantle_mtz = n
+                        case "mantlelower":
+                            i_mantle_lower = n
 
-        # convert to numpy arrays
+
+        # convert data to numpy arrays
         column.depth = np.asarray(column.depth)
         column.SiO2  = np.asarray(column.SiO2)
         column.Al2O3 = np.asarray(column.Al2O3)
@@ -179,22 +205,39 @@ with open(args.inputfile) as myfile:
         if args.uvs = "km/s":    column.Vs *= 1000
         if args.udens = "g/cm3": column.density *= 1000
 
-        # add missing fields
+# print information about the column
 
-        if not column.VpVs and column.Vp and column.Vs:
-            column.VpVs = np.divide(column.Vp, column.Vs, out=np.full_like(column.Vp, np.nan), where=np.isfinite(column.Vs) & (column.Vs != 0))
-        elif column.VpVs and not column.Vp and column.Vs:
-            column.Vp = column.VpVs * column.Vs
-        elif column.VpVs and column.Vp and not column.Vs:
-            column.Vs = np.divide(column.Vp, column.VpVs, out=np.full_like(column.Vp, np.nan), where=np.isfinite(column.VpVs) & (column.VpVs != 0))
-        else:
-            for vpvs, vp, vs in zip (column.VpVs , column.Vp , column.Vs)
-                if not np.isfinite(vpvs):
-                    if vs != 0.0: 
-                        print ("The following Vp, Vs, Vp/Vs values are inconsistent: " + str(Vp) + ", " + str(Vs) + ", " + str(Vp/Vs))
-                    continue
-                if vpvs - vp/vs > 1.e-3:
-                    print ("The following Vp, Vs, Vp/Vs values are inconsistent: " + str(Vp) + ", " + str(Vs) + ", " + str(Vp/Vs))
+print ("Checking file " + colored (args.inputfile, 'cyan') + " column " + colored (column.Name, 'cyan'), end='')
+
+if column.coordsys == "Geographic":
+    if column.longitude is None:
+        print (error() + "a value for longitude was not provided")
+        exit()
+    if column.latitude is None:
+        print (error() + "a value for latitude was not provided")
+        exit()
+    print (" with longitude " + colored (str(column.longitude), 'cyan') + " and latitude " + colored (str(column.latitude), 'cyan') )
+
+elif column.coordsys == "Cartesian":
+    if column.x is None:
+        print (error() + "a value for x coordinate was not provided")
+        exit()
+    if column.y is None:
+        print (error() + "a value for y coordinate was not provided")
+        exit()
+    print (" with X " + colored (str(column.longitude), 'cyan') + " and Y " + colored (str(column.latitude), 'cyan') )
+
+else:
+    print ("")
+
+print ("Checking the following properties:")
+print (" - ".join(column.columns)
+
+# actual data checks
+
+# this function computes missing fields from those present
+column.Vp, column.Vs, column.VpVs = check_velocities( column.Depth, column.Vp, column.Vs, column.VpVs, Crust, Mantle )
+
 
 
 
