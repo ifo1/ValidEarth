@@ -1,8 +1,8 @@
 # ValidEarth
 
-ValidEarth is a toolkit for verifying whether vertical profiles of Earth’s physical properties are consistent with established reference models. The properties assessed include key parameters such as density, temperature (including solidi and liquidi), bulk and shear seismic velocities and their ratio, chemical composition of the mantle - and the list can be easily extended). The tool does not nee
+ValidEarth is a toolkit for verifying whether vertical profiles of Earth's physical properties are consistent with established reference models. The assessable properties include key parameters such as density, temperature, bulk and shear seismic velocities and their ratio, chemical composition of the mantle. This list can be easily extended using new modules.
 
-For each parameter, the toolkit comes with a set of well-established reference models based on experimental and seismic data, with all sources documented in the bibliography. Each reference data point is associated with an independent relative or absolute uncertainty, allowing the comparison to account for the expected variability and uncertainty of the reference models. The tool reports the differences that are greater than three sigmas; for the parameters with more than reference models provided (for example, geotherms for different geological settings), the tool looks for the best matching profile automatically.
+For each parameter, ValidEarth comes with a set of well-established reference models based on experimental and seismic data, with all sources documented in the **bibliography**. Each reference data point is associated with an independent relative or absolute uncertainty, allowing the comparison to account for the expected variability and uncertainty of the reference models. The tool reports the differences that are greater than three sigmas; for the parameters with more than reference models provided (for example, geotherms for different geological settings), the tool looks for the best matching profile automatically.
 
 # Input Data Format
 
@@ -14,48 +14,55 @@ The code accepts an input file with the following format:
 
 Optional keywords include Name (an arbitrary string without whitespace), CoordinateSystem (Geographic or Cartesian), Longitude, and Latitude. Each keyword must be on a separate line.
 
-The first Column Header must be Depth. It can be followed by any of the following Headers:
-- Temperature
-- Vp
-- Vs
-- Density
-- VpVs for the Vp/Vs ratio
-- SiO2
-- Al2O3
-- FeO
-- MgO
-- CaO
-- MgNum or Mg#
+The first Column Header must be **Depth**. It can be followed by any of the following **Headers**:
+- **Temperature**, K
+- **Vp**, m/sec
+- **Vs**, m/sec
+- **Density**, kg/m3
+- **VpVs** for the Vp/Vs ratio
+- **SiO2**, wt.%
+- **Al2O3**, wt.%
+- **FeO**, wt.%
+- **MgO**, wt.%
+- **CaO**, wt.%
+- **MgNum** or Mg#, mol.%
 
-This line should be followed by a datatable with the actual values
+This line should be followed by a datatable with values to verify. By default, ValidEarth treats (almost) all the physical quantities as being expressed in SI units, unless specified. Some automated unit conversions can be enabled using the command line options.
 
-By default, the code treats all the values as SI inputs, the unit for chemical compounds is wt.%, and the Mg# is in mol.%; that behaviour can be controlled using the command line options.
+Notice: the code will automatically compute the mutually depending quantities in case they are not supplied such as Vp/Vs from Vp and Vs, or Vp from Vp/Vs and Vs.
 
-The code also allows specific tags for distinct domains. They should appear as the last entry for each data row; an auxilliary word "Type" can be used to mark this column. Currently the code recongnises the following keywords:
-- soil: for all the layers representing soils
-- regolith: for all the unconsolidated sediments such as sands, gravels and so on
-- sediments: consolidated sediments like sandstone, limestone, and so on
-- crustupper: the upper layer of crystalline crust
-- crustmiddle: the middle layer of crystalline crust
-- crustlower: the lower layer of crystalline crust
-- Moho: an alternative keyword with the same meaning as crustlower
-- mantlelitho: the lithospheric mantle
-- LAB: an alternative keyword with the same meaning as mantlelitho
-- mantleupper: the sublithospheric mantle above the 410 discontinuity 
-- 410km: the actual depth of 410 km discontinuity, an alternative to mantleupper
-- mantlemtz: the mantle transition zone
-- 670km: an alternative keyword with the same meaning as mantlemtz
-- mantlelower: lower mantle 
+The code also allows specific tags for distinct geological domains (layers). They should appear as the last entry for each data row; an auxilliary word "Type" can be used to mark this column. Currently the code recongnises the following keywords:
+- **soil**: for all the layers representing soils
+- **regolith**: for all the unconsolidated sediments such as sands, gravels and so on
+- **sediments**: consolidated sediments like sandstone, limestone, and so on
+- **crustupper**: the upper layer of crystalline crust
+- **crustmiddle**: the middle layer of crystalline crust
+- **crustlower**: the lower layer of crystalline crust
+- **Moho**: an alternative keyword with the same meaning as crustlower
+- **mantlelitho**: the lithospheric mantle
+- **LAB**: an alternative keyword with the same meaning as mantlelitho
+- **mantleupper**: the sublithospheric mantle above the 410 discontinuity 
+- **410km**: the actual depth of 410 km discontinuity, an alternative to mantleupper
+- **mantlemtz**: the mantle transition zone
+- **670km**: an alternative keyword with the same meaning as mantlemtz
+- **mantlelower**: lower mantle 
 
-Notice: these keywords might be used for every specific row, or only for the last one in the depth profile. Only one entry for each domain is allowed.
+Notice: these keywords might be used for every specific row, or only for the last one representing the given layer. Each of these layers must be continuous.
 
 All lines starting with #, /, % and ! are treated as comments and ignored.
 
 # Profile Validation
 
-The code checks whether the properties submitted for each layer fall within the properties of corresponding layers. If the input file (or reference model file) has no layers provided, or if there are multiple datapoints within this layer, the comparison is performed according to the depth value.
+There are two main methods of profile validation:
 
-For each depth value of the input file, a corresponding parameter value is estimated using linear interpolation. If the depth value is above the uppermost reference value or it is below the lowermost available value, two first (last) points of the reference profile are used to interpolate the value. 
+- signalling if the value is outside a feasible range. **ParameterMin** and **ParameterMax** columns must be provided in the model reference file to utilise it 
+- signalling if the value is too far from an expected value. In that case, the reference model must contain Parameter and **ParameterSigma** columns (or ParameterSigma+ and ParameterSigma- to apply different standard deviations for values above and below the reference one). Alternatively, the reference model can contain Parameter and **Parameter%** columns (or Parameter%+ and Parameter%-).
+
+For each assessable record in the input data table, a corresponding reference parameter value is linearly interpolated to the provided depth levels. If the depth value is above the uppermost reference value or it is below the lowermost available value, two first (last) points of the reference profile are used to interpolate the value. 
+
+An additional test scenario is provided to check whether any melting may happen along the profile. In that case, the code will report for any temperature values above the solidus and liquidus. 
+
+Notice: a reference model can use Pressure or Depth as an input field. In the former case, the pressures will be converted to depths according to a supplied model. 
 
 # Available Options
 

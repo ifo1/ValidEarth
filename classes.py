@@ -108,12 +108,14 @@ class referencecolumn:
                     for field, value in zip (columns, tmp):
                         if field == "Depth":
                             self.depths.append( read_value(value) )
+
                         elif field == self.parameter:
                             self.reference.append( read_value(value) )
                         elif field == self.parameter+"Max":
                             self.maximum.append( read_value(value) )
                         elif field == self.parameter+"Min":
                             self.minimum.append( read_value(value) )
+
                         elif field == self.parameter+"Sigma":
                             self.sigmaplus.append( read_value(value) )
                             self.sigmaminus.append( read_value(value) )
@@ -121,6 +123,23 @@ class referencecolumn:
                             self.sigmaplus.append( read_value(value) )
                         elif field == self.parameter+"Sigma-":
                             self.sigmaminus.append( read_value(value) )
+
+                        elif field == self.parameter+"%":
+                            if not self.reference:
+                                print (error(self.depths[-1]) + " the relative uncertainty column must be after the actual parameter reference column")
+                                exit()
+                            self.sigmaplus.append( read_value(value) * self.reference[-1] / 100 )
+                            self.sigmaminus.append( read_value(value) * self.reference[-1] / 100 )
+                        elif field == self.parameter+"%+":
+                            if not self.reference:
+                                print (error(self.depths[-1]) + " the relative uncertainty column must be after the actual parameter reference column")
+                                exit()
+                            self.sigmaplus.append( read_value(value) * self.reference[-1] / 100 )
+                        elif field == self.parameter+"%-":
+                            if not self.reference:
+                                print (error(self.depths[-1]) + " the relative uncertainty column must be after the actual parameter reference column")
+                                exit()
+                            self.sigmaminus.append( read_value(value) * self.reference[-1] / 100 )
 
         if self.name is not None: print ("Using " + colored(self.name , 'cyan') " as a pressure-depth dependency model")
 
