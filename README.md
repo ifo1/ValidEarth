@@ -6,7 +6,7 @@ For each parameter, ValidEarth comes with a set of well-established reference mo
 
 # Input Data Format
 
-The code accepts an input file with the following format:
+A valid input file should contain following sections:
 
 - Optional Keywords and Values
 - Column Headers
@@ -47,7 +47,7 @@ The code also allows specific tags for distinct geological domains (layers). The
 - **670km**: an alternative keyword with the same meaning as mantlemtz
 - **mantlelower**: lower mantle 
 
-Notice: these keywords might be used for every specific row, or only for the last one representing the given layer. Each of these layers must be continuous.
+Notice: these keywords might be used for every data row, or mark the last one representing the given layer. Each of these layers must be continuous (without any other layers between its start and end points).
 
 All lines starting with #, /, % and ! are treated as comments and ignored.
 
@@ -60,7 +60,7 @@ There are two main methods of profile validation:
 
 For each assessable record in the input data table, a corresponding reference parameter value is linearly interpolated to the provided depth levels. If the depth value is above the uppermost reference value or it is below the lowermost available value, two first (last) points of the reference profile are used to interpolate the value. 
 
-An additional test scenario is provided to check whether any melting may happen along the profile. In that case, the code will report for any temperature values above the solidus and liquidus. 
+An additional test scenario is provided to check whether any **melting** may occur along the profile. In that case, the code will report any temperature above the **solidus** and **liquidus**. 
 
 Notice: a reference model can use Pressure or Depth as an input field. In the former case, the pressures will be converted to depths according to a supplied model. 
 
