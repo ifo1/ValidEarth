@@ -77,3 +77,17 @@ year = {1996}
 }
 
 
+@article{McKenzie_etal_2005,
+title = {Thermal structure of oceanic and continental lithosphere},
+journal = {Earth and Planetary Science Letters},
+volume = {233},
+number = {3},
+pages = {337-349},
+year = {2005},
+issn = {0012-821X},
+doi = {https://doi.org/10.1016/j.epsl.2005.02.005},
+url = {https://www.sciencedirect.com/science/article/pii/S0012821X05001068},
+author = {McKenzie, Dan and Jackson, James and Priestley, Keith},
+keywords = {heat flow, oceanic bathymetry, mantle rheology, continental geotherms},
+abstract = {Recent studies of the focal depths of earthquakes in old continental lithosphere have shown that they are almost entirely confined to the crust. Except where recent subduction of oceanic lithosphere is likely to have occurred, no earthquakes with a magnitude of >5.5 have yet been located beneath the Moho. In contrast, in oceanic lithosphere earthquakes commonly occur within the mantle. The principal control on whether or not deformation occurs by brittle failure has long been believed to be temperature. We re-examine the thermal models of both oceans and shields. Taking account of the temperature dependence of the thermal conductivity lowers the temperature within the oceanic lithosphere. Except beneath the outer rises of trenches, where the strain rates are large, intraplate oceanic earthquakes are confined to regions cooler than 600 °C. In continental regions most earthquakes occur in the mobile belts that surround Archaean cratons, where the crust is as thick as 50-60 km. Recent studies, of the Canadian Shield in particular, have shown that radiogenic heating is not as concentrated at shallow depths as was previously believed. Taking account of both these effects and the temperature dependence of the thermal conductivity increases the Moho temperatures, which can exceed 600 °C, and produces geotherms that agree well with pressure and temperature estimates from nodule suites from kimberlites. Therefore the mechanical behaviour of oceanic and continental upper mantle appears to depend on temperature alone, and there is as yet no convincing evidence for any compositional effects.}
+}

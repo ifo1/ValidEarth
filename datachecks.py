@@ -48,3 +48,21 @@ def read_float(fieldname, pair, minval = None, maxval = None, default=None):
             print ("Error: the value supplied for " + fieldname + " is greater than the maximum bound " + str(maxval))
 
     return value, True
+
+
+def read_value(fieldname, value):
+    # Attempt to read a field from the input file
+    # fieldname - the name of field to read (for reporting purposes only)
+    # value     - a value in the input file
+
+    if len(value) < 1:
+        print ("Warning: data for " + fieldname + " was not supplied")
+        return None
+
+    if value == "NaN": return None
+
+    try:
+        return float(value)
+    except ValueError:
+        print ("Error: the value supplied for " + fieldname + " is not a valid number!")
+
