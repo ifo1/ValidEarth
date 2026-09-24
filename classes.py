@@ -28,14 +28,97 @@ def linear_interp(xi, xarr, yarr):
     return yi
 
 
-def match_layers(model_ind, ref_ind):
-    # match the locations of layers in the input file and in the reference model
+def match_layers(model_ind, model_nlay, ref_ind, ref_nlay):
+    # match the locations of layers in the input file and in the reference model 
     # this function is necessary because some of the layers might be missing in the input model and in the 
+    # in the end, it stacks the profiles to produce a "composite cross-section"
     # Inputs
-    # model_ind - indices (golden nails) in the input array
-    # ref_ind   - indices (golden nails) in the reference array
-    #
-    pass
+    # model_ind  - indices (golden nails) in the input array
+    # model_nlay - the number of layers in the input data table
+    # ref_ind    - indices (golden nails) in the reference array
+    # ref_nlay   - the number of layers in the reference data table
+    # Outputs
+    # layernames - a list of layer names
+    # layermodel - a list of layer indices for the input model
+    # layerref   - a list of corresponding layer indices for the reference model 
+
+    layernames = []
+    layermodel = [0]
+    layerref   = [0]
+
+    if model_nlay <= 0:
+        print (error() + "the input data file contains no records")
+        exit()
+
+    if ref_nlay <= 0:
+        print (error() + "the reference file contains no records")
+        exit()
+
+    if model_ind.water > 0 and ref_ind.water > 0:
+        layernames.append("Water")
+        layermodel.append(model_ind.water)
+        layerref.append(ref_ind.water)
+
+    if model_ind.crust_soil > 0 and ref_ind.crust_soil > 0:
+        layernames.append("Soil")
+        layermodel.append(model_ind.crust_soil)
+        layerref.append(ref_ind.crust_soil)
+
+    if model_ind.crust_regolith > 0 and ref_ind.crust_regolith > 0:
+        layernames.append("Regolith")
+        layermodel.append(model_ind.crust_regolith)
+        layerref.append(ref_ind.crust_regolith)
+
+    if model_ind.crust_sediment > 0 and ref_ind.crust_sediment > 0:
+        layernames.append("Sediments")
+        layermodel.append(model_ind.crust_sediment)
+        layerref.append(ref_ind.crust_sediment)
+
+    if model_ind.crust_upper > 0 and ref_ind.crust_upper > 0:
+        layernames.append("Upper Crust")
+        layermodel.append(model_ind.crust_upper)
+        layerref.append(ref_ind.crust_upper)
+
+    if model_ind.crust_middle > 0 and ref_ind.crust_middle > 0:
+        layernames.append("Middle Crust")
+        layermodel.append(model_ind.crust_middle)
+        layerref.append(ref_ind.crust_middle)
+
+    if model_ind.crust_lower > 0 and ref_ind.crust_lower > 0:
+        layernames.append("Lower Crust")
+        layermodel.append(model_ind.crust_lower)
+        layerref.append(ref_ind.crust_lower)
+
+    if model_ind.mantle_litho > 0 and ref_ind.mantle_litho > 0:
+        layernames.append("Lithospheric Mantle")
+        layermodel.append(model_ind.mantle_litho)
+        layerref.append(ref_ind.mantle_litho)
+
+    if model_ind.mantle_sublitho > 0 and ref_ind.mantle_sublitho > 0:
+        layernames.append("Sublithospheric Mantle")
+        layermodel.append(model_ind.mantle_sublitho)
+        layerref.append(ref_ind.mantle_sublitho)
+
+    if model_ind.mantle_mtz > 0 and ref_ind.mantle_mtz > 0:
+        layernames.append("Mantle Transition Zone")
+        layermodel.append(model_ind.mantle_mtz)
+        layerref.append(ref_ind.mantle_mtz)
+
+    if model_ind.mantle_lower > 0 and ref_ind.mantle_lower > 0:
+        layernames.append("Lower Mantle")
+        layermodel.append(model_ind.mantle_lower)
+        layerref.append(ref_ind.mantle_lower)
+
+    # finalise the arrays if they do not have layer types assigned at the end of profile
+    # one is subtracted as it is the size of an array with indexing starting from 0 
+    if layermodel[-1] < model_nlay-1 and layerref[-1] < ref_nlay-1:
+        layernames.append("Undifferentiated")
+        layermodel.append(model_nlay-1)
+        layerref.append(ref_nlay-1)
+    elif layermodel[-1] < model_nlay-1:
+        print ("Everything in the input model which lies below the " + layernames[-1] + " will be ignored when comparing with this model")
+
+    return layernames, layermodel, layerref
 
 
 class goldennaildata:
@@ -313,6 +396,9 @@ class pressuredepth:
         for i in range (p_arr.size):
             d_arr[i] = linear_interp(p_arr[i], self.pressures, self.depths)
 
+        # return scalar if there is only one value
+        if d_arr.size = 1: d_arr = d_arr[0]
 
+        return d_arr
 
 
