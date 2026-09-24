@@ -27,7 +27,7 @@ args = parser.parse_args()
 # verify the input file exists
 
 if not os.path.isfile(args.inputfile):
-    print ("Fatal error: input file "+args.inputfile+" does not exist!")
+    print (error() + "input file "+args.inputfile+" does not exist!")
     exit()
 
 # initialise a class for the inputs ad for the golden nails
@@ -104,29 +104,34 @@ with open(args.inputfile) as myfile:
         # read the actual data
         for field, value in zip (column.columns, tmp):
             if field == "Depth":
-                column.depth.append( read_value("Depth",value) )
+                locdepth = read_value(field,value)
+                if len(column.depth) > 1:
+                    if locdepth < column.depth[-1]:
+                        print (error(locdepth) + "the depth is not non-decreasing in the input file!")
+                        exit()
+                column.depth.append( locdepth )
             elif field == "Temperature":
-                column.temperature.append( read_value("Temperature",value) )
+                column.temperature.append( read_value(field,value) )
             elif field == "Vp":
-                column.Vp.append( read_value("Vp",value) )
+                column.Vp.append( read_value(field,value) )
             elif field == "Vs":
-                column.Vs.append( read_value("Vs",value) )
+                column.Vs.append( read_value(field,value) )
             elif field == "Density":
-                column.density.append( read_value("Density",value) )
+                column.density.append( read_value(field,value) )
             elif field == "VpVs":
-                column.VpVs.append( read_value("VpVs",value) )
+                column.VpVs.append( read_value(field,value) )
             elif field == "SiO2":
-                column.SiO2.append( read_value("SiO2",value) )
+                column.SiO2.append( read_value(field,value) )
             elif field == "Al2O3":
-                column.Al2O3.append( read_value("Al2O3",value) )
+                column.Al2O3.append( read_value(field,value) )
             elif field == "MgO":
-                column.MgO.append( read_value("MgO",value) )
+                column.MgO.append( read_value(field,value) )
             elif field == "FeO":
-                column.FeO.append( read_value("FeO",value) )
+                column.FeO.append( read_value(field,value) )
             elif field == "CaO":
-                column.CaO.append( read_value("CaO",value) )
+                column.CaO.append( read_value(field,value) )
             elif field == "MgNum" or field == "Mg#":
-                column.MgNum.append( read_value("Mg#",value) )
+                column.MgNum.append( read_value(field,value) )
             elif field == "Type":
                 if value is not None: column.gn.assign_gn(value, len(column.depth)-1)
 
@@ -176,9 +181,10 @@ column.gn.report_gn(column.depth)
 print ("Checking the following properties: ")
 print (" - ".join(column.columns[1:-1]))
 
-# reading pressure model
+# read pressure model
 
 pressuremodel = pressuredepth(args.file_pressure)
+pressuremodel.read_pressure_model()
 
 # actual data checks
 

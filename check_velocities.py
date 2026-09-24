@@ -8,7 +8,7 @@ eps_vpvs = 0.01
 
 
 
-def check_velocities(Depth, Vp, Vs, VpVs, Crust, Mantle):
+def check_velocities(Depth, Vp, Vs, VpVs):
 
     #size of all arrays
     n = Depth.size

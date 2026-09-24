@@ -27,6 +27,16 @@ def linear_interp(xi, xarr, yarr):
     return yi
 
 
+def match_layers(model_ind, ref_ind):
+    # match the locations of layers in the input file and in the reference model
+    # this function is necessary because some of the layers might be missing in the input model and in the 
+    # Inputs
+    # model_ind - indices (golden nails) in the input array
+    # ref_ind   - indices (golden nails) in the reference array
+    #
+    pass
+
+
 class goldennaildata:
     def __init__ (self):
         self.water = -1
@@ -82,7 +92,6 @@ class goldennaildata:
                 self.mantle_lower = n
             case default:
                 print (warning() + "type " + value + " is not known")
-
 
     def report_gn(self, depth):
         if self.water >= 0 or self.crust_soil >= 0 or self.crust_regolith >= 0 or self.crust_sediment >= 0 or \
@@ -153,7 +162,7 @@ class referencecolumn:
 
     def refmodel_reader(self):
         # read the reference model from a supplied file
-        print ("reading " + self.filename)
+        print ("Reading " + self.filename)
 
         with open (self.filename, 'r') as myfile:
 
@@ -192,39 +201,43 @@ class referencecolumn:
                     # read the actual data table
                     for field, value in zip (columns, tmp):
                         if field == "Depth":
-                            self.depths.append( read_value(value) )
-
+                            locdepth = read_value(field,value)
+                            if len(self.depths) >= 1:
+                                if locdepth < self.depths[-1]:
+                                    print (error(locdepth) + "the depth is not non-decreasing in the reference file!")
+                                    exit()
+                            column.depths.append( locdepth )
                         elif field == self.parameter:
-                            self.reference.append( read_value(value) )
+                            self.reference.append( read_value(field,value) )
                         elif field == self.parameter+"Max":
-                            self.maximum.append( read_value(value) )
+                            self.maximum.append( read_value(field,value) )
                         elif field == self.parameter+"Min":
-                            self.minimum.append( read_value(value) )
+                            self.minimum.append( read_value(field,value) )
 
                         elif field == self.parameter+"Sigma":
-                            self.sigmaplus.append( read_value(value) )
-                            self.sigmaminus.append( read_value(value) )
+                            self.sigmaplus.append( read_value(field,value) )
+                            self.sigmaminus.append( read_value(field,value) )
                         elif field == self.parameter+"Sigma+":
-                            self.sigmaplus.append( read_value(value) )
+                            self.sigmaplus.append( read_value(field,value) )
                         elif field == self.parameter+"Sigma-":
-                            self.sigmaminus.append( read_value(value) )
+                            self.sigmaminus.append( read_value(field,value) )
 
                         elif field == self.parameter+"%":
                             if not self.reference:
                                 print (error(self.depths[-1]) + " the relative uncertainty column must be after the actual parameter reference column")
                                 exit()
-                            self.sigmaplus.append( read_value(value) * self.reference[-1] / 100 )
-                            self.sigmaminus.append( read_value(value) * self.reference[-1] / 100 )
+                            self.sigmaplus.append( read_value(field,value) * self.reference[-1] / 100 )
+                            self.sigmaminus.append( read_value(field,value) * self.reference[-1] / 100 )
                         elif field == self.parameter+"%+":
                             if not self.reference:
                                 print (error(self.depths[-1]) + " the relative uncertainty column must be after the actual parameter reference column")
                                 exit()
-                            self.sigmaplus.append( read_value(value) * self.reference[-1] / 100 )
+                            self.sigmaplus.append( read_value(field,value) * self.reference[-1] / 100 )
                         elif field == self.parameter+"%-":
                             if not self.reference:
                                 print (error(self.depths[-1]) + " the relative uncertainty column must be after the actual parameter reference column")
                                 exit()
-                            self.sigmaminus.append( read_value(value) * self.reference[-1] / 100 )
+                            self.sigmaminus.append( read_value(field,value) * self.reference[-1] / 100 )
                         elif field == "Type":
                             if value is not None: self.gn.assign_gn(value, len(self.depth))
 
@@ -264,7 +277,7 @@ class pressuredepth:
 
                     if tmp[0] == "Name":
                         self.name = tmp[1]
-                        print ("Using " + message(self.name) + " as a pressure-depth dependency model")
+                        print ("Using " + highlight(self.name) + " as a pressure-depth dependency model")
 
                     elif tmp[0] == "Citation":
                         self.citation = tmp[1]
@@ -278,12 +291,12 @@ class pressuredepth:
                     # read the actual data table
                     for field, value in zip (columns, tmp):
                         if field == "Depth":
-                            self.depths.append( read_value(value) )
+                            self.depths.append( read_value(field,value) )
                         elif field == "Pressure":
-                            self.pressures.append( read_value(value) )
+                            self.pressures.append( read_value(field,value) )
 
-        column.depths = np.asarray(column.depths)
-        column.pressures  = np.asarray(column.pressures)
+        self.depths = np.asarray(self.depths)
+        self.pressures  = np.asarray(self.pressures)
 
 
     def pressure_to_depth(self, pressures):
