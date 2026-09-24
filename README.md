@@ -31,8 +31,6 @@ The first column header must be **Depth**. It can be followed by any of the foll
 
 The header line must be followed by a data table containing the values to be validated. By default, ValidEarth assumes that physical quantities are expressed in SI units unless otherwise specified. Selected automatic unit conversions can be enabled using command-line options.
 
-ValidEarth automatically calculates mutually dependent quantities when they are not explicitly provided. For example, it can calculate Vp/Vs from Vp and Vs, or Vp from Vp/Vs and Vs.
-
 The input format also supports tags identifying distinct geological domains or layers. These tags should appear as the last entry in each data row. The optional header Type can be used to identify this column.
 
 Currently, ValidEarth recognises the following layer types (internally referred as golden nails to highlight their role as layer bottom markers):
@@ -82,6 +80,12 @@ The most important section, however, is a comparison table with the following co
 - **Bedding Depth** is the depth of last record representing the given layer. Provided both for the input model and for the reference one.
 - **Stdev** and **Abs** show the absolute difference between the reference model and the input file, represented by the number of standard deviations and by absolute value. The code shows separately differences for the predictions greater and less than the reference curve.
 - **Rel** and **Abs** appear for the reference parameters that come with the Minimum and Maximum boundaries and show the distance from the minimum and maximum values (if the value is out of the range). The Relative column shows the absolute difference divided by the range. 
+
+# Derived and Mutually-Dependent Parameters
+
+Some important parameters are mutually dependent, for example, the Vp/Vs ratio and Vp and Vs velocities, or the Magnesium Number (Mg#) and MgO and FeO content. However, if the values two parameters in such a set are within reasonable bounds, it does not necessarily mean that the third one will be feasible as well.
+
+ValidEarth aims to tackle these issues and it calculates the third parameter if the first two are provided.
 
 # Available Options
 
