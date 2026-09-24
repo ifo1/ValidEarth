@@ -121,6 +121,23 @@ def match_layers(model_ind, model_nlay, ref_ind, ref_nlay):
     return layernames, layermodel, layerref
 
 
+def print_stacked_models(layernames, layermodel, layerref, depthmodel, depthref):
+    # a function to print out a "composite cross-section" from the reference and the input models being stacked
+    # Inputs
+    # layernames - a list of layer names in the composite cross-section
+    # layermodel - a list of matching layer indices for the input model
+    # layerref   - a list of matching layer indices for the reference model 
+    # depthmodel - a list of matching layer depths for the input model
+    # depthref   - a list of matching layer depths for the reference model 
+
+    print ("Input model layer index and bedding depth - Layer Name - Reference model bedding depth and layer index")
+    for name, im, ir in zip (layernames, layermodel[1:], layerref[1:]):
+        text = '               {:4d}'.format(im) + ' - {:12.2f} m'.format(depthmodel[im]) + " - " 
+        text += name.center(20)
+        text += (' - {:12.2f} m '.format(depthref[ir]) + ' - {:4d}'.format(ir)).rjust(20)
+        print (text)
+
+
 class goldennaildata:
     def __init__ (self):
         self.water = -1
@@ -266,7 +283,7 @@ class referencecolumn:
 
                     if tmp[0] == "Name":
                         self.name = tmp[1]
-                        print ("Using " + highlight(self.name) + " as a reference for " + self.parameter)
+                        print ("Using " + highlight(self.name) + " as a reference model for " + self.parameter)
 
                     elif tmp[0] == "Citation":
                         self.citation = tmp[1]
@@ -279,7 +296,7 @@ class referencecolumn:
 
                 else:
                     # pad the Type column with None
-                    if len(tmp) == len(column.columns)-1:
+                    if len(tmp) == len(columns)-1:
                         tmp.append(None)
 
                     # read the actual data table
@@ -290,7 +307,7 @@ class referencecolumn:
                                 if locdepth < self.depths[-1]:
                                     print (error(locdepth) + "the depth is not non-decreasing in the reference file!")
                                     exit()
-                            column.depths.append( locdepth )
+                            self.depths.append( locdepth )
                         elif field == self.parameter:
                             self.reference.append( read_value(field,value) )
                         elif field == self.parameter+"Max":
@@ -323,13 +340,11 @@ class referencecolumn:
                                 exit()
                             self.sigmaminus.append( read_value(field,value) * self.reference[-1] / 100 )
                         elif field == "Type":
-                            if value is not None: self.gn.assign_gn(value, len(self.depth))
+                            if value is not None: self.gn.assign_gn(value, len(self.depths))
 
+        self.depths = np.asarray(self.depths)
+        self.reference  = np.asarray(self.reference)
 
-        if self.name is not None: print ("Using " + highlight(self.name) + " as a pressure-depth dependency model")
-
-        column.depths = np.asarray(column.depths)
-        column.pressures  = np.asarray(column.pressures)
 
 
 class pressuredepth:
@@ -397,7 +412,7 @@ class pressuredepth:
             d_arr[i] = linear_interp(p_arr[i], self.pressures, self.depths)
 
         # return scalar if there is only one value
-        if d_arr.size = 1: d_arr = d_arr[0]
+        if d_arr.size == 1: d_arr = d_arr[0]
 
         return d_arr
 

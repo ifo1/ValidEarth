@@ -8,7 +8,7 @@ from colouredstrings import error, warning, highlight
 from check_velocities import check_velocities
 
 # local classes
-from classes import columndata, pressuredepth
+from classes import columndata, pressuredepth, match_layers, print_stacked_models, referencecolumn
 
 # read command line arguments
 
@@ -177,9 +177,6 @@ elif column.coordsys == "Cartesian":
 
 column.gn.report_gn(column.depth)
 
-print ("Checking the following properties: ")
-print (" - ".join(column.columns[1:-1]))
-
 # read pressure model
 
 pressuremodel = pressuredepth(args.file_pressure)
@@ -187,8 +184,28 @@ pressuremodel.read_pressure_model()
 
 # actual data checks
 
+# for each of the assesable physical quantities in the input file, try to find a match in the available reference models
+
+
+
+print ("Assessing the following input model physical quantities: ")
+print (highlight(" - ".join(column.columns[1:-1])))
+for quantity in column.columns:
+
+    if quantity == "Depth" or quantity == "Type": continue
+
+    print ("Assessing " + highlight(quantity))
+
+    # trying to validate using PREM
+    refcol = referencecolumn(quantity, "models/PREM.dat")
+    refcol.refmodel_reader()
+
+    layernames, layermodel, layerref = match_layers(column.gn, column.depth.size, refcol.gn, refcol.depths.size)
+    print_stacked_models(layernames, layermodel, layerref, column.depth, refcol.depths)
+
+
 # this function computes missing fields from those present
-column.Vp, column.Vs, column.VpVs = check_velocities( column.depth, column.Vp, column.Vs, column.VpVs )
+#column.Vp, column.Vs, column.VpVs = check_velocities( column.depth, column.Vp, column.Vs, column.VpVs )
 
 
 
