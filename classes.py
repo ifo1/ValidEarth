@@ -1,5 +1,6 @@
 from termcolor import colored
 import numpy as np
+import os.path
 
 from colouredstrings import error, warning, highlight
 from datachecks import read_value
@@ -258,6 +259,10 @@ class pressuredepth:
 
     def read_pressure_model(self):
         print ("Reading Pressure-Depth parametrisation from " + self.filename)
+
+        if not os.path.isfile(self.filename):
+            print (error() + "input file " +self.filename+" does not exist!")
+            exit()
 
         with open (self.filename, 'r') as myfile:
 

@@ -95,7 +95,7 @@ Refer to the bibliography.bib file in the root directory for all the reference m
 # Requirements
 
 - Python 3.10
-- modules termcolor, numpy, time, os, argparse
+- modules termcolor, numpy, os, argparse
 
 # Authorship
 
