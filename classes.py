@@ -127,7 +127,7 @@ def match_layers(model_ind, model_nlay, ref_ind, ref_nlay):
     return layernames, layermodel, layerref
 
 
-def print_stacked_models(layernames, layermodel, layerref, depthmodel, depthref, mindifabs, mindifrel, maxdifrel, maxdifabs):
+def print_stacked_models(layernames, layermodel, layerref, depthmodel, depthref, mindifabs, mindifrel, maxdifrel, maxdifabs, minmax):
     # a function to print out a "composite cross-section" from the reference and the input models being stacked
     # Inputs
     # layernames - a list of layer names in the composite cross-section
@@ -136,8 +136,12 @@ def print_stacked_models(layernames, layermodel, layerref, depthmodel, depthref,
     # depthmodel - a list of matching layer depths for the input model
     # depthref   - a list of matching layer depths for the reference model 
 
-    print ("       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference")
-    print ("Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs")
+    if minmax:
+        print ("       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference")
+        print ("Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs")
+    else:
+        print ("       Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum")
+        print ("Layer index - Bedding depth -                      - Bedding depth - Layer index -   Rel   -  Abs  -   Rel   -  Abs")
     im1 = 0
     ir1 = 0
     for name, im, ir, minabs, minrel, maxrel, maxabs in zip (layernames, layermodel[1:], layerref[1:], mindifabs, mindifrel, maxdifrel, maxdifabs):
@@ -160,7 +164,7 @@ def print_stacked_models(layernames, layermodel, layerref, depthmodel, depthref,
         print (text)
 
 
-def validate_profile(refmodel, layerref, dataval, datadepths, layermodel):
+def validate_profile_stdev(refmodel, layerref, dataval, datadepths, layermodel):
     # a function to print out a "composite cross-section" from the reference and the input models being stacked
     # Inputs
     # refmodel   - the reference model
@@ -226,6 +230,74 @@ def validate_profile(refmodel, layerref, dataval, datadepths, layermodel):
 
     return mindifabs, mindifrel, maxdifrel, maxdifabs
 
+
+def validate_profile_minmax(refmodel, layerref, dataval, datadepths, layermodel):
+    # a function to print out a "composite cross-section" from the reference and the input models being stacked
+    # Inputs
+    # refmodel   - the reference model
+    # layerref   - indices of layers in the reference model
+    # dataval    - the input model data
+    # datadepths - the input model layer bedding depths
+    # layermodel - indices of layers in the input model data
+    # Outputs (lists, one entry per each layer)
+    # negdifabs - the maximum negative difference (absolute) between the reference and the model
+    # mindifrel - the maximum negative difference (relative) between the reference and the model
+    # maxdifrel - the maximum positive difference (relative) between the reference and the model
+    # maxdifabs - the maximum positive difference (absolute) between the reference and the model
+
+    mindifabs = []
+    mindifrel = []
+    maxdifrel = []
+    maxdifabs = []
+
+    if len(layerref) != len(layermodel):
+        print (error() + "the number of matched layers in the reference and input models are not equal")
+        exit()
+
+    im1 = layermodel[0]
+    ir1 = layerref[0]
+    for im, ir in zip (layermodel[1:], layerref[1:]):
+        # inspecting every single layer from the stacked model
+
+        datadepthsubset = datadepths[im1+1:im+1]
+        datavalsubset   = dataval[im1+1:im+1]
+
+        refdepthsubset  = refmodel.depths[ir1+1:ir+1]
+        minimumsubset   = refmodel.minimum[ir1+1:ir+1]
+        maximumsubset   = refmodel.maximum[ir1+1:ir+1]
+
+        mindifabsloc = 0.0
+        mindifrelloc = 0.0
+        maxdifrelloc = 0.0
+        maxdifabsloc = 0.0
+
+        for i in range(datavalsubset.size):
+            # inspecting data points within a single layer of the input model
+
+            minloc = linear_interp(datadepthsubset[i], refdepthsubset, minimumsubset)
+            maxloc = linear_interp(datadepthsubset[i], refdepthsubset, maximumsubset)
+            sigma = maxloc - minloc
+            # reference minimum - input model
+            diff = minloc - datavalsubset[i]
+            if diff > 0:
+                mindifabsloc = max(mindifabsloc, diff)
+                mindifrelloc = max(mindifrelloc, diff / sigma)
+
+            # input model - reference maximum
+            diff = datavalsubset[i] - maxloc
+            if diff > 0:
+                maxdifabsloc = max(maxdifabsloc, diff)
+                maxdifrelloc = max(maxdifrelloc, diff / sigma)
+
+        mindifabs.append(mindifabsloc)
+        mindifrel.append(mindifrelloc)
+        maxdifabs.append(maxdifabsloc)
+        maxdifrel.append(maxdifrelloc)
+
+        im1 = im
+        ir1 = ir
+
+    return mindifabs, mindifrel, maxdifrel, maxdifabs
 
 
 class goldennaildata:
@@ -437,32 +509,27 @@ class referencecolumn:
                                 self.gn.assign_gn(value, len(self.depths)-1)
 
         self.depths = np.asarray(self.depths)
-        self.reference = np.asarray(self.reference)
 
-        if not self.sigmaplus:
-            self.sigmaplus = None
-        else:
-            self.sigmaplus = np.asarray(self.sigmaplus)
-
-        if not self.sigmaminus:
-            self.sigmaminus = None
-        else:
-            self.sigmaminus = np.asarray(self.sigmaminus)
-
-        if not self.maximum:
-            self.maximum = None
-        else:
+        if not self.reference:
+            # min and max values
             self.maximum = np.asarray(self.maximum)
-
-        if not self.minimum:
-            self.minimum = None
-        else:
             self.minimum = np.asarray(self.minimum)
+            self.sigmaplus = None
+            self.sigmaminus = None
+            self.reference = None
+        else:
+            # mean and stdevs
+            self.reference = np.asarray(self.reference)
+            if not self.sigmaplus and not self.sigmaminus:
+                # sigma = 1% 
+                self.sigmaplus = self.reference / 100.0
+                self.sigmaminus = self.sigmaplus
+            else:            
+                self.sigmaplus = np.asarray(self.sigmaplus)
+                self.sigmaminus = np.asarray(self.sigmaminus)
+            self.maximum = None
+            self.minimum = None
 
-        if self.sigmaplus is None and self.sigmaminus is None and self.maximum is None and self.minimum is None:
-            # sigma = 1% 
-            self.sigmaplus = self.reference / 100.0
-            self.sigmaminus = self.sigmaplus
 
 
 class pressuredepth:

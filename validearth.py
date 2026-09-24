@@ -8,7 +8,7 @@ from colouredstrings import error, warning, highlight
 from check_velocities import check_velocities
 
 # local classes
-from classes import columndata, pressuredepth, match_layers, print_stacked_models, referencecolumn, validate_profile
+from classes import columndata, pressuredepth, match_layers, print_stacked_models, referencecolumn, validate_profile_stdev, validate_profile_minmax
 
 # read command line arguments
 
@@ -225,8 +225,16 @@ for field in column.columns:
     refcol.refmodel_reader()
 
     layernames, layermodel, layerref = match_layers(column.gn, column.depth.size, refcol.gn, refcol.depths.size)
-    mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile(refcol, layerref, data, column.depth, layermodel)
-    print_stacked_models(layernames, layermodel, layerref, column.depth, refcol.depths, mindifabs, mindifrel, maxdifrel, maxdifabs)
+    # two main validation options
+    use_stdev = refcol.reference is not None
+    if use_stdev:
+        # checking the mean and stdevs
+        mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile_stdev(refcol, layerref, data, column.depth, layermodel)
+    else:
+        # checking the value is between min and max
+        mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile_minmax(refcol, layerref, data, column.depth, layermodel)
+
+    print_stacked_models(layernames, layermodel, layerref, column.depth, refcol.depths, mindifabs, mindifrel, maxdifrel, maxdifabs, use_stdev)
 
 
 # this function computes missing fields from those present

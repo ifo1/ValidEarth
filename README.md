@@ -72,6 +72,17 @@ An additional test is provided to assess whether melting may occur within the pr
 
 A reference model may use either Pressure or Depth as its independent variable. When pressure is used, it is converted to depth according to a supplied pressure-depth model.
 
+# Understanding Program Outputs
+
+Program outputs begin with general information summary from the input data file, which might be useful for troubleshooting.
+
+The most important section, however, is a comparison table with the following columns:
+- **Layer Name** is the name of geological unit. Note that only the units that exist in the reference model and in the input file will be shown. All the other units will be merged downwards. 
+- **Layer Index** is an integer number indicating the row of data table with the layer boundary. Provided both for the input model and for the reference one.
+- **Bedding Depth** is the depth of last record representing the given layer. Provided both for the input model and for the reference one.
+- **Stdev** and **Abs** show the absolute difference between the reference model and the input file, represented by the number of standard deviations and by absolute value. The code shows separately differences for the predictions greater and less than the reference curve.
+- **Rel** and **Abs** appear for the reference parameters that come with the Minimum and Maximum boundaries and show the distance from the minimum and maximum values (if the value is out of the range). The Relative column shows the absolute difference divided by the range. 
+
 # Available Options
 
 Run:
