@@ -81,6 +81,12 @@ The most important section, however, is a comparison table with the following co
 - **Stdev** and **Abs** show the absolute difference between the reference model and the input file, represented by the number of standard deviations and by absolute value. The code shows separately differences for the predictions greater and less than the reference curve.
 - **Rel** and **Abs** appear for the reference parameters that come with the Minimum and Maximum boundaries and show the distance from the minimum and maximum values (if the value is out of the range). The Relative column shows the absolute difference divided by the range. 
 
+## Is the fit good or not?
+
+A good question!
+
+ValidEarth comes with a set of standard models such as PREM, as135f and others. Some of them, like PREM, are not suitable for the continental crust, as they severely underestimate the Moho depth and impose an ocean on the Earth's surface. Other models might be not so good for the crust, and so on. The Earth is very diverse, and this toolkit is an instrument to automate and accelerate Quality Assessment, but not to replace it.
+
 # Derived and Mutually-Dependent Parameters
 
 Some important parameters are mutually dependent, for example, the Vp/Vs ratio and Vp and Vs velocities, or the Magnesium Number (Mg#) and MgO and FeO content. However, if the values of two parameters fall in between certain reasonable bounds, it does not necessarily mean that the third one will be feasible as well.
@@ -104,6 +110,8 @@ Planned development of the toolkit include:
 - Gradient analysis between adjacent vertical profiles, enabling the identification of spatial variations and potentially anomalous transitions between neighbouring profiles.
 
 - 3D reference models for assessing data in the context of its geological setting.
+
+The author is looking forward for fruitfil collaboration and your suggestions!
 
 # Bibliography
 

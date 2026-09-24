@@ -1,6 +1,6 @@
-Model ak135-f - spherical average structure
-# Kennett B.L.N., Engdahl E.R. & Buland R. (1995) Constraints on seismic velocities in the earth from travel times Geophys. J. Int, 122, 108-124
-# Montagner J.P. & Kennett B.L.N. (1995) How to reconcile body-wave and normal-mode reference Earth models? Geophys. J. Int., 125, 229-248
+Name ak135-f - spherical average structure
+Citation Kennett B.L.N., Engdahl E.R. & Buland R. (1995) Constraints on seismic velocities in the earth from travel times Geophys. J. Int, 122, 108-124
+Citation Montagner J.P. & Kennett B.L.N. (1995) How to reconcile body-wave and normal-mode reference Earth models? Geophys. J. Int., 125, 229-248
 Depth	Vp	Vs	Density	ShearQualityFactor	BulkQualityFactor
 # m, m/sec, m/sec, kg/m3, 1, 1
 0	1450	0	1020	57822	0

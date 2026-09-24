@@ -127,6 +127,10 @@ with open(args.inputfile) as myfile:
         if len(tmp) == len(column.columns)-1:
             tmp.append(None)
 
+        if len(tmp) != len(column.columns):
+            print (error() + "the number of columns in the input data file is not uniform!")
+            exit()
+
         # read the actual data
         for field, value in zip (column.columns, tmp):
             if field == "Depth":
@@ -187,18 +191,18 @@ if args.udens == "g/cm3": column.density *= 1000
 # check the datum
 
 if column.coordsys == "Geographic":
-    if column.longitude is None:
+    if column.longitude is None and column.latitude is not None:
         print (error() + "a value for longitude was not provided")
         exit()
-    if column.latitude is None:
+    if column.latitude is None and column.longitude is not None:
         print (error() + "a value for latitude was not provided")
         exit()
 
 elif column.coordsys == "Cartesian":
-    if column.x is None:
+    if column.x is None and column.y is not None:
         print (error() + "a value for x coordinate was not provided")
         exit()
-    if column.y is None:
+    if column.y is None and column.x is not None:
         print (error() + "a value for y coordinate was not provided")
         exit()
 
@@ -250,7 +254,8 @@ for field in column.columns:
     # trying to validate using PREM
     for refmodelfile in refmodelfiles:
         refcol = referencecolumn(field, refmodelfile)
-        refcol.refmodel_reader()
+        found = refcol.refmodel_reader()
+        if not found: continue
 
         layernames, layermodel, layerref = match_layers(column.gn, column.depth.size, refcol.gn, refcol.depths.size)
         # two main validation options

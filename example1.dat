@@ -1,0 +1,9 @@
+Name MtKaputar
+Longitude 150.15694
+Latitude -30.27389
+Depth Density   Vp Type
+5       2000    500   regolith
+5000     2800  2500    crustupper
+15000    3000  5000    crustmiddle
+35000    3100  5500    Moho
+150000   3600  7000    mantlelitho

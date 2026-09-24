@@ -6,9 +6,16 @@ from colouredstrings import error, warning, highlight, red, yellow, green
 from datachecks import read_value
 
 
-def linear_interp(xi, xarr, yarr):
+def linear_interp(xi, xarrin, yarrin):
     # linear interpolation for numpy vectors
     # implies non-decreasing xarr
+
+    # remove all non-finite vales
+    xarr = xarrin[np.isfinite(yarrin)]
+    yarr = yarrin[np.isfinite(xarrin)]
+
+    #if there are no values left, leave
+    if xarr.size == 0: return np.nan
 
     #if there is only one value for this layer, return it
     if xarr.size == 1: return yarr[0]
@@ -127,7 +134,7 @@ def match_layers(model_ind, model_nlay, ref_ind, ref_nlay):
     return layernames, layermodel, layerref
 
 
-def print_stacked_models(layernames, layermodel, layerref, depthmodel, depthref, mindifabs, mindifrel, maxdifrel, maxdifabs, minmax):
+def print_stacked_models(layernames, layermodel, layerref, depthmodel, depthref, mindifabs, mindifrel, maxdifrel, maxdifabs, use_stdev):
     # a function to print out a "composite cross-section" from the reference and the input models being stacked
     # Inputs
     # layernames - a list of layer names in the composite cross-section
@@ -136,27 +143,31 @@ def print_stacked_models(layernames, layermodel, layerref, depthmodel, depthref,
     # depthmodel - a list of matching layer depths for the input model
     # depthref   - a list of matching layer depths for the reference model 
 
-    if minmax:
+    if use_stdev:
         print ("       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference")
         print ("Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs")
+        yellowlevel = 3 # 3 sigma
+        redlevel    = 4 # 4 sigma
     else:
         print ("       Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum")
         print ("Layer index - Bedding depth -                      - Bedding depth - Layer index -   Rel   -  Abs  -   Rel   -  Abs")
+        yellowlevel = 0.05 #  5% of the range 
+        redlevel    = 0.1  # 10% of the range
     im1 = 0
     ir1 = 0
     for name, im, ir, minabs, minrel, maxrel, maxabs in zip (layernames, layermodel[1:], layerref[1:], mindifabs, mindifrel, maxdifrel, maxdifabs):
         text = '       {:4d}'.format(im) + ' - {:11.2f} m'.format(depthmodel[im]) + " - " 
         text += name.center(20)
         text += (' - {:11.2f} m'.format(depthref[ir]) + ' - {:4d}'.format(ir)).rjust(20)
-        if minrel > 2:
+        if minrel > redlevel:
             text += '        - ' +    red('{:6.2f}'.format(minrel)) + ' - ' +    red('{:6.1f}'.format(minabs))
-        elif minrel > 1:
+        elif minrel > yellowlevel:
             text += '        - ' + yellow('{:6.2f}'.format(minrel)) + ' - ' + yellow('{:6.1f}'.format(minabs))
         else:
             text += '        - ' +  green('{:6.2f}'.format(minrel)) + ' - ' +  green('{:6.1f}'.format(minabs))
-        if maxrel > 2:
+        if maxrel > redlevel:
             text += ' -  ' +    red('{:6.2f}'.format(maxrel)) + ' -' +    red('{:7.1f}'.format(maxabs))
-        elif maxrel > 1:
+        elif maxrel > yellowlevel:
             text += ' -  ' + yellow('{:6.2f}'.format(maxrel)) + ' -' + yellow('{:7.1f}'.format(maxabs))
         else:
             text += ' -  ' +  green('{:6.2f}'.format(maxrel)) + ' -' +  green('{:7.1f}'.format(maxabs))
@@ -209,14 +220,17 @@ def validate_profile_stdev(refmodel, layerref, dataval, datadepths, layermodel):
             # inspecting data points within a single layer of the input model
 
             refinterp = linear_interp(datadepthsubset[i], refdepthsubset, refvalsubset)
+            if not np.isfinite(refinterp): continue
             # reference - input model
             diff = refinterp - datavalsubset[i]
             if diff < 0:
                 sigma = linear_interp(datadepthsubset[i], refdepthsubset, sminussubset)
+                if not np.isfinite(sigma): continue
                 mindifabsloc = max(mindifabsloc, -diff)
                 mindifrelloc = max(mindifrelloc, -diff / sigma)
             else:
                 sigma = linear_interp(datadepthsubset[i], refdepthsubset, splussubset)
+                if not np.isfinite(sigma): continue
                 maxdifabsloc = max(maxdifabsloc, diff)
                 maxdifrelloc = max(maxdifrelloc, diff / sigma)
 
@@ -276,6 +290,7 @@ def validate_profile_minmax(refmodel, layerref, dataval, datadepths, layermodel)
 
             minloc = linear_interp(datadepthsubset[i], refdepthsubset, minimumsubset)
             maxloc = linear_interp(datadepthsubset[i], refdepthsubset, maximumsubset)
+            if not np.isfinite(minloc) or not np.isfinite(maxloc): continue
             sigma = maxloc - minloc
             # reference minimum - input model
             diff = minloc - datavalsubset[i]
@@ -464,6 +479,10 @@ class referencecolumn:
                     if len(tmp) == len(columns)-1:
                         tmp.append(None)
 
+                    if len(tmp) != len(columns):
+                        print (error() + "the number of columns in the reference model file is not uniform!")
+                        exit()
+
                     # read the actual data table
                     for field, value in zip (columns, tmp):
                         if field == "Depth":
@@ -511,6 +530,9 @@ class referencecolumn:
         self.depths = np.asarray(self.depths)
 
         if not self.reference:
+            if not self.maximum and not self.minimum:
+                print ("The field was not found; skipping")
+                return False
             # min and max values
             self.maximum = np.asarray(self.maximum)
             self.minimum = np.asarray(self.minimum)
@@ -530,13 +552,15 @@ class referencecolumn:
             self.maximum = None
             self.minimum = None
 
+        return True
+
 
 
 class pressuredepth:
     def __init__(self,filename):
         self.filename = filename
         self.name = None
-        self.citation = None
+        self.citation = []
         self.depths = []
         self.pressures = []
 
@@ -568,7 +592,7 @@ class pressuredepth:
                         print ("Using " + highlight(self.name) + " as a pressure-depth dependency model")
 
                     elif tmp[0] == "Citation":
-                        self.citation = tmp[1]
+                        self.citation.append(tmp[1])
 
                     elif tmp[0] == "Depth":
                         columns = tmp

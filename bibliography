@@ -107,4 +107,16 @@ abstract = {Traditional inversion techniques applied to the problem of character
 year = {2013}
 }
 
-
+@article{LIU202312,
+title = {The magnesium isotopic composition of the mantle},
+journal = {Geochimica et Cosmochimica Acta},
+volume = {358},
+pages = {12-26},
+year = {2023},
+issn = {0016-7037},
+doi = {https://doi.org/10.1016/j.gca.2023.08.011},
+url = {https://www.sciencedirect.com/science/article/pii/S0016703723004040},
+author = {Xiao-Ning Liu and Remco C. Hin and Christopher D. Coath and Michael Bizimis and Li Su and Dmitri A. Ionov and Eiichi Takazawa and Richard Brooker and Tim Elliott},
+keywords = {Mg isotopes, Mantle composition, Mg isotope fractionation factors, Critical mixture double-spiking},
+abstract = {In order to better constrain the Mg isotopic composition of the mantle, we have analysed twenty-eight samples of both oceanic and continental peridotite using a high-precision, critical mixture double spiking approach. The unaltered samples show no variability δ26Mg in outside analytical uncertainty and yield a value of −0.236 ± 0.006‰ (2 s.e.) for the accessible mantle, substantiating its non-chondritic composition. We have also determined inter-mineral Mg isotopic fractionations for a sub-set of samples. We document small but significant differences in δ26Mg between olivine and pyroxenes, Δ26/24Mg ol/cpx = −0.118 ± 0.018‰ and Δ26/24Mg ol/opx = −0.056 ± 0.018‰, in excellent agreement with ab initio calculations for temperatures ∼1000 °C, as recorded by mineral thermometry in the peridotites. The differences in δ26Mg between olivine and spinel (Δ26/24Mg ol/sp) are more variable and generally higher than theoretical calculations at corresponding temperatures, likely due to incomplete Fe-Mg diffusive exchange during post-eruptive cooling of the xenoliths. Using these data, together with a recently determined olivine-melt fractionation factor for Mg isotopes, we show that partial melting has a negligible influence on the δ26Mg of residual peridotites. This helps account for the minimal variability of δ26Mg in fresh, mantle peridotites. However, the δ26Mg of primary mantle melts are predicted to be discernibly higher than their sources (Δ26Mg ∼ 0.06‰ and ∼0.123‰ for representative partial melts of peridotitic and pyroxenitic sources respectively) across a wide range of melting conditions. Such elevated δ26Mg values are not generally observed in the current dataset of mantle derived melts. We propose that this inconsistency is likely a consequence of diffusive fractionation during partial re-equilibration between low Mg/Fe melts migrating through high Mg/Fe mantle en route to the surface.}
+}

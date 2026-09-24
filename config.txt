@@ -1,1 +1,3 @@
 models/PREM.dat
+models/ak135f-sph.dat
+models/MantleChemistry.dat
