@@ -83,9 +83,9 @@ The most important section, however, is a comparison table with the following co
 
 # Derived and Mutually-Dependent Parameters
 
-Some important parameters are mutually dependent, for example, the Vp/Vs ratio and Vp and Vs velocities, or the Magnesium Number (Mg#) and MgO and FeO content. However, if the values two parameters in such a set are within reasonable bounds, it does not necessarily mean that the third one will be feasible as well.
+Some important parameters are mutually dependent, for example, the Vp/Vs ratio and Vp and Vs velocities, or the Magnesium Number (Mg#) and MgO and FeO content. However, if the values of two parameters fall in between certain reasonable bounds, it does not necessarily mean that the third one will be feasible as well.
 
-ValidEarth aims to tackle these issues and it calculates the third parameter if the first two are provided.
+ValidEarth aims to tackle these issues and it calculates the third parameter if the other two are provided.
 
 # Available Options
 
@@ -102,6 +102,7 @@ Planned development of the toolkit include:
 - Plotting tools to visualise differences between observed data and reference profiles.
 
 - Gradient analysis between adjacent vertical profiles, enabling the identification of spatial variations and potentially anomalous transitions between neighbouring profiles.
+
 - 3D reference models for assessing data in the context of its geological setting.
 
 # Bibliography

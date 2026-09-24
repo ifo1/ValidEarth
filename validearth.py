@@ -21,13 +21,40 @@ parser.add_argument("-uvs", dest="uvs", default="m/s", help="Vs units: m/s [defa
 parser.add_argument("-udepth", dest="udepth", default="m", help="Depth units: m [default] or km")
 parser.add_argument("-udens", dest="udens", default="kg/m3", help="Density units: kg/m3 [default] or g/cm3")
 parser.add_argument("-pressuremodel", dest="file_pressure", default="models/PREM.dat", help="A file with columns Pressure and Depth that will be used to calculate depths from pressures for those reference models calibrated for pressure")
+parser.add_argument("-refmodels", dest="file_refmodels", default="config.txt", help="A list of reference models to compare the data with")
 args = parser.parse_args()
 
 # verify the input file exists
-
 if not os.path.isfile(args.inputfile):
     print (error() + "input file "+args.inputfile+" does not exist!")
     exit()
+
+# read the list of reference models
+if not os.path.isfile(args.file_refmodels):
+    print (error() + "catalog file "+args.file_refmodels+" does not exist!")
+    exit()
+
+print ("Reading the list of reference models from " + highlight (args.file_refmodels))
+refmodelfiles = []
+with open(args.file_refmodels) as myfile:
+
+    # read each line and parse it
+    datatable = False
+
+    for line in myfile:
+
+        # skip empty lines and comments
+        if len(line.strip()) == 0: continue
+        char = line.strip()[0]
+        if char == "#" or char == "!" or char == "/" or char == "%": continue
+
+        #check whether the reference model exists
+        if not os.path.isfile(line.strip()):
+            print (error() + "the reference model file "+line.strip()+" does not exist!")
+            exit()
+
+        refmodelfiles.append(line.strip())
+
 
 # initialise a class for the inputs ad for the golden nails
 column = columndata()
@@ -221,20 +248,21 @@ for field in column.columns:
         data = column.MgNum
 
     # trying to validate using PREM
-    refcol = referencecolumn(field, "models/PREM.dat")
-    refcol.refmodel_reader()
+    for refmodelfile in refmodelfiles:
+        refcol = referencecolumn(field, refmodelfile)
+        refcol.refmodel_reader()
 
-    layernames, layermodel, layerref = match_layers(column.gn, column.depth.size, refcol.gn, refcol.depths.size)
-    # two main validation options
-    use_stdev = refcol.reference is not None
-    if use_stdev:
-        # checking the mean and stdevs
-        mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile_stdev(refcol, layerref, data, column.depth, layermodel)
-    else:
-        # checking the value is between min and max
-        mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile_minmax(refcol, layerref, data, column.depth, layermodel)
+        layernames, layermodel, layerref = match_layers(column.gn, column.depth.size, refcol.gn, refcol.depths.size)
+        # two main validation options
+        use_stdev = refcol.reference is not None
+        if use_stdev:
+            # checking the mean and stdevs
+            mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile_stdev(refcol, layerref, data, column.depth, layermodel)
+        else:
+            # checking the value is between min and max
+            mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile_minmax(refcol, layerref, data, column.depth, layermodel)
 
-    print_stacked_models(layernames, layermodel, layerref, column.depth, refcol.depths, mindifabs, mindifrel, maxdifrel, maxdifabs, use_stdev)
+        print_stacked_models(layernames, layermodel, layerref, column.depth, refcol.depths, mindifabs, mindifrel, maxdifrel, maxdifabs, use_stdev)
 
 
 # this function computes missing fields from those present
