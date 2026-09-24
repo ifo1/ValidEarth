@@ -8,7 +8,7 @@ from colouredstrings import error, warning, highlight
 from check_velocities import check_velocities
 
 # local classes
-from classes import columndata, pressuredepth, match_layers, print_stacked_models, referencecolumn
+from classes import columndata, pressuredepth, match_layers, print_stacked_models, referencecolumn, validate_profile
 
 # read command line arguments
 
@@ -190,18 +190,43 @@ pressuremodel.read_pressure_model()
 
 print ("Assessing the following input model physical quantities: ")
 print (highlight(" - ".join(column.columns[1:-1])))
-for quantity in column.columns:
+for field in column.columns:
 
-    if quantity == "Depth" or quantity == "Type": continue
+    if field == "Depth" or field == "Type": continue
 
-    print ("Assessing " + highlight(quantity))
+    print ("Assessing " + highlight(field))
+
+    # extract the data from class
+    if field == "Temperature":
+        data = column.temperature
+    elif field == "Vp":
+        data = column.Vp
+    elif field == "Vs":
+        data = column.Vs
+    elif field == "Density":
+        data = column.density
+    elif field == "VpVs":
+        data = column.VpVs
+    elif field == "SiO2":
+        data = column.SiO2
+    elif field == "Al2O3":
+        data = column.Al2O3
+    elif field == "MgO":
+        data = column.MgO
+    elif field == "FeO":
+        data = column.FeO
+    elif field == "CaO":
+        data = column.CaO
+    elif field == "MgNum" or field == "Mg#":
+        data = column.MgNum
 
     # trying to validate using PREM
-    refcol = referencecolumn(quantity, "models/PREM.dat")
+    refcol = referencecolumn(field, "models/PREM.dat")
     refcol.refmodel_reader()
 
     layernames, layermodel, layerref = match_layers(column.gn, column.depth.size, refcol.gn, refcol.depths.size)
-    print_stacked_models(layernames, layermodel, layerref, column.depth, refcol.depths)
+    mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile(refcol, layerref, data, column.depth, layermodel)
+    print_stacked_models(layernames, layermodel, layerref, column.depth, refcol.depths, mindifabs, mindifrel, maxdifrel, maxdifabs)
 
 
 # this function computes missing fields from those present

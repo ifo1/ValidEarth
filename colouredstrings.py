@@ -14,3 +14,12 @@ def error(depth = None):
 
 def highlight(message):
     return colored (str(message), 'cyan', attrs=["bold"])
+
+def red(message):
+    return colored (str(message), 'red', attrs=["bold"])
+
+def yellow(message):
+    return colored (str(message), 'yellow', attrs=["bold"])
+
+def green(message):
+    return colored (str(message), 'green', attrs=["bold"])

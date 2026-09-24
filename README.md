@@ -51,7 +51,8 @@ Currently, ValidEarth recognises the following layer types (internally referred 
 - **410km**: an alternative keyword with the same meaning as mantleupper, the actual depth of 410 km discontinuity
 - **mantlemtz**: mantle transition zone
 - **670km**: an alternative keyword with the same meaning as mantlemtz, the actual depth of 670 km discontinuity
-- **mantlelower**: lower mantle
+- **mantlelower**: the bottom of the lower mantle
+- **CMB**: an alternative keyword with the same meaning as mantlelower, the actual depth of Core-Mantle Boundary 
 
 These keywords can either be assigned to every data row within a layer or used only on the final row of a layer. In the latter case, they serve as markers identifying the bottom of the corresponding layer. Each layer must be continuous, with no other layer types occurring between its upper and lower boundaries.
 
