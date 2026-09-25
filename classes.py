@@ -1,6 +1,7 @@
 from termcolor import colored
 import numpy as np
 import os.path
+import math
 
 from colouredstrings import error, warning, highlight, red, yellow, green
 from datachecks import read_value
@@ -440,6 +441,11 @@ class referencecolumn:
         self.filename = filename
         self.parameter = keyword
         self.name = None
+        self.coordsys  = "Geographic"
+        self.longitude = None
+        self.latitude  = None
+        self.x = None
+        self.y  = None
         self.citation = None
         # the actual reference profile expressed in terms of depth or pressure
         self.depths = []
@@ -486,6 +492,19 @@ class referencecolumn:
                         if columns[-1] != "Type":
                             columns.append("Type")
 
+                    elif tmp[0] == "CoordinateSystem":
+                        self.coordsys = tmp[1]
+
+                    elif tmp[0] == "Longitude":
+                        self.longitude = float(tmp[1])
+                    elif tmp[0] == "Latitude":
+                        self.latitude = float(tmp[1])
+
+                    elif tmp[0] == "X":
+                        self.x = float(tmp[1])
+                    elif tmp[0] == "Y":
+                        self.y = float(tmp[1])
+
                 else:
                     # pad the Type column with None
                     if len(tmp) == len(columns)-1:
@@ -511,12 +530,12 @@ class referencecolumn:
                         elif field == self.parameter+"Min":
                             self.minimum.append( read_value(field,value) )
 
-                        elif field == self.parameter+"Sigma":
+                        elif field == self.parameter+"Stdev":
                             self.sigmaplus.append( read_value(field,value) )
                             self.sigmaminus.append( read_value(field,value) )
-                        elif field == self.parameter+"Sigma+":
+                        elif field == self.parameter+"Stdev+":
                             self.sigmaplus.append( read_value(field,value) )
-                        elif field == self.parameter+"Sigma-":
+                        elif field == self.parameter+"Stdev-":
                             self.sigmaminus.append( read_value(field,value) )
 
                         elif field == self.parameter+"%":
@@ -555,8 +574,8 @@ class referencecolumn:
             # mean and stdevs
             self.reference = np.asarray(self.reference)
             if not self.sigmaplus and not self.sigmaminus:
-                # sigma = 1% 
-                self.sigmaplus = self.reference / 100.0
+                # sigma = 1%, but not less than unity to avoid division by zero
+                self.sigmaplus = np.maximum(100., self.reference) / 100.0
                 self.sigmaminus = self.sigmaplus
             else:            
                 self.sigmaplus = np.asarray(self.sigmaplus)

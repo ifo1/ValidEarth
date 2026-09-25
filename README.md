@@ -62,7 +62,7 @@ ValidEarth provides two main methods for profile validation:
 
 - Range validation: flags values outside a physically feasible range. The reference model must provide ParameterMin and ParameterMax columns for this type of validation.
 
-- Reference-value validation: flags values that differ significantly from an expected value. The reference model must provide Parameter and ParameterSigma columns, or ParameterSigma+ and ParameterSigma- to specify different standard deviations above and below the reference value. Alternatively, the reference model can provide Parameter and Parameter% columns, with Parameter%+ and Parameter%- available for asymmetric relative uncertainties.
+- Reference-value validation: flags values that differ significantly from an expected value. The reference model must provide Parameter (to be replaced by the name of an actual physical quantity) and ParameterStdev columns, or ParameterStdev+ and ParameterStdev- to specify different standard deviations above and below the reference value independently. Alternatively, the reference model can provide Parameter and Parameter% columns, with Parameter%+ and Parameter%- available for asymmetric relative uncertainties.
 
 For each assessable record in the input data table, the corresponding reference parameter value is linearly interpolated to the provided depth. If a depth lies above the uppermost reference point or below the lowermost reference point, the first or last two reference points, respectively, are used for linear extrapolation.
 

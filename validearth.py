@@ -280,10 +280,11 @@ for field in column.columns:
 
         if args.pdf or args.png:
             if refcol.reference is not None:
-                plt.plot(refcol.depths, refcol.reference, "o-", color=plotcolours[imodel], label=refcol.name)
+                jmodel = imodel%len(plotcolours)
+                plt.plot(refcol.depths, refcol.reference, "o-", color=plotcolours[jmodel], label=refcol.name)
             else:
-                plt.plot(0, 0, "o", color=plotcolours[imodel], label=refcol.name)
-                plt.fill_between(refcol.depths, refcol.minimum, refcol.maximum, color = plotcolours[imodel], alpha=0.2)
+                plt.plot(0, 0, "o", color=plotcolours[jmodel], label=refcol.name)
+                plt.fill_between(refcol.depths, refcol.minimum, refcol.maximum, color = plotcolours[jmodel], alpha=0.2)
 
         layernames, layermodel, layerref = match_layers(column.gn, column.depth.size, refcol.gn, refcol.depths.size)
         # two main validation options
