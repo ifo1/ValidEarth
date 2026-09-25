@@ -89,11 +89,11 @@ ValidEarth comes with a set of standard models such as PREM, as135f and others. 
 
 ## Graphic Outputs
 
-ValidEarth can automatically create plots (PDF or PNG) for each assessed prysical quantity.
+ValidEarth can automatically create plots (PDF or PNG) for each assessed physical quantity showing the relevant Earth reference models just next to it.
 
 ## Detailed Profiles
 
-ValidEarth can produce tables with the properties of interest and relevant Earth models.
+ValidEarth can produce tables with the properties of interest and relevant Earth reference models.
 
 # Derived and Mutually-Dependent Parameters
 
