@@ -14,7 +14,7 @@ A valid input file should contain the following sections:
 - Column headers
 - Data table
 
-Optional keywords include Name (an arbitrary string without whitespace), CoordinateSystem (Geographic or Cartesian), Longitude, and Latitude. Each keyword must be specified on a separate line.
+Optional keywords include **Name** (an arbitrary string without whitespace), **CoordinateSystem** (Geographic or Cartesian), **Longitude**, and **Latitude**. Each keyword must be specified on a separate line.
 
 The first column header must be **Depth**. It can be followed by any of the following headers:
 - **Temperature**, K
@@ -60,15 +60,21 @@ All lines beginning with #, /, %, or ! are treated as comments and ignored.
 
 ValidEarth provides two main methods for profile validation:
 
-- Range validation: flags values outside a physically feasible range. The reference model must provide ParameterMin and ParameterMax columns for this type of validation.
+- **Range validation**: flags values outside a physically feasible range. The reference model must provide ParameterMin and ParameterMax columns for this type of validation.
 
-- Reference-value validation: flags values that differ significantly from an expected value. The reference model must provide Parameter (to be replaced by the name of an actual physical quantity) and ParameterStdev columns, or ParameterStdev+ and ParameterStdev- to specify different standard deviations above and below the reference value independently. Alternatively, the reference model can provide Parameter and Parameter% columns, with Parameter%+ and Parameter%- available for asymmetric relative uncertainties.
+- **Expected value validation**: flags values that differ significantly from an expected value. The reference model must provide Parameter (to be replaced by the name of an actual physical quantity) and ParameterStdev columns, or ParameterStdev+ and ParameterStdev- to specify different standard deviations above and below the reference value independently. Alternatively, the reference model can provide Parameter and Parameter% columns, with Parameter%+ and Parameter%- available for asymmetric relative uncertainties.
 
 For each assessable record in the input data table, the corresponding reference parameter value is linearly interpolated to the provided depth. If a depth lies above the uppermost reference point or below the lowermost reference point, the first or last two reference points, respectively, are used for linear extrapolation.
 
 An additional test is provided to assess whether melting may occur within the profile. In this case, ValidEarth reports temperatures exceeding the solidus and liquidus temperatures.
 
 A reference model may use either Pressure or Depth as its independent variable. When pressure is used, it is converted to depth according to a supplied pressure-depth model.
+
+## 3D Models
+
+By default, ValidEarth does not take into account the geographic location of the reference and assesable columns. However, due to the great heterogeneity of mother Earth, it is really important to have this feature available.
+
+ValidEarth allows the user to specify a certain distance (in metres) using the **-dist** option. Only if a reference column is within this distance from the examined column, it will be used for reporting. No global model can be used in this mode.
 
 # Understanding Program Outputs
 
@@ -114,8 +120,6 @@ to display the available command-line options.
 Planned development of the toolkit include:
 
 - Gradient analysis between adjacent vertical profiles, enabling the identification of spatial variations and potentially anomalous transitions between neighbouring profiles.
-
-- 3D reference models for assessing data in the context of its geological setting.
 
 The author is looking forward for fruitfil collaboration and your suggestions!
 

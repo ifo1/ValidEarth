@@ -25,7 +25,7 @@ parser.add_argument("-udepth", dest="udepth", default="m", help="Depth units: m 
 parser.add_argument("-udens", dest="udens", default="kg/m3", help="Density units: kg/m3 [default] or g/cm3")
 parser.add_argument("-pressuremodel", dest="file_pressure", default="models/PREM.dat", help="A file with columns Pressure and Depth that will be used to calculate depths from pressures for those reference models calibrated for pressure")
 parser.add_argument("-refmodels", dest="file_refmodels", default="config.txt", help="A list of reference models to compare the data with")
-parser.add_argument("-d","--depth", dest="d",action="store_true",help="Print out a detailed layer-by-layer comparison")
+parser.add_argument("-detailed", dest="d",action="store_true",help="Print out a detailed layer-by-layer comparison")
 parser.add_argument("-pdf", dest="pdf",action="store_true",help="Create pdf plots")
 parser.add_argument("-png", dest="png",action="store_true",help="Create png plots")
 parser.add_argument("-dist", dest="dist", default=0.0,type=float,help="The maximum distance (m) from the reference model to the input column")
