@@ -1,6 +1,9 @@
 import numpy as np
 import os.path
 import argparse
+import matplotlib.pyplot as plt
+
+plotcolours = ["red", "blue", "green", "orange", "violet", "brown"]
 
 # local modules
 from datachecks import read_field, read_float, read_value
@@ -23,6 +26,8 @@ parser.add_argument("-udens", dest="udens", default="kg/m3", help="Density units
 parser.add_argument("-pressuremodel", dest="file_pressure", default="models/PREM.dat", help="A file with columns Pressure and Depth that will be used to calculate depths from pressures for those reference models calibrated for pressure")
 parser.add_argument("-refmodels", dest="file_refmodels", default="config.txt", help="A list of reference models to compare the data with")
 parser.add_argument("-d","--depth", dest="d",action="store_true",help="Print out a detailed layer-by-layer comparison")
+parser.add_argument("-pdf", dest="pdf",action="store_true",help="Create pdf plots")
+parser.add_argument("-png", dest="png",action="store_true",help="Create png plots")
 args = parser.parse_args()
 
 # verify the input file exists
@@ -252,11 +257,33 @@ for field in column.columns:
     elif field == "MgNum" or field == "Mg#":
         data = column.MgNum
 
+    if args.pdf or args.png:
+        fig = plt.figure()
+        amin = min(column.depth)
+        amin = amin - 0.1*abs(amin) #always going to the left
+        amax = max(column.depth)
+        amax = amax + 0.1*abs(amax) #always going to the right
+        plt.xlim( [amin, amax] )
+        amin = min(data[np.isfinite(data)])
+        amin = amin - 0.1*abs(amin) #always going down
+        amax = max(data[np.isfinite(data)])
+        amax = amax + 0.1*abs(amax) #always going up
+        plt.ylim( [amin, amax] )
+        plt.plot(column.depth, data, "o-", color='black', label='Data')
+        plt.title(column.name + ": " + field + " v depth")
+
     # trying to validate using PREM
-    for refmodelfile in refmodelfiles:
+    for imodel, refmodelfile in enumerate(refmodelfiles):
         refcol = referencecolumn(field, refmodelfile)
         found = refcol.refmodel_reader()
         if not found: continue
+
+        if args.pdf or args.png:
+            if refcol.reference is not None:
+                plt.plot(refcol.depths, refcol.reference, "o-", color=plotcolours[imodel], label=refcol.name)
+            else:
+                plt.plot(0, 0, "o", color=plotcolours[imodel], label=refcol.name)
+                plt.fill_between(refcol.depths, refcol.minimum, refcol.maximum, color = plotcolours[imodel], alpha=0.2)
 
         layernames, layermodel, layerref = match_layers(column.gn, column.depth.size, refcol.gn, refcol.depths.size)
         # two main validation options
@@ -270,6 +297,15 @@ for field in column.columns:
 
         print_stacked_models(layernames, layermodel, layerref, column.depth, refcol.depths, mindifabs, mindifrel, maxdifrel, maxdifabs, use_stdev)
 
+    if args.pdf or args.png:
+        plt.legend()
+        if args.pdf:
+            filename = column.name + "-" + field + ".pdf"
+        if args.png:
+            filename = column.name + "-" + field + ".png"
+
+        plt.savefig(filename)
+        plt.close(fig)
 
 # this function computes missing fields from those present
 #column.Vp, column.Vs, column.VpVs = check_velocities( column.depth, column.Vp, column.Vs, column.VpVs )

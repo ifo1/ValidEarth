@@ -85,7 +85,15 @@ The most important section, however, is a comparison table with the following co
 
 A good question!
 
-ValidEarth comes with a set of standard models such as PREM, as135f and others. Some of them, like PREM, are not suitable for the continental crust, as they severely underestimate the Moho depth and impose an ocean on the Earth's surface. Other models might be not so good for the crust, and so on. The Earth is very diverse, and this toolkit is an instrument to automate and accelerate Quality Assessment, but not to replace it.
+ValidEarth comes with a set of standard models such as PREM, as135f and others. Some of them, like PREM, are not suitable for the continental crust, as they severely underestimate the Moho depth and impose an ocean at the Earth's surface. Other models might be also not so good for the cratonic areas, and so on. The Earth is very diverse, and this toolkit is an instrument to automate and accelerate Quality Assessment, but not to replace it.
+
+## Graphic Outputs
+
+ValidEarth can automatically create plots (PDF or PNG) for each assessed prysical quantity.
+
+## Detailed Profiles
+
+ValidEarth can produce tables with the properties of interest and relevant Earth models.
 
 # Derived and Mutually-Dependent Parameters
 
@@ -105,8 +113,6 @@ to display the available command-line options.
 
 Planned development of the toolkit include:
 
-- Plotting tools to visualise differences between observed data and reference profiles.
-
 - Gradient analysis between adjacent vertical profiles, enabling the identification of spatial variations and potentially anomalous transitions between neighbouring profiles.
 
 - 3D reference models for assessing data in the context of its geological setting.
@@ -120,7 +126,7 @@ Refer to the bibliography.bib file in the root directory for all the reference m
 # Requirements
 
 - Python 3.10
-- modules termcolor, numpy, os, argparse
+- modules termcolor, numpy, os, argparse, matplotlib
 
 # Authorship
 
