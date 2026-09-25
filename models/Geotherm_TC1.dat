@@ -1,0 +1,24 @@
+Name TC1
+Citation Artemieva I. Global 1 degrees x 1 degrees thermal model TC1 for the continental lithosphere: Implications for lithosphere secular evolution // Tectonophysics, 2006, 416, 245-277, DOI:10.1016/j.tecto.2005.11.022
+Depth	Temperature	TemperatureStdev
+0	287.12	20
+5310	368.6	22
+10150	444.65	24
+14678	514.18	26
+19517	586.97	28
+25606	672.8	30
+30601	741.25	32
+36844	824.91	34
+42931	897.7	36
+48862	969.41	38
+60093	1054.18	40
+70856	1133.51	42
+80683	1201.98	44
+90823	1278.05	46
+99558	1341.08	48
+107668	1393.25	50
+116869	1441.08	52
+125602	1484.56	54
+134335	1526.96	56
+142289	1569.35	58
+
