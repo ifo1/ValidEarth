@@ -14,7 +14,7 @@ from classes import columndata, pressuredepth, match_layers, print_stacked_model
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", dest="inputfile", default="", help="An input file with structure to verify")
-parser.add_argument("-d", dest="delimiter", default=None, help="Delimiter between all columns")
+parser.add_argument("-delim", dest="delimiter", default=None, help="Delimiter between all columns")
 parser.add_argument("-utemp", dest="utemp", default="K", help="Temperature units: K [default] or C")
 parser.add_argument("-uvp", dest="uvp", default="m/s", help="Vp units: m/s [default] or km/s")
 parser.add_argument("-uvs", dest="uvs", default="m/s", help="Vs units: m/s [default] or km/s")
@@ -22,6 +22,7 @@ parser.add_argument("-udepth", dest="udepth", default="m", help="Depth units: m 
 parser.add_argument("-udens", dest="udens", default="kg/m3", help="Density units: kg/m3 [default] or g/cm3")
 parser.add_argument("-pressuremodel", dest="file_pressure", default="models/PREM.dat", help="A file with columns Pressure and Depth that will be used to calculate depths from pressures for those reference models calibrated for pressure")
 parser.add_argument("-refmodels", dest="file_refmodels", default="config.txt", help="A list of reference models to compare the data with")
+parser.add_argument("-d","--depth", dest="d",action="store_true",help="Print out a detailed layer-by-layer comparison")
 args = parser.parse_args()
 
 # verify the input file exists
@@ -262,7 +263,7 @@ for field in column.columns:
         use_stdev = refcol.reference is not None
         if use_stdev:
             # checking the mean and stdevs
-            mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile_stdev(refcol, layerref, data, column.depth, layermodel)
+            mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile_stdev(refcol, layerref, data, column.depth, layermodel, args.d)
         else:
             # checking the value is between min and max
             mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile_minmax(refcol, layerref, data, column.depth, layermodel)

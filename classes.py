@@ -175,7 +175,7 @@ def print_stacked_models(layernames, layermodel, layerref, depthmodel, depthref,
         print (text)
 
 
-def validate_profile_stdev(refmodel, layerref, dataval, datadepths, layermodel):
+def validate_profile_stdev(refmodel, layerref, dataval, datadepths, layermodel, verbose = False):
     # a function to print out a "composite cross-section" from the reference and the input models being stacked
     # Inputs
     # refmodel   - the reference model
@@ -183,6 +183,7 @@ def validate_profile_stdev(refmodel, layerref, dataval, datadepths, layermodel):
     # dataval    - the input model data
     # datadepths - the input model layer bedding depths
     # layermodel - indices of layers in the input model data
+    # verbose    - whether to print out a detailed comparison
     # Outputs (lists, one entry per each layer)
     # negdifabs - the maximum negative difference (absolute) between the reference and the model
     # mindifrel - the maximum negative difference (relative) between the reference and the model
@@ -200,6 +201,10 @@ def validate_profile_stdev(refmodel, layerref, dataval, datadepths, layermodel):
 
     im1 = layermodel[0]
     ir1 = layerref[0]
+    if verbose:
+        print ("Printing full comparison for " + refmodel.parameter + " using " + refmodel.name + " as reference")
+        print ("Layer#   -   Depth  -  Value    - Reference -   StDev   - Difference")
+
     for im, ir in zip (layermodel[1:], layerref[1:]):
         # inspecting every single layer from the stacked model
 
@@ -223,6 +228,7 @@ def validate_profile_stdev(refmodel, layerref, dataval, datadepths, layermodel):
             if not np.isfinite(refinterp): continue
             # reference - input model
             diff = refinterp - datavalsubset[i]
+
             if diff < 0:
                 sigma = linear_interp(datadepthsubset[i], refdepthsubset, sminussubset)
                 if not np.isfinite(sigma): continue
@@ -233,6 +239,12 @@ def validate_profile_stdev(refmodel, layerref, dataval, datadepths, layermodel):
                 if not np.isfinite(sigma): continue
                 maxdifabsloc = max(maxdifabsloc, diff)
                 maxdifrelloc = max(maxdifrelloc, diff / sigma)
+
+            if verbose: 
+                print ('{:4d}'.format(im1+1+i) + ' - {:11.2f} '.format(datadepthsubset[i]) + \
+                    ' - {:8.2f} '.format(datavalsubset[i]) + ' - {:8.2f} '.format(refinterp) + \
+                    ' - {:8.2f} '.format(sigma) + ' - {:8.2f} '.format(diff))
+
 
         mindifabs.append(mindifabsloc)
         mindifrel.append(mindifrelloc)
