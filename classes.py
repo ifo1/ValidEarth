@@ -7,6 +7,32 @@ from colouredstrings import error, warning, highlight, red, yellow, green
 from datachecks import read_value
 
 
+def haversine(lon1, lat1, lon2, lat2):
+    # computes the distance (in metres) between two points from their Latitude and Longitude
+    # uses a simplified haversine formula, assuming the Earth is a perfect sphere
+
+    if lon1 is None: return None
+    if lat1 is None: return None
+    if lon2 is None: return None
+    if lat2 is None: return None
+
+    # average Earth radius, m
+    R = 6378000.0
+
+    rlon1 = radians(lon1)
+    rlat1 = radians(lat1)
+    rlon2 = radians(lon2)
+    rlat2 = radians(lat2)
+
+    dlon = rlon2 - rlon1
+    dlat = rlat2 - rlat1
+
+    a = sin(dlat / 2)**2 + cos(rlat1) * cos(rlat2) * sin(dlon / 2)**2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+    return R * c
+
+
 def linear_interp(xi, xarrin, yarrin):
     # linear interpolation for numpy vectors
     # implies non-decreasing xarr

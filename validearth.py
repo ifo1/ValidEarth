@@ -11,7 +11,7 @@ from colouredstrings import error, warning, highlight
 from check_velocities import check_velocities
 
 # local classes
-from classes import columndata, pressuredepth, match_layers, print_stacked_models, referencecolumn, validate_profile_stdev, validate_profile_minmax
+from classes import columndata, pressuredepth, match_layers, print_stacked_models, referencecolumn, validate_profile_stdev, validate_profile_minmax, haversine
 
 # read command line arguments
 
@@ -28,6 +28,7 @@ parser.add_argument("-refmodels", dest="file_refmodels", default="config.txt", h
 parser.add_argument("-d","--depth", dest="d",action="store_true",help="Print out a detailed layer-by-layer comparison")
 parser.add_argument("-pdf", dest="pdf",action="store_true",help="Create pdf plots")
 parser.add_argument("-png", dest="png",action="store_true",help="Create png plots")
+parser.add_argument("-dist", dest="dist", default=0.0,type=float,help="The maximum distance (m) from the reference model to the input column")
 args = parser.parse_args()
 
 # verify the input file exists
@@ -275,6 +276,17 @@ for field in column.columns:
     # trying to validate using PREM
     for imodel, refmodelfile in enumerate(refmodelfiles):
         refcol = referencecolumn(field, refmodelfile)
+
+        # check that the distance between the reference column and the input one does not exceed the threshold
+        if args.dist > 0:
+            actdist = haversine (column.longitude, column.latitude, refcol.longitude, refcol.latitude)
+            if actdist is None:
+                print ("Skipping the reference model as the distance cannot be evaluated")
+                continue
+            if actdist > args.dist:
+                print ("Skipping the reference model as its not within the prescribed radius: " + str(actdist))
+                continue
+
         found = refcol.refmodel_reader()
         if not found: continue
 
