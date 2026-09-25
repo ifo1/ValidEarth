@@ -70,11 +70,13 @@ An additional test is provided to assess whether melting may occur within the pr
 
 A reference model may use either Pressure or Depth as its independent variable. When pressure is used, it is converted to depth according to a supplied pressure-depth model.
 
-## 3D Models
+## 3D Reference Models
 
 By default, ValidEarth does not take into account the geographic location of the reference and assesable columns. However, due to the great heterogeneity of mother Earth, it is really important to have this feature available.
 
-ValidEarth allows the user to specify a certain distance (in metres) using the **-dist** option. Only if a reference column is within this distance from the examined column, it will be used for reporting. No global model can be used in this mode.
+ValidEarth allows the user to specify a certain distance (in metres) using the **-dist** option. Only if a reference column is within this distance from the examined column, it will be used for reporting. No global model (such as PREM) can be used in this mode.
+
+Notice, that the code uses a simplified Haversine formula for the distance test.
 
 # Understanding Program Outputs
 
