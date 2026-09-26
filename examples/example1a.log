@@ -1,0 +1,37 @@
+Reading a list of reference models from config.txt
+ - models/PREM.dat
+ - models/ak135f-sph.dat
+ - models/MantleChemistry.dat
+ - models/Geotherm_TC1.dat
+ - models/ECM1_model.dat
+Reading file examples/example1.dat
+Name: MtKaputar
+Longitude: 150.15694
+Latitude: -30.27389
+The following golden nails are used
+ - Regolith layer ends at depth 5.0 (record #1)
+ - Upper crust ends at depth 5000.0 (record #2)
+ - Middle crust ends at depth 15000.0 (record #3)
+ - Lower crust ends at depth 35000.0 (record #4)
+ - Lithospheric mantle ends at depth 150000.0 (record #5)
+Reading Pressure-Depth parameterisation from models/PREM.dat
+Using PREM as a pressure-depth dependency model
+Assessing the following input model physical quantities: 
+Density - Vp
+Assessing Density
+Reading /home/ilya/DATABASES/ECM1/ECM1_model.txt for model ECM1
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+          1 -     5000.00 m -     Upper Crust      -    12870.90 m -    1        -   1.72 -   47.4 -   27.34 -  752.6
+          2 -    15000.00 m -     Middle Crust     -    25741.90 m -    3        -   5.55 -  157.7 -    0.00 -    0.0
+          3 -    35000.00 m -     Lower Crust      -    39002.90 m -    5        -   5.36 -  157.7 -    0.00 -    0.0
+          4 -   150000.00 m - Lithospheric Mantle  -   100000.00 m -    7        -   7.89 -  263.2 -    0.00 -    0.0
+Assessing Vp
+Reading /home/ilya/DATABASES/ECM1/ECM1_model.txt for model ECM1
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+          1 -     5000.00 m -     Upper Crust      -    12870.90 m -    1        -   0.00 -    0.0 -   91.89 - 5663.3
+          2 -    15000.00 m -     Middle Crust     -    25741.90 m -    3        -   0.00 -    0.0 -   23.51 - 1536.5
+          3 -    35000.00 m -     Lower Crust      -    39002.90 m -    5        -   0.00 -    0.0 -   20.40 - 1409.7
+          4 -   150000.00 m - Lithospheric Mantle  -   100000.00 m -    7        -   0.00 -    0.0 -   13.87 - 1127.5
+

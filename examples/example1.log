@@ -1,0 +1,50 @@
+Reading a list of reference models from config.txt
+ - models/PREM.dat
+ - models/ak135f-sph.dat
+ - models/MantleChemistry.dat
+ - models/Geotherm_TC1.dat
+Reading file examples/example1.dat
+Name: MtKaputar
+Longitude: 150.15694
+Latitude: -30.27389
+The following golden nails are used
+ - Regolith layer ends at depth 5.0 (record #1)
+ - Upper crust ends at depth 5000.0 (record #2)
+ - Middle crust ends at depth 15000.0 (record #3)
+ - Lower crust ends at depth 35000.0 (record #4)
+ - Lithospheric mantle ends at depth 150000.0 (record #5)
+Reading Pressure-Depth parameterisation from models/PREM.dat
+Using PREM as a pressure-depth dependency model
+Assessing the following input model physical quantities: 
+Density - Vp
+Assessing Density
+Reading models/PREM.dat for model PREM
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+          1 -     5000.00 m -     Upper Crust      -    15000.00 m -    3        -  96.08 -  980.0 -    0.00 -    0.0
+          3 -    35000.00 m -     Lower Crust      -    24400.00 m -    5        -   6.90 -  200.0 -    0.00 -    0.0
+          4 -   150000.00 m -   Undifferentiated   -  6371000.00 m -   84        -   7.07 -  237.7 -    0.00 -    0.0
+Reading models/ak135f-sph.dat for model ak135-f
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+          4 -   150000.00 m -   Undifferentiated   -  6371000.00 m -  144        -  96.08 -  980.0 -   13.88 -  499.6
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+Field not found; skipping
+Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+Assessing Vp
+Reading models/PREM.dat for model PREM
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+          1 -     5000.00 m -     Upper Crust      -    15000.00 m -    3        -   0.00 -    0.0 -   65.52 - 3300.0
+          3 -    35000.00 m -     Lower Crust      -    24400.00 m -    5        -   0.00 -    0.0 -   26.47 - 1800.0
+          4 -   150000.00 m -   Undifferentiated   -  6371000.00 m -   84        -   0.00 -    0.0 -   12.87 - 1033.8
+Reading models/ak135f-sph.dat for model ak135-f
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+          4 -   150000.00 m -   Undifferentiated   -  6371000.00 m -  144        -   0.00 -    0.0 -   65.52 - 3300.0
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+Field not found; skipping
+Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+

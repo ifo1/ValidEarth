@@ -1,0 +1,86 @@
+Reading a list of reference models from config.txt
+ - models/PREM.dat
+ - models/ak135f-sph.dat
+ - models/MantleChemistry.dat
+ - models/Geotherm_TC1.dat
+Reading file examples/example2.dat
+Name: Warrumbungles
+The following golden nails are used
+ - Lower crust ends at depth 45000.0 (record #1)
+Reading Pressure-Depth parameterisation from models/PREM.dat
+Using PREM as a pressure-depth dependency model
+Assessing the following input model physical quantities: 
+SiO2 - Al2O3 - FeO - MgO - CaO - MgNum
+Assessing SiO2
+Reading models/PREM.dat for model PREM
+Field not found; skipping
+Reading models/ak135f-sph.dat for model ak135-f
+Field not found; skipping
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+       Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
+Layer index - Bedding depth -                      - Bedding depth - Layer index -   Rel   -  Abs  -   Rel   -  Abs
+          0 -    45000.00 m -     Lower Crust      -    35000.00 m -    2        -   0.00 -    0.0 -    0.00 -    0.0
+         70 -   326000.00 m -   Undifferentiated   -   410000.00 m -    5        -   1.15 -    9.2 -    0.00 -    0.0
+Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+Assessing Al2O3
+Reading models/PREM.dat for model PREM
+Field not found; skipping
+Reading models/ak135f-sph.dat for model ak135-f
+Field not found; skipping
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+       Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
+Layer index - Bedding depth -                      - Bedding depth - Layer index -   Rel   -  Abs  -   Rel   -  Abs
+          0 -    45000.00 m -     Lower Crust      -    35000.00 m -    2        -   0.00 -    0.0 -    0.00 -    0.0
+         70 -   326000.00 m -   Undifferentiated   -   410000.00 m -    5        -   0.00 -    0.0 -    0.00 -    0.0
+Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+Assessing FeO
+Reading models/PREM.dat for model PREM
+Field not found; skipping
+Reading models/ak135f-sph.dat for model ak135-f
+Field not found; skipping
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+       Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
+Layer index - Bedding depth -                      - Bedding depth - Layer index -   Rel   -  Abs  -   Rel   -  Abs
+          0 -    45000.00 m -     Lower Crust      -    35000.00 m -    2        -   0.00 -    0.0 -    0.00 -    0.0
+         70 -   326000.00 m -   Undifferentiated   -   410000.00 m -    5        -   0.00 -    0.0 -    0.00 -    0.0
+Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+Assessing MgO
+Reading models/PREM.dat for model PREM
+Field not found; skipping
+Reading models/ak135f-sph.dat for model ak135-f
+Field not found; skipping
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+       Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
+Layer index - Bedding depth -                      - Bedding depth - Layer index -   Rel   -  Abs  -   Rel   -  Abs
+          0 -    45000.00 m -     Lower Crust      -    35000.00 m -    2        -   0.00 -    0.0 -    0.00 -    0.0
+         70 -   326000.00 m -   Undifferentiated   -   410000.00 m -    5        -   0.27 -    4.9 -    0.00 -    0.0
+Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+Assessing CaO
+Reading models/PREM.dat for model PREM
+Field not found; skipping
+Reading models/ak135f-sph.dat for model ak135-f
+Field not found; skipping
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+       Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
+Layer index - Bedding depth -                      - Bedding depth - Layer index -   Rel   -  Abs  -   Rel   -  Abs
+          0 -    45000.00 m -     Lower Crust      -    35000.00 m -    2        -   0.00 -    0.0 -    0.00 -    0.0
+         70 -   326000.00 m -   Undifferentiated   -   410000.00 m -    5        -   0.00 -    0.0 -    0.00 -    0.0
+Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+Assessing MgNum
+Reading models/PREM.dat for model PREM
+Field not found; skipping
+Reading models/ak135f-sph.dat for model ak135-f
+Field not found; skipping
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+       Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
+Layer index - Bedding depth -                      - Bedding depth - Layer index -   Rel   -  Abs  -   Rel   -  Abs
+          0 -    45000.00 m -     Lower Crust      -    35000.00 m -    2        -   0.00 -    0.0 -    0.00 -    0.0
+         70 -   326000.00 m -   Undifferentiated   -   410000.00 m -    5        -   0.00 -    0.0 -    0.00 -    0.0
+Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+

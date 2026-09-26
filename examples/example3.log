@@ -1,0 +1,62 @@
+Reading a list of reference models from config.txt
+ - models/PREM.dat
+ - models/ak135f-sph.dat
+ - models/MantleChemistry.dat
+ - models/Geotherm_TC1.dat
+Reading file examples/example3.dat
+Name: Pomani
+Reading Pressure-Depth parameterisation from models/PREM.dat
+Using PREM as a pressure-depth dependency model
+Assessing the following input model physical quantities: 
+Vp - Vs - Density - Temperature
+Assessing Vp
+Reading models/PREM.dat for model PREM
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+        325 -    95000.00 m -   Undifferentiated   -  6371000.00 m -   84        - 157.02 - 2276.8 -   35.67 - 2068.8
+Reading models/ak135f-sph.dat for model ak135-f
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+        325 -    95000.00 m -   Undifferentiated   -  6371000.00 m -  144        - 196.50 - 3242.3 -   26.99 - 2168.6
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+Field not found; skipping
+Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+Assessing Vs
+Reading models/PREM.dat for model PREM
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+        325 -    95000.00 m -   Undifferentiated   -  6371000.00 m -   84        - 2007.99 - 2008.0 -   36.73 - 1175.3
+Reading models/ak135f-sph.dat for model ak135-f
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+        325 -    95000.00 m -   Undifferentiated   -  6371000.00 m -  144        - 2007.99 - 2008.0 -   25.37 - 1137.7
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+Field not found; skipping
+Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+Assessing Density
+Reading models/PREM.dat for model PREM
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+        325 -    95000.00 m -   Undifferentiated   -  6371000.00 m -   84        - 142.96 - 1458.2 -   11.21 -  379.0
+Reading models/ak135f-sph.dat for model ak135-f
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+        325 -    95000.00 m -   Undifferentiated   -  6371000.00 m -  144        - 142.96 - 1458.2 -   17.60 -  640.6
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+Field not found; skipping
+Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+Assessing Temperature
+Reading models/PREM.dat for model PREM
+Field not found; skipping
+Reading models/ak135f-sph.dat for model ak135-f
+Field not found; skipping
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+Field not found; skipping
+Reading models/Geotherm_TC1.dat for model TC1
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+        325 -    95000.00 m -   Undifferentiated   -   142289.00 m -   19        -   5.81 -  139.1 -    0.31 -    6.1
+

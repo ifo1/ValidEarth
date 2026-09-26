@@ -1,7 +1,7 @@
 from termcolor import colored
 import numpy as np
 import os.path
-import math
+from math import radians, sin, cos, atan2, sqrt
 
 from colouredstrings import error, warning, highlight, red, yellow, green
 from datachecks import read_value
@@ -182,6 +182,7 @@ def print_stacked_models(layernames, layermodel, layerref, depthmodel, depthref,
         redlevel    = 0.1  # 10% of the range
     im1 = 0
     ir1 = 0
+
     for name, im, ir, minabs, minrel, maxrel, maxabs in zip (layernames, layermodel[1:], layerref[1:], mindifabs, mindifrel, maxdifrel, maxdifabs):
         text = '       {:4d}'.format(im) + ' - {:11.2f} m'.format(depthmodel[im]) + " - " 
         text += name.center(20)
@@ -229,7 +230,7 @@ def validate_profile_stdev(refmodel, layerref, dataval, datadepths, layermodel, 
     im1 = layermodel[0]
     ir1 = layerref[0]
     if verbose:
-        print ("Printing full comparison for " + refmodel.parameter + " using " + refmodel.name + " as reference")
+        print ("Printing a full comparison for " + refmodel.parameter + " using " + refmodel.name + " as a reference")
         print ("Layer#   -   Depth  -  Value    - Reference -   StDev   - Difference")
 
     for im, ir in zip (layermodel[1:], layerref[1:]):
@@ -461,18 +462,33 @@ class columndata:
         self.gn     = goldennaildata()
 
 
-
-class referencecolumn:
-    def __init__ (self, keyword, filename):
+class referencemodel:
+    def __init__ (self, filename):
         self.filename = filename
-        self.parameter = keyword
         self.name = None
         self.coordsys  = "Geographic"
+        self.citation = []
+        # for 3D models
+        self.arraylongitude = []
+        self.arraylatitude  = []
+        self.arrayx = []
+        self.arrayy = []
+        # the first line with datatable
+        self.lineindex = []
+
+
+class referencecolumn:
+    def __init__ (self, field, refmodel, irecord):
+        self.filename = refmodel.filename
+        self.parameter = field
+        self.name = refmodel.name
+        self.coordsys  = "Geographic"
         self.longitude = None
-        self.latitude  = None
-        self.x = None
-        self.y  = None
-        self.citation = None
+        self.latitude = None
+        if irecord > -1: 
+            self.longitude = refmodel.arraylongitude[irecord]
+            self.latitude  = refmodel.arraylatitude[irecord]
+        self.lineindex = refmodel.lineindex[irecord]
         # the actual reference profile expressed in terms of depth or pressure
         self.depths = []
         self.pressure = []
@@ -485,16 +501,35 @@ class referencecolumn:
         self.minimum = []
         self.gn = goldennaildata()
 
+
     def refmodel_reader(self):
+        # read a column from the reference model with the given offset
+        nskip = 0 
+
         # read the reference model from a supplied file
-        print ("Reading " + self.filename)
+        print ("Reading " + self.filename + " for model " + highlight(self.name))
 
         with open (self.filename, 'r') as myfile:
 
-            header = True
             columns = []
 
             for line in myfile:
+                # skip N lines
+                if nskip < self.lineindex:
+                    nskip += 1
+                    continue
+                elif nskip == self.lineindex:
+                    # add column names only if we are exactly at this very line
+                    tmp = line.strip().split()
+                    if tmp[0] not in ["Depth", "Presure"]:
+                        print (error() + "wrong offset in the reference file!")
+                    columns = tmp
+                    # check whether the field is among those available
+                    if not any(s.startswith(self.parameter) for s in columns):
+                        return False
+                    if columns[-1] != "Type": columns.append("Type")
+                    nskip += 1
+                    continue
 
                 # skip empty lines and comments
                 if len(line.strip()) == 0: continue
@@ -503,86 +538,64 @@ class referencecolumn:
 
                 tmp = line.strip().split()
 
-                if header:
+                try:
+                    # it will cause an exception if it is not a valid number for depth
+                    float(tmp[0])
+                except:
+                    # means the data table finished
+                    break
 
-                    if tmp[0] == "Name":
-                        self.name = tmp[1]
-                        print ("Using " + highlight(self.name) + " as a reference model for " + self.parameter)
+                # pad the Type column with None
+                if len(tmp) == len(columns)-1:
+                    tmp.append(None)
 
-                    elif tmp[0] == "Citation":
-                        self.citation = tmp[1]
+                if len(tmp) != len(columns):
+                    print (error() + "the number of columns in the reference model file is not uniform!")
+                    exit()
 
-                    elif tmp[0] == "Depth" or tmp[0] == "Presure":
-                        columns = tmp
-                        header = False
-                        if columns[-1] != "Type":
-                            columns.append("Type")
-
-                    elif tmp[0] == "CoordinateSystem":
-                        self.coordsys = tmp[1]
-
-                    elif tmp[0] == "Longitude":
-                        self.longitude = float(tmp[1])
-                    elif tmp[0] == "Latitude":
-                        self.latitude = float(tmp[1])
-
-                    elif tmp[0] == "X":
-                        self.x = float(tmp[1])
-                    elif tmp[0] == "Y":
-                        self.y = float(tmp[1])
-
-                else:
-                    # pad the Type column with None
-                    if len(tmp) == len(columns)-1:
-                        tmp.append(None)
-
-                    if len(tmp) != len(columns):
-                        print (error() + "the number of columns in the reference model file is not uniform!")
-                        exit()
-
-                    # read the actual data table
-                    for field, value in zip (columns, tmp):
-                        if field == "Depth":
-                            locdepth = read_value(field,value)
-                            if len(self.depths) >= 1:
-                                if locdepth < self.depths[-1]:
-                                    print (error(locdepth) + "the depth is not non-decreasing in the reference file!")
-                                    exit()
-                            self.depths.append( locdepth )
-                        elif field == self.parameter:
-                            self.reference.append( read_value(field,value) )
-                        elif field == self.parameter+"Max":
-                            self.maximum.append( read_value(field,value) )
-                        elif field == self.parameter+"Min":
-                            self.minimum.append( read_value(field,value) )
-
-                        elif field == self.parameter+"Stdev":
-                            self.sigmaplus.append( read_value(field,value) )
-                            self.sigmaminus.append( read_value(field,value) )
-                        elif field == self.parameter+"Stdev+":
-                            self.sigmaplus.append( read_value(field,value) )
-                        elif field == self.parameter+"Stdev-":
-                            self.sigmaminus.append( read_value(field,value) )
-
-                        elif field == self.parameter+"%":
-                            if not self.reference:
-                                print (error(self.depths[-1]) + " the relative uncertainty column must be after the actual parameter reference column")
+                # read the actual data table
+                for field, value in zip (columns, tmp):
+                    if field == "Depth":
+                        locdepth = read_value(field,value)
+                        if len(self.depths) >= 1:
+                            if locdepth < self.depths[-1]:
+                                print (error(locdepth) + "the depth is not non-decreasing in the reference file!")
                                 exit()
-                            self.sigmaplus.append( read_value(field,value) * self.reference[-1] / 100 )
-                            self.sigmaminus.append( read_value(field,value) * self.reference[-1] / 100 )
-                        elif field == self.parameter+"%+":
-                            if not self.reference:
-                                print (error(self.depths[-1]) + " the relative uncertainty column must be after the actual parameter reference column")
-                                exit()
-                            self.sigmaplus.append( read_value(field,value) * self.reference[-1] / 100 )
-                        elif field == self.parameter+"%-":
-                            if not self.reference:
-                                print (error(self.depths[-1]) + " the relative uncertainty column must be after the actual parameter reference column")
-                                exit()
-                            self.sigmaminus.append( read_value(field,value) * self.reference[-1] / 100 )
-                        elif field == "Type":
-                            if value is not None:
-                                self.gn.assign_gn(value, len(self.depths)-1)
+                        self.depths.append( locdepth )
+                    elif field == self.parameter:
+                        self.reference.append( read_value(field,value) )
+                    elif field == self.parameter+"Max":
+                        self.maximum.append( read_value(field,value) )
+                    elif field == self.parameter+"Min":
+                        self.minimum.append( read_value(field,value) )
+
+                    elif field == self.parameter+"Stdev":
+                        self.sigmaplus.append( read_value(field,value) )
+                        self.sigmaminus.append( read_value(field,value) )
+                    elif field == self.parameter+"Stdev+":
+                        self.sigmaplus.append( read_value(field,value) )
+                    elif field == self.parameter+"Stdev-":
+                        self.sigmaminus.append( read_value(field,value) )
+
+                    elif field == self.parameter+"%":
+                        if not self.reference:
+                            print (error(self.depths[-1]) + " the relative uncertainty column must be after the actual parameter reference column")
+                            exit()
+                        self.sigmaplus.append( read_value(field,value) * self.reference[-1] / 100 )
+                        self.sigmaminus.append( read_value(field,value) * self.reference[-1] / 100 )
+                    elif field == self.parameter+"%+":
+                        if not self.reference:
+                            print (error(self.depths[-1]) + " the relative uncertainty column must be after the actual parameter reference column")
+                            exit()
+                        self.sigmaplus.append( read_value(field,value) * self.reference[-1] / 100 )
+                    elif field == self.parameter+"%-":
+                        if not self.reference:
+                            print (error(self.depths[-1]) + " the relative uncertainty column must be after the actual parameter reference column")
+                            exit()
+                        self.sigmaminus.append( read_value(field,value) * self.reference[-1] / 100 )
+                    elif field == "Type":
+                        if value is not None:
+                            self.gn.assign_gn(value, len(self.depths)-1)
 
         self.depths = np.asarray(self.depths)
 
@@ -649,7 +662,7 @@ class pressuredepth:
                         print ("Using " + highlight(self.name) + " as a pressure-depth dependency model")
 
                     elif tmp[0] == "Citation":
-                        self.citation.append(tmp[1])
+                        self.citation.append(line.partition(' ')[2])
 
                     elif tmp[0] == "Depth":
                         columns = tmp

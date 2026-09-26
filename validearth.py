@@ -11,7 +11,8 @@ from colouredstrings import error, warning, highlight
 from check_velocities import check_velocities
 
 # local classes
-from classes import columndata, pressuredepth, match_layers, print_stacked_models, referencecolumn, validate_profile_stdev, validate_profile_minmax, haversine
+from classes import columndata, pressuredepth, match_layers, print_stacked_models, referencecolumn, \
+    validate_profile_stdev, validate_profile_minmax, haversine, referencemodel
 
 # read command line arguments
 
@@ -41,26 +42,78 @@ if not os.path.isfile(args.file_refmodels):
     print (error() + "catalog file "+args.file_refmodels+" does not exist!")
     exit()
 
-print ("Reading the list of reference models from " + highlight (args.file_refmodels))
-refmodelfiles = []
-with open(args.file_refmodels) as myfile:
+print ("Reading a list of reference models from " + highlight (args.file_refmodels))
+referencemodels = []
 
-    # read each line and parse it
-    datatable = False
+with open(args.file_refmodels) as myfile:
 
     for line in myfile:
 
         # skip empty lines and comments
         if len(line.strip()) == 0: continue
         char = line.strip()[0]
-        if char == "#" or char == "!" or char == "/" or char == "%": continue
+        if char == "#" or char == "!" or char == "%": continue
 
-        #check whether the reference model exists
+        # check whether the reference model exists
         if not os.path.isfile(line.strip()):
-            print (error() + "the reference model file "+line.strip()+" does not exist!")
+            print (error() + "the reference model file " + line.strip() + " does not exist!")
             exit()
 
-        refmodelfiles.append(line.strip())
+        # create new class instance and load data
+        refmodel = referencemodel(line.strip())
+        with open(refmodel.filename) as mymodel:
+            print (" - " + refmodel.filename)
+            iline = 0
+            for line in mymodel:
+                iline += 1
+
+                # skip empty lines and comments
+                if len(line.strip()) == 0: continue
+                char = line.strip()[0]
+                if char == "#" or char == "!" or char == "/" or char == "%": continue
+
+                tmp = line.strip().split()
+                
+                if tmp[0] == "Name":
+                    refmodel.name = tmp[1]
+
+                elif tmp[0] == "Citation":
+                    refmodel.citation.append(line.partition(' ')[2])
+
+                elif tmp[0] == "Depth" or tmp[0] == "Presure":
+                    # the number of line (starting from zero) where the datatable begins
+                    refmodel.lineindex.append(iline-1)
+
+                elif tmp[0] == "CoordinateSystem":
+                    refmodel.coordsys = tmp[1]
+
+                elif tmp[0] == "Longitude":
+                    refmodel.arraylongitude.append(float(tmp[1]))
+                elif tmp[0] == "Latitude":
+                    refmodel.arraylatitude.append(float(tmp[1]))
+
+                elif tmp[0] == "X":
+                    refmodel.arrayx.append(float(tmp[1]))
+                elif tmp[0] == "Y":
+                    refmodel.arrayy.append(float(tmp[1]))
+
+        # verify that the coordinate lists are aligned
+        if len(refmodel.arraylongitude) != len(refmodel.arraylatitude):
+            print (error() + " the number of longitude data entries does not match the number of latitude data entries")
+            exit()
+
+        if len(refmodel.arrayx) != len(refmodel.arrayy):
+            print (error() + " the number of X data entries does not match the number of Y data entries")
+            exit()
+
+        if args.dist > 0:
+            # append 3D models if -dist is provided
+            if len (refmodel.arraylongitude) > 1:
+                referencemodels.append(refmodel)
+        else:
+            # append 1D models if -dist is NOT provided
+            if len (refmodel.arraylongitude) <= 1:
+                referencemodels.append(refmodel)
 
 
 # initialise a class for the inputs ad for the golden nails
@@ -273,30 +326,36 @@ for field in column.columns:
         plt.plot(column.depth, data, "o-", color='black', label='Data')
         plt.title(column.name + ": " + field + " v depth")
 
-    # trying to validate using PREM
-    for imodel, refmodelfile in enumerate(refmodelfiles):
-        refcol = referencecolumn(field, refmodelfile)
+    # validate model using available references
+    for imodel, refmodel in enumerate(referencemodels):
 
-        # check that the distance between the reference column and the input one does not exceed the threshold
-        if args.dist > 0:
-            actdist = haversine (column.longitude, column.latitude, refcol.longitude, refcol.latitude)
-            if actdist is None:
-                print ("Skipping the reference model as the distance cannot be evaluated")
-                continue
-            if actdist > args.dist:
-                print ("Skipping the reference model as its not within the prescribed radius: " + str(actdist))
-                continue
-
-        found = refcol.refmodel_reader()
-        if not found: continue
-
-        if args.pdf or args.png:
-            if refcol.reference is not None:
-                jmodel = imodel%len(plotcolours)
-                plt.plot(refcol.depths, refcol.reference, "o-", color=plotcolours[jmodel], label=refcol.name)
+        # check the distance if necessary
+        irecord = -1 # the number of column in the model
+        mindist = args.dist
+        if args.dist > 0.0:
+            if refmodel.arraylongitude and refmodel.arraylatitude:
+                for i, (lon, lat) in enumerate (zip(refmodel.arraylongitude, refmodel.arraylatitude)):
+                    actdist = haversine (lon, lat, column.longitude, column.latitude)
+                    if actdist is None:
+                        print (error() + "haversine distance cannot be computed. Highly likely, the coordinates of an input data column were not provided.")
+                        exit()
+                    # within given radius
+                    if args.dist > actdist:
+                        # the fit is better
+                        if mindist > actdist:
+                            mindist = actdist
+                            irecord = i
             else:
-                plt.plot(0, 0, "o", color=plotcolours[jmodel], label=refcol.name)
-                plt.fill_between(refcol.depths, refcol.minimum, refcol.maximum, color = plotcolours[jmodel], alpha=0.2)
+                continue
+
+        refcol = referencecolumn(field, refmodel, irecord)
+
+        # found indicates whether the field is actually available for the selected record
+        found = refcol.refmodel_reader()
+
+        if not found:
+            print ("Field not found; skipping")
+            continue
 
         layernames, layermodel, layerref = match_layers(column.gn, column.depth.size, refcol.gn, refcol.depths.size)
         # two main validation options
@@ -307,6 +366,15 @@ for field in column.columns:
         else:
             # checking the value is between min and max
             mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile_minmax(refcol, layerref, data, column.depth, layermodel)
+
+        if args.pdf or args.png:
+            jmodel = imodel%len(plotcolours)
+            if refcol.reference is not None:
+                plt.fill_between(refcol.depths, refcol.reference-refcol.sigmaminus, refcol.reference+refcol.sigmaplus, color = plotcolours[jmodel], alpha=0.2)
+                plt.plot(refcol.depths, refcol.reference, "o-", color=plotcolours[jmodel], label=refcol.name)
+            else:
+                plt.plot(0, 0, "o", color=plotcolours[jmodel], label=refcol.name)
+                plt.fill_between(refcol.depths, refcol.minimum, refcol.maximum, color = plotcolours[jmodel], alpha=0.2)
 
         print_stacked_models(layernames, layermodel, layerref, column.depth, refcol.depths, mindifabs, mindifrel, maxdifrel, maxdifabs, use_stdev)
 

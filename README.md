@@ -70,13 +70,19 @@ An additional test is provided to assess whether melting may occur within the pr
 
 A reference model may use either Pressure or Depth as its independent variable. When pressure is used, it is converted to depth according to a supplied pressure-depth model.
 
+## Config file
+
+A default list of reference models is stored in the **config.txt** file (the file lists relative or absolute paths to the models, one path per line). The user can use command line options to specify a custom config file or amend the existing one.
+
 ## 3D Reference Models
 
-By default, ValidEarth does not take into account the geographic location of the reference and assesable columns. However, due to the great heterogeneity of mother Earth, it is really important to have this feature available.
+By default, ValidEarth does not take into account the geographic locations of the reference and assesable columns. However, due to the great heterogeneity of mother Earth, it is really important to have this feature available.
 
-ValidEarth allows the user to specify a certain distance (in metres) using the **-dist** option. Only if a reference column is within this distance from the examined column, it will be used for reporting. No global model (such as PREM) can be used in this mode.
+ValidEarth allows the user to specify a certain distance (in metres) using the **-dist** option. Only if a reference column is within this distance from the examined column, it will be used for reporting. No global (1D) model (such as PREM) can be used in this mode, and vice versa.
 
 Notice, that the code uses a simplified Haversine formula for the distance test.
+
+The ValidEarth package contains a file called ecm2validearth.py (located in models/) that allows the user to convert the **ECM1** dataset to a ValidEarth 3D reference model file. 
 
 # Understanding Program Outputs
 
@@ -116,6 +122,40 @@ Run:
 python validearth.py --help
 
 to display the available command-line options.
+
+ValidEarth comes with several examples, the expected outputs (logs) are stored in the models/ directory next to the input files:
+
+## Example 1 
+
+Run
+python3 ./validearth.py -i examples/example1.dat
+to assess the example column using a set of 1D models. The code automatically looks for the matching column names and compares the data.
+
+The plots will show not only the input model and reference profiles, but also a highlighted area marking one standard deviation in each direction from the reference values.  
+
+## Example 1a
+
+Requires a valid ECM1 model file to be provided (see above)! Update the config file to include a path to the produced ValidEarth reference model file!
+
+Run
+python3 ./validearth.py -i examples/example1.dat -dist 100 -pdf
+to assess the example column using a 3D model. 
+
+## Example 2
+
+Run
+python3 ./validearth.py -i examples/example1.dat
+to assess the example column using a set of 1D models. The code automatically looks for the matching column names and compares the data.
+
+The plots will show the input model and a highighted area marking the range between minumum and maximum allowed values.  
+
+## Example 3
+
+Run
+python3 ./validearth.py -i examples/example3.dat
+to assess the example column using a set of 1D models. The code automatically looks for the matching column names and compares the data.
+
+The plots will show not only the input model and reference profiles, but also a highlighted area marking one standard deviation in each direction from the reference values.  
 
 # Future Work
 

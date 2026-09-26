@@ -242,7 +242,7 @@ def create_ecm1(
                 f"{e['DLy1'] * 1000:.2f} "
                 f"{e['VP1'] * 1000:.2f} "
                 f"{e['VS1'] * 1000:.2f} "
-                f"{e['RHO1'] * 1000:.2f} uppercrust\n"
+                f"{e['RHO1'] * 1000:.2f} crustupper\n"
             )
 
             # ----------------------------------------------------------
@@ -260,7 +260,7 @@ def create_ecm1(
                 f"{e['DLy2'] * 1000:.2f} "
                 f"{e['VP2'] * 1000:.2f} "
                 f"{e['VS2'] * 1000:.2f} "
-                f"{e['RHO2'] * 1000:.2f} middlecrust\n"
+                f"{e['RHO2'] * 1000:.2f} crustmiddle\n"
             )
 
             # ----------------------------------------------------------
@@ -299,5 +299,5 @@ def create_ecm1(
                 f"{e['RHON'] * 1000:.2f} mantlelitho\n"
             )
 
-create_ecm1( "Sed_ECM1.txt", "ECM1.txt", "ECM1_model.txt" 
+create_ecm1( "Sed_ECM1.txt", "ECM1.txt", "ECM1_model.dat" 
 )
