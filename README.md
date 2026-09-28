@@ -123,7 +123,7 @@ python validearth.py --help
 
 to display the available command-line options.
 
-ValidEarth comes with several examples, the expected outputs (logs) are stored in the models/ directory next to the input files:
+ValidEarth comes with several examples, the expected outputs (logs, might be slightly different from the actual outputs) are stored in the models/ directory next to the input files:
 
 ## Example 1 
 
@@ -139,12 +139,14 @@ Requires a valid ECM1 model file to be provided (see above)! Update the config f
 
 Run
 python3 ./validearth.py -i examples/example1.dat -dist 100 -pdf
-to assess the example column using a 3D model. 
+
+to assess the example column using a 3D model. The density, Vp and Vs charts allow to compare the properties of individual layers along the profile. 
 
 ## Example 2
 
 Run
 python3 ./validearth.py -i examples/example1.dat
+
 to assess the example column using a set of 1D models. The code automatically looks for the matching column names and compares the data.
 
 The plots will show the input model and a highighted area marking the range between minumum and maximum allowed values.  
@@ -153,13 +155,23 @@ The plots will show the input model and a highighted area marking the range betw
 
 Run
 python3 ./validearth.py -i examples/example3.dat
+
 to assess the example column using a set of 1D models. The code automatically looks for the matching column names and compares the data.
 
 The plots will show not only the input model and reference profiles, but also a highlighted area marking one standard deviation in each direction from the reference values.  
 
-# Future Work
+## Example 4
+
+Run
+python3 ./validearth.py -i examples/example4.dat -pdf -detailed
+
+to assess a geothermal profile using one of the reference lithospheric geotherms and solidus and liquidus curves. ValidEarth will produce the interpolated liquidus and solidus temperatures along the studied profile, as well as a short summary in the end. 
+
+# To Do
 
 Planned development of the toolkit include:
+
+- Tool for comparing with reference specimens instead of profile-to-profile comparisons.
 
 - Gradient analysis between adjacent vertical profiles, enabling the identification of spatial variations and potentially anomalous transitions between neighbouring profiles.
 

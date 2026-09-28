@@ -4,7 +4,7 @@ import os.path
 from math import radians, sin, cos, atan2, sqrt
 
 from colouredstrings import error, warning, highlight, red, yellow, green
-from datachecks import read_value
+from read_values import read_value
 
 
 def haversine(lon1, lat1, lon2, lat2):
@@ -39,7 +39,7 @@ def linear_interp(xi, xarrin, yarrin):
 
     # remove all non-finite vales
     xarr = xarrin[np.isfinite(yarrin)]
-    yarr = yarrin[np.isfinite(xarrin)]
+    yarr = yarrin[np.isfinite(yarrin)]
 
     #if there are no values left, leave
     if xarr.size == 0: return np.nan
@@ -203,6 +203,63 @@ def print_stacked_models(layernames, layermodel, layerref, depthmodel, depthref,
         print (text)
 
 
+
+def validate_profile_melting(refmodel, dataval, datadepths, verbose = False):
+    # a function to print out a "composite cross-section" from the reference and the input models being stacked
+    # Inputs
+    # refmodel   - the reference model
+    # dataval    - the input model data
+    # datadepths - the input model depths
+    # verbose    - whether to print out a detailed comparison
+
+    abovesolidus = []
+    aboveliquidus = []
+    localsolidus = None
+    localliquidus = None
+
+    if verbose:
+        print ("Printing a full comparison for " + refmodel.parameter + " using " + refmodel.name + " as a reference")
+        print ("Layer#   -   Depth  - Temperature - Solidus - Liquidus")
+
+    for i, (temperature,depth) in enumerate(zip(dataval, datadepths)):
+        # inspecting data points within a single layer of the input model
+
+        if refmodel.solidus is not None:
+            localsolidus = linear_interp(depth, refmodel.depths, refmodel.solidus)
+            abovesolidus.append( temperature > localsolidus )
+
+        if refmodel.liquidus is not None:
+            localliquidus = linear_interp(depth, refmodel.depths, refmodel.liquidus)
+            aboveliquidus.append( temperature > localliquidus )
+
+        if verbose: 
+            line = '{:4d}'.format(i) + ' - {:11.2f} '.format(depth) + ' - '
+            if refmodel.liquidus is not None and aboveliquidus[-1]:
+                line += red('{:9.2f}'.format(temperature))
+            elif refmodel.solidus is not None and abovesolidus[-1]:
+                line += yellow('{:9.2f}'.format(temperature))
+            else:
+                line += green('{:9.2f}'.format(temperature))
+
+            if localsolidus is not None:
+                line += ' - {:9.2f}'.format(localsolidus)
+            else:
+                line += ' -     N/A'
+            if localliquidus is not None:
+                line += ' - {:9.2f}'.format(localliquidus)
+            else:
+                line += ' -     N/A'
+            print (line)
+
+    if any(aboveliquidus):
+        print (red("Some sections along the profile should be completely molten"))
+    elif any(abovesolidus):
+        print (yellow("Some sections along the profile should be partially molten"))
+    else:
+        print (green("All rocks along the profile should remain solid"))
+
+
+
 def validate_profile_stdev(refmodel, layerref, dataval, datadepths, layermodel, verbose = False):
     # a function to print out a "composite cross-section" from the reference and the input models being stacked
     # Inputs
@@ -235,7 +292,6 @@ def validate_profile_stdev(refmodel, layerref, dataval, datadepths, layermodel, 
 
     for im, ir in zip (layermodel[1:], layerref[1:]):
         # inspecting every single layer from the stacked model
-
         datadepthsubset = datadepths[im1+1:im+1]
         datavalsubset   = dataval[im1+1:im+1]
 
@@ -281,7 +337,6 @@ def validate_profile_stdev(refmodel, layerref, dataval, datadepths, layermodel, 
 
         im1 = im
         ir1 = ir
-
     return mindifabs, mindifrel, maxdifrel, maxdifabs
 
 
@@ -499,12 +554,23 @@ class referencecolumn:
         # alternatively, max and min bounds
         self.maximum = []
         self.minimum = []
+        # special case for temperatures
+        self.liquidus = []
+        self.solidus = []
+        # layer boundaries
         self.gn = goldennaildata()
 
 
-    def refmodel_reader(self):
-        # read a column from the reference model with the given offset
+    def refmodel_reader(self, pressuremodel):
+        # read a column from the reference model
+        # Inputs
+        # pressuremodel -- pressure-depth dependency calibration
+
+        # offset in the file        
         nskip = 0 
+
+        # if True, use Depth, otherwise use Pressure
+        use_depth = True
 
         # read the reference model from a supplied file
         print ("Reading " + self.filename + " for model " + highlight(self.name))
@@ -521,9 +587,10 @@ class referencecolumn:
                 elif nskip == self.lineindex:
                     # add column names only if we are exactly at this very line
                     tmp = line.strip().split()
-                    if tmp[0] not in ["Depth", "Presure"]:
+                    if tmp[0] not in ["Depth", "Pressure"]:
                         print (error() + "wrong offset in the reference file!")
                     columns = tmp
+                    use_depth = "Depth" in columns
                     # check whether the field is among those available
                     if not any(s.startswith(self.parameter) for s in columns):
                         return False
@@ -555,12 +622,21 @@ class referencecolumn:
 
                 # read the actual data table
                 for field, value in zip (columns, tmp):
-                    if field == "Depth":
+                    if field == "Depth" and use_depth:
                         locdepth = read_value(field,value)
                         if len(self.depths) >= 1:
                             if locdepth < self.depths[-1]:
-                                print (error(locdepth) + "the depth is not non-decreasing in the reference file!")
+                                print (error(locdepth) + "the depth is decreasing in the reference file!")
                                 exit()
+                        self.depths.append( locdepth )
+                    elif field == "Pressure" and not use_depth:
+                        locpressure = read_value(field,value)
+                        if len(self.pressure) >= 1:
+                            if locpressure < self.pressure[-1]:
+                                print (error(locpressure) + "the pressure is decreasing in the reference file!")
+                                exit()
+                        self.pressure.append( locpressure )
+                        locdepth = pressuremodel.pressure_to_depth( locpressure )
                         self.depths.append( locdepth )
                     elif field == self.parameter:
                         self.reference.append( read_value(field,value) )
@@ -576,6 +652,11 @@ class referencecolumn:
                         self.sigmaplus.append( read_value(field,value) )
                     elif field == self.parameter+"Stdev-":
                         self.sigmaminus.append( read_value(field,value) )
+
+                    elif field == self.parameter+"Solidus":
+                        self.solidus.append( read_value(field,value) )
+                    elif field == self.parameter+"Liquidus":
+                        self.liquidus.append( read_value(field,value) )
 
                     elif field == self.parameter+"%":
                         if not self.reference:
@@ -599,7 +680,22 @@ class referencecolumn:
 
         self.depths = np.asarray(self.depths)
 
-        if not self.reference:
+        if self.liquidus or self.solidus:
+            if self.liquidus:
+                self.liquidus = np.asarray(self.liquidus)
+            else:
+                self.liquidus = None
+            if self.solidus:
+                self.solidus = np.asarray(self.solidus)
+            else:
+                self.solidus = None
+            self.maximum = None
+            self.minimum = None
+            self.sigmaplus = None
+            self.sigmaminus = None
+            self.reference = None
+
+        elif not self.reference:
             if not self.maximum and not self.minimum:
                 print ("The field was not found; skipping")
                 return False
@@ -609,18 +705,31 @@ class referencecolumn:
             self.sigmaplus = None
             self.sigmaminus = None
             self.reference = None
+            self.liquidus = None
+            self.solidus = None
+
         else:
             # mean and stdevs
             self.reference = np.asarray(self.reference)
             if not self.sigmaplus and not self.sigmaminus:
                 # sigma = 1%, but not less than unity to avoid division by zero
-                self.sigmaplus = np.maximum(100., self.reference) / 100.0
+                self.sigmaplus = np.maximum(10., self.reference) / 100.0
                 self.sigmaminus = self.sigmaplus
             else:            
                 self.sigmaplus = np.asarray(self.sigmaplus)
                 self.sigmaminus = np.asarray(self.sigmaminus)
             self.maximum = None
             self.minimum = None
+            self.liquidus = None
+            self.solidus = None
+
+            # check all sigmas are positive
+            if np.any(self.sigmaplus <= 0):
+                print (error() + " there are non positive StDev plus values in the reference model " + model.name + " in " + model.filename + "!")
+                exit()
+            if np.any(self.sigmaminus <= 0):
+                print (error() + " there are non positive StDev minus values in the reference model " + model.name + " in " + model.filename + "!")
+                exit()
 
         return True
 
@@ -681,18 +790,7 @@ class pressuredepth:
         self.pressures  = np.asarray(self.pressures)
 
 
-    def pressure_to_depth(self, pressures):
-
-        p_arr = np.asarray(pressures)
-
-        d_arr = np.zeros_like(p_arr)
-
-        for i in range (p_arr.size):
-            d_arr[i] = linear_interp(p_arr[i], self.pressures, self.depths)
-
-        # return scalar if there is only one value
-        if d_arr.size == 1: d_arr = d_arr[0]
-
-        return d_arr
+    def pressure_to_depth(self, pressure):
+        return linear_interp(pressure, self.pressures, self.depths)
 
 

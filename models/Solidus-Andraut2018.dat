@@ -1,6 +1,6 @@
-Upper Mantle Solidus by Anrault et al (2018)
-# Andrault, D., Pesce, G., Manthilake, G. et al. Deep and persistent melt layer in the Archaean mantle. Nature Geosci 11, 139–143 (2018).
-Pressure	Solidus
+Name Andrault_etal_2018
+Citation Andrault, D., Pesce, G., Manthilake, G. et al. Deep and persistent melt layer in the Archaean mantle. Nature Geosci 11, 139–143 (2018).
+Pressure	TemperatureSolidus
 # Pa, K
 0	1371.21
 26000000	1375.31

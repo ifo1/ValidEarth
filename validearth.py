@@ -6,13 +6,13 @@ import matplotlib.pyplot as plt
 plotcolours = ["red", "blue", "green", "orange", "violet", "brown"]
 
 # local modules
-from datachecks import read_field, read_float, read_value
+from read_values import read_field, read_float, read_value
 from colouredstrings import error, warning, highlight
-from check_velocities import check_velocities
+from check_data import check_velocities
 
 # local classes
 from classes import columndata, pressuredepth, match_layers, print_stacked_models, referencecolumn, \
-    validate_profile_stdev, validate_profile_minmax, haversine, referencemodel
+    validate_profile_stdev, validate_profile_minmax, haversine, referencemodel, validate_profile_melting
 
 # read command line arguments
 
@@ -80,7 +80,7 @@ with open(args.file_refmodels) as myfile:
                 elif tmp[0] == "Citation":
                     refmodel.citation.append(line.partition(' ')[2])
 
-                elif tmp[0] == "Depth" or tmp[0] == "Presure":
+                elif tmp[0] == "Depth" or tmp[0] == "Pressure":
                     # the number of line (starting from zero) where the datatable begins
                     refmodel.lineindex.append(iline-1)
 
@@ -226,6 +226,16 @@ with open(args.inputfile) as myfile:
                 if value is not None: column.gn.assign_gn(value, len(column.depth)-1)
 
 
+# convert to SI units
+if args.udepth == "km":   column.depth *= 1000
+if args.utemp == "C":     column.temperature += 273.15
+if args.uvp == "km/s":    column.Vp *= 1000
+if args.uvs == "km/s":    column.Vs *= 1000
+if args.udens == "g/cm3": column.density *= 1000
+
+
+# compute or verify derived fields
+check_velocities(column)
 
 # convert data to numpy arrays
 column.depth = np.asarray(column.depth)
@@ -241,12 +251,6 @@ column.Vs      = np.asarray(column.Vs)
 column.VpVs    = np.asarray(column.VpVs)
 column.density = np.asarray(column.density)
 
-# convert to SI units
-if args.udepth == "km":   column.depth *= 1000
-if args.utemp == "C":     column.temperature += 273.15
-if args.uvp == "km/s":    column.Vp *= 1000
-if args.uvs == "km/s":    column.Vs *= 1000
-if args.udens == "g/cm3": column.density *= 1000
 
 # check the datum
 
@@ -276,8 +280,6 @@ pressuremodel.read_pressure_model()
 # actual data checks
 
 # for each of the assesable physical quantities in the input file, try to find a match in the available reference models
-
-
 
 print ("Assessing the following input model physical quantities: ")
 print (highlight(" - ".join(column.columns[1:-1])))
@@ -323,14 +325,15 @@ for field in column.columns:
         amax = max(data[np.isfinite(data)])
         amax = amax + 0.1*abs(amax) #always going up
         plt.ylim( [amin, amax] )
-        plt.plot(column.depth, data, "o-", color='black', label='Data')
         plt.title(column.name + ": " + field + " v depth")
+        # plot the actual data
+        plt.plot(column.depth, data, "o-", color='black', label='Data')
 
     # validate model using available references
     for imodel, refmodel in enumerate(referencemodels):
 
         # check the distance if necessary
-        irecord = -1 # the number of column in the model
+        irecord = -1 # the number of line in the file to read
         mindist = args.dist
         if args.dist > 0.0:
             if refmodel.arraylongitude and refmodel.arraylatitude:
@@ -350,34 +353,53 @@ for field in column.columns:
 
         refcol = referencecolumn(field, refmodel, irecord)
 
+
         # found indicates whether the field is actually available for the selected record
-        found = refcol.refmodel_reader()
+        found = refcol.refmodel_reader(pressuremodel)
 
         if not found:
             print ("Field not found; skipping")
             continue
 
-        layernames, layermodel, layerref = match_layers(column.gn, column.depth.size, refcol.gn, refcol.depths.size)
-        # two main validation options
-        use_stdev = refcol.reference is not None
-        if use_stdev:
-            # checking the mean and stdevs
-            mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile_stdev(refcol, layerref, data, column.depth, layermodel, args.d)
+        if refcol.solidus is not None or refcol.liquidus is not None:
+            # if solidus or liduidus, do special thing
+            validate_profile_melting(refcol, data, column.depth, args.d)
+            # plotting
+            if args.pdf or args.png:
+                jmodel = imodel%len(plotcolours)
+                if refcol.solidus is not None:
+                    plt.plot(refcol.depths, refcol.solidus,  "o-", color=plotcolours[jmodel], label=refcol.name + " - solidus")
+                if refcol.liquidus is not None:
+                    plt.plot(refcol.depths, refcol.liquidus, "o-", color=plotcolours[jmodel], label=refcol.name + " - liquidus")
+
         else:
-            # checking the value is between min and max
-            mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile_minmax(refcol, layerref, data, column.depth, layermodel)
-
-        if args.pdf or args.png:
-            jmodel = imodel%len(plotcolours)
-            if refcol.reference is not None:
-                plt.fill_between(refcol.depths, refcol.reference-refcol.sigmaminus, refcol.reference+refcol.sigmaplus, color = plotcolours[jmodel], alpha=0.2)
-                plt.plot(refcol.depths, refcol.reference, "o-", color=plotcolours[jmodel], label=refcol.name)
+            # stack and match vertical profiles
+            layernames, layermodel, layerref = match_layers(column.gn, column.depth.size, refcol.gn, refcol.depths.size)
+            # two main validation options
+            use_stdev = refcol.reference is not None
+            if use_stdev:
+                # checking the mean and stdevs
+                mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile_stdev(refcol, layerref, data, column.depth, layermodel, args.d)
             else:
-                plt.plot(0, 0, "o", color=plotcolours[jmodel], label=refcol.name)
-                plt.fill_between(refcol.depths, refcol.minimum, refcol.maximum, color = plotcolours[jmodel], alpha=0.2)
+                # checking the value is between min and max
+                mindifabs, mindifrel, maxdifrel, maxdifabs = validate_profile_minmax(refcol, layerref, data, column.depth, layermodel)
 
-        print_stacked_models(layernames, layermodel, layerref, column.depth, refcol.depths, mindifabs, mindifrel, maxdifrel, maxdifabs, use_stdev)
+            # plotting
+            if args.pdf or args.png:
+                jmodel = imodel%len(plotcolours)
+                if refcol.reference is not None:
+                    plt.fill_between(refcol.depths, refcol.reference-refcol.sigmaminus, refcol.reference+refcol.sigmaplus, color = plotcolours[jmodel], alpha=0.2)
+                    plt.plot(refcol.depths, refcol.reference, "o-", color=plotcolours[jmodel], label=refcol.name)
+                else:
+                    plt.plot(0, 0, "o", color=plotcolours[jmodel], label=refcol.name)
+                    plt.fill_between(refcol.depths, refcol.minimum, refcol.maximum, color = plotcolours[jmodel], alpha=0.2)
 
+            # print a short summary
+            print_stacked_models(layernames, layermodel, layerref, column.depth, refcol.depths, mindifabs, mindifrel, maxdifrel, maxdifabs, use_stdev)
+
+    # end of assessment for the selected thermodynamic property
+
+    # save graphics is required
     if args.pdf or args.png:
         plt.legend()
         if args.pdf:

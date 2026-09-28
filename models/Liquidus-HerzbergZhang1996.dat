@@ -1,8 +1,7 @@
-Upper Mantle Liquidus by Herzberg and Zhang 1996
-# Herzberg, C., & Zhang, J. (1996). Melting experiments on anhydrous peridotite KLB‐1: Compositions of magmas in the upper mantle and transition zone. Journal of Geophysical Research: Solid Earth, 101(B4), 8271-8295
+Name Herzberg_Zhang_1996
+Citation Herzberg, C., & Zhang, J. (1996). Melting experiments on anhydrous peridotite KLB‐1: Compositions of magmas in the upper mantle and transition zone. Journal of Geophysical Research: Solid Earth, 101(B4), 8271-8295
 # digitised after Andrault at al 2018
-Pressure Temperature
-Pressure	Liquidus
+Pressure TemperatureLiquidus
 0	1979.42
 26000000	1980.69
 416300000	1999.65
