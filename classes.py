@@ -794,3 +794,26 @@ class pressuredepth:
         return linear_interp(pressure, self.pressures, self.depths)
 
 
+
+class rockproperty():
+    def __init__ (self, name):
+        self.parameter = name
+        self.mean = None
+        self.stdev = None
+        self.min  = None
+        self.max = None
+
+
+class rocktype():
+    def __init__ (self, filename, lithology = None, name = None, citation = None):
+        self.lithology = lithology
+        self.name = name
+        self.filename = filename
+        self.citation = citation
+        self.properties = []
+        # experimental conditions
+        self.pressure = None
+        self.temperature = None
+        # matching lithologies
+        self.matching = None
+

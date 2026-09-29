@@ -10,6 +10,8 @@ def is_new_data(array, columns, label):
     return ( label not in columns and isinstance(array,np.ndarray) )
 
 
+
+
 def check_velocities(column):
 
     # size of all arrays

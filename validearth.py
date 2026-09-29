@@ -237,6 +237,7 @@ if args.udens == "g/cm3": column.density *= 1000
 # compute or verify derived fields
 check_velocities(column)
 
+
 # convert data to numpy arrays
 column.depth = np.asarray(column.depth)
 column.SiO2  = np.asarray(column.SiO2)
