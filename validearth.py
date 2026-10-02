@@ -25,7 +25,7 @@ parser.add_argument("-uvs", dest="uvs", default="m/s", help="Vs units: m/s [defa
 parser.add_argument("-udepth", dest="udepth", default="m", help="Depth units: m [default] or km")
 parser.add_argument("-udens", dest="udens", default="kg/m3", help="Density units: kg/m3 [default] or g/cm3")
 parser.add_argument("-pressuremodel", dest="file_pressure", default="models/PREM.dat", help="A file with columns Pressure and Depth that will be used to calculate depths from pressures for those reference models calibrated for pressure")
-parser.add_argument("-refmodels", dest="file_refmodels", default="config.txt", help="A list of reference models to compare the data with")
+parser.add_argument("-refmodels", dest="file_refmodels", default="config.txt", help="A list of reference models to compare the data with (use -refmodels noref to run without references")
 parser.add_argument("-detailed", dest="d",action="store_true",help="Print out a detailed layer-by-layer comparison")
 parser.add_argument("-pdf", dest="pdf",action="store_true",help="Create pdf plots")
 parser.add_argument("-png", dest="png",action="store_true",help="Create png plots")
@@ -39,83 +39,85 @@ if not os.path.isfile(args.inputfile):
     print (error() + "input file "+args.inputfile+" does not exist!")
     exit()
 
-# read the list of reference models
-if not os.path.isfile(args.file_refmodels):
-    print (error() + "catalog file "+args.file_refmodels+" does not exist!")
-    exit()
+if args.file_refmodels != "noref":
 
-print ("Reading a list of reference models from " + highlight (args.file_refmodels))
-referencemodels = []
+    # read the list of reference models
+    if not os.path.isfile(args.file_refmodels):
+        print (error() + "catalog file "+args.file_refmodels+" does not exist!")
+        exit()
 
-with open(args.file_refmodels) as myfile:
+    print ("Reading a list of reference models from " + highlight (args.file_refmodels))
+    referencemodels = []
 
-    for line in myfile:
+    with open(args.file_refmodels) as myfile:
 
-        # skip empty lines and comments
-        if len(line.strip()) == 0: continue
-        char = line.strip()[0]
-        if char == "#" or char == "!" or char == "%": continue
+        for line in myfile:
 
-        # check whether the reference model exists
-        if not os.path.isfile(line.strip()):
-            print (error() + "the reference model file " + line.strip() + " does not exist!")
-            exit()
+            # skip empty lines and comments
+            if len(line.strip()) == 0: continue
+            char = line.strip()[0]
+            if char == "#" or char == "!" or char == "%": continue
 
-        # create new class instance and load data
-        refmodel = referencemodel(line.strip())
-        with open(refmodel.filename) as mymodel:
-            print (" - " + refmodel.filename)
-            iline = 0
-            for line in mymodel:
-                iline += 1
+            # check whether the reference model exists
+            if not os.path.isfile(line.strip()):
+                print (error() + "the reference model file " + line.strip() + " does not exist!")
+                exit()
 
-                # skip empty lines and comments
-                if len(line.strip()) == 0: continue
-                char = line.strip()[0]
-                if char == "#" or char == "!" or char == "/" or char == "%": continue
+            # create new class instance and load data
+            refmodel = referencemodel(line.strip())
+            with open(refmodel.filename) as mymodel:
+                print (" - " + refmodel.filename)
+                iline = 0
+                for line in mymodel:
+                    iline += 1
 
-                tmp = line.strip().split()
-                
-                if tmp[0] == "Name":
-                    refmodel.name = tmp[1]
+                    # skip empty lines and comments
+                    if len(line.strip()) == 0: continue
+                    char = line.strip()[0]
+                    if char == "#" or char == "!" or char == "/" or char == "%": continue
 
-                elif tmp[0] == "Citation":
-                    refmodel.citation.append(line.partition(' ')[2])
+                    tmp = line.strip().split()
+                    
+                    if tmp[0] == "Name":
+                        refmodel.name = tmp[1]
 
-                elif tmp[0] == "Depth" or tmp[0] == "Pressure":
-                    # the number of line (starting from zero) where the datatable begins
-                    refmodel.lineindex.append(iline-1)
+                    elif tmp[0] == "Citation":
+                        refmodel.citation.append(line.partition(' ')[2])
 
-                elif tmp[0] == "CoordinateSystem":
-                    refmodel.coordsys = tmp[1]
+                    elif tmp[0] == "Depth" or tmp[0] == "Pressure":
+                        # the number of line (starting from zero) where the datatable begins
+                        refmodel.lineindex.append(iline-1)
 
-                elif tmp[0] == "Longitude":
-                    refmodel.arraylongitude.append(float(tmp[1]))
-                elif tmp[0] == "Latitude":
-                    refmodel.arraylatitude.append(float(tmp[1]))
+                    elif tmp[0] == "CoordinateSystem":
+                        refmodel.coordsys = tmp[1]
 
-                elif tmp[0] == "X":
-                    refmodel.arrayx.append(float(tmp[1]))
-                elif tmp[0] == "Y":
-                    refmodel.arrayy.append(float(tmp[1]))
+                    elif tmp[0] == "Longitude":
+                        refmodel.arraylongitude.append(float(tmp[1]))
+                    elif tmp[0] == "Latitude":
+                        refmodel.arraylatitude.append(float(tmp[1]))
 
-        # verify that the coordinate lists are aligned
-        if len(refmodel.arraylongitude) != len(refmodel.arraylatitude):
-            print (error() + " the number of longitude data entries does not match the number of latitude data entries")
-            exit()
+                    elif tmp[0] == "X":
+                        refmodel.arrayx.append(float(tmp[1]))
+                    elif tmp[0] == "Y":
+                        refmodel.arrayy.append(float(tmp[1]))
 
-        if len(refmodel.arrayx) != len(refmodel.arrayy):
-            print (error() + " the number of X data entries does not match the number of Y data entries")
-            exit()
+            # verify that the coordinate lists are aligned
+            if len(refmodel.arraylongitude) != len(refmodel.arraylatitude):
+                print (error() + " the number of longitude data entries does not match the number of latitude data entries")
+                exit()
 
-        if args.dist > 0:
-            # append 3D models if -dist is provided
-            if len (refmodel.arraylongitude) > 1:
-                referencemodels.append(refmodel)
-        else:
-            # append 1D models if -dist is NOT provided
-            if len (refmodel.arraylongitude) <= 1:
-                referencemodels.append(refmodel)
+            if len(refmodel.arrayx) != len(refmodel.arrayy):
+                print (error() + " the number of X data entries does not match the number of Y data entries")
+                exit()
+
+            if args.dist > 0:
+                # append 3D models if -dist is provided
+                if len (refmodel.arraylongitude) > 1:
+                    referencemodels.append(refmodel)
+            else:
+                # append 1D models if -dist is NOT provided
+                if len (refmodel.arraylongitude) <= 1:
+                    referencemodels.append(refmodel)
 
 
 # initialise a class for the inputs ad for the golden nails
@@ -237,7 +239,6 @@ with open(args.inputfile) as myfile:
                 if value is not None: column.gn.assign_gn(value, len(column.depth)-1)
 
 # check the layer boundaries
-print (len(column.depth))
 if args.depthrev: column.gn.reverse_gn(len(column.depth)-1)
 column.gn.report_gn(column.depth)
 
@@ -288,6 +289,10 @@ elif column.coordsys == "Cartesian":
     if column.y is None and column.x is not None:
         print (error() + "a value for y coordinate was not provided")
         exit()
+
+
+# stop script execution if the comparison with reference models was not requested 
+if args.file_refmodels == "noref": exit()
 
 
 # read pressure model
