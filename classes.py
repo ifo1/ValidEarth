@@ -435,21 +435,35 @@ class goldennaildata:
         n = ni
         match value:
             case "water":
+                if self.water != -1 and self.water != n:
+                    print (error() + "the water node is not consistent")
+                    exit()
                 self.water = n
             case "soil":
                 self.crust_soil = n
             case "regolith":
                 self.crust_regolith = n
             case "sediments":
-                self.crust_sediment = n
+                if self.crust_sediment != -1 and self.crust_sediment != n:
+                    print (error() + "the sedimentary layer node is not consistent - leaving it as it is")
+                else:
+                    self.crust_sediment = n
             case "crustupper":
                 self.crust_upper = n
             case "crustmiddle":
                 self.crust_middle = n
             case "crustlower":
-                self.crust_lower = n
+                if self.crust_lower != -1 and self.crust_lower != n:
+                    print (error() + "the Moho depth is not consistent")
+                    exit()
+                else:
+                    self.crust_lower = n
             case "moho":
-                self.crust_lower = n
+                if self.crust_lower != -1 and self.crust_lower != n:
+                    print (error() + "the Moho depth is not consistent")
+                    exit()
+                else:
+                    self.crust_lower = n
             case "mantlelitho":
                 self.mantle_litho = n
             case "lab":

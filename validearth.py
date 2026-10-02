@@ -8,7 +8,7 @@ plotcolours = ["red", "blue", "green", "orange", "violet", "brown"]
 # local modules
 from read_values import read_field, read_float, read_value
 from colouredstrings import error, warning, highlight
-from check_data import check_velocities
+from check_data import recompute_vp_vs, recompute_mgnum, check_layers, check_layer_depth
 
 # local classes
 from classes import columndata, pressuredepth, match_layers, print_stacked_models, referencecolumn, \
@@ -233,9 +233,13 @@ if args.uvp == "km/s":    column.Vp *= 1000
 if args.uvs == "km/s":    column.Vs *= 1000
 if args.udens == "g/cm3": column.density *= 1000
 
+# check geological layers
+check_layers(column)
+check_layer_depth(column)
 
 # compute or verify derived fields
-check_velocities(column)
+recompute_vp_vs(column)
+recompute_mgnum(column)
 
 
 # convert data to numpy arrays
