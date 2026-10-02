@@ -454,13 +454,13 @@ class goldennaildata:
                 self.crust_middle = n
             case "crustlower":
                 if self.crust_lower != -1 and self.crust_lower != n:
-                    print (error() + "the Moho depth is not consistent")
+                    print (error() + "the Moho depth is not consistent: " + str(self.crust_lower) + " vs " +str(n))
                     exit()
                 else:
                     self.crust_lower = n
             case "moho":
                 if self.crust_lower != -1 and self.crust_lower != n:
-                    print (error() + "the Moho depth is not consistent")
+                    print (error() + "the Moho depth is not consistent: " + str(self.crust_lower) + " vs " +str(n))
                     exit()
                 else:
                     self.crust_lower = n
@@ -482,6 +482,20 @@ class goldennaildata:
                 self.mantle_lower = n
             case default:
                 print (warning() + "type " + value + " is not known")
+
+    def reverse_gn (self, n):
+        if self.water != -1: self.water = n - self.water
+        if self.crust_soil != -1: self.crust_soil = n - self.crust_soil
+        if self.crust_regolith != -1: self.crust_regolith = n - self.crust_regolith
+        if self.crust_sediment != -1: self.crust_sediment = n - self.crust_sediment
+        if self.crust_upper != -1: self.crust_upper = n - self.crust_upper
+        if self.crust_middle != -1: self.crust_middle = n - self.crust_middle
+        if self.crust_lower != -1: self.crust_lower = n - self.crust_lower
+        if self.mantle_litho != -1: self.mantle_litho = n - self.mantle_litho
+        if self.mantle_sublitho != -1: self.mantle_sublitho = n - self.mantle_sublitho
+        if self.mantle_mtz != -1: self.mantle_mtz = n - self.mantle_mtz
+        if self.mantle_lower != -1: self.mantle_lower = n - self.mantle_lower
+
 
     def report_gn(self, depth):
         if self.water >= 0 or self.crust_soil >= 0 or self.crust_regolith >= 0 or self.crust_sediment >= 0 or \

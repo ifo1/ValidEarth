@@ -30,6 +30,8 @@ parser.add_argument("-detailed", dest="d",action="store_true",help="Print out a 
 parser.add_argument("-pdf", dest="pdf",action="store_true",help="Create pdf plots")
 parser.add_argument("-png", dest="png",action="store_true",help="Create png plots")
 parser.add_argument("-dist", dest="dist", default=0.0,type=float,help="The maximum distance (m) from the reference model to the input column")
+parser.add_argument("-depthneg", dest="depthneg",action="store_true",help="The depths below sea level are negative")
+parser.add_argument("-depthrev", dest="depthrev",action="store_true",help="The depth is decreasing towards the end of the file (e.g. mantle first, crust second)")
 args = parser.parse_args()
 
 # verify the input file exists
@@ -191,47 +193,60 @@ with open(args.inputfile) as myfile:
             print (error() + "the number of columns in the input data file is not uniform!")
             exit()
 
+        # append to the beginning (0) or to the end (N+1) of the list
+        appendindex = 0 if args.depthrev else len(column.depth)+1
+
         # read the actual data
         for field, value in zip (column.columns, tmp):
             if field == "Depth":
                 locdepth = read_value(field,value)
+                if args.depthneg: locdepth = -locdepth
                 if len(column.depth) > 1:
-                    if locdepth < column.depth[-1]:
-                        print (error(locdepth) + "the depth is not non-decreasing in the input file!")
-                        exit()
-                column.depth.append( locdepth )
+                    if args.depthrev:
+                        if locdepth > column.depth[-1]:
+                            print (error() + "the depth is not non-decreasing in the input file: " + str (column.depth[-1]) + " vs "  + str (locdepth))
+                            exit()
+                    else:
+                        if locdepth < column.depth[-1]:
+                            print (error() + "the depth is not non-increasing in the input file: " + str (column.depth[-1]) + " vs "  + str (locdepth))
+                            exit()
+                column.depth.insert( appendindex , locdepth )
             elif field == "Temperature":
-                column.temperature.append( read_value(field,value) )
+                column.temperature.insert( appendindex , read_value(field,value) )
             elif field == "Vp":
-                column.Vp.append( read_value(field,value) )
+                column.Vp.insert( appendindex , read_value(field,value) )
             elif field == "Vs":
-                column.Vs.append( read_value(field,value) )
+                column.Vs.insert( appendindex , read_value(field,value) )
             elif field == "Density":
-                column.density.append( read_value(field,value) )
+                column.density.insert( appendindex , read_value(field,value) )
             elif field == "VpVs":
-                column.VpVs.append( read_value(field,value) )
+                column.VpVs.insert( appendindex , read_value(field,value) )
             elif field == "SiO2":
-                column.SiO2.append( read_value(field,value) )
+                column.SiO2.insert( appendindex , read_value(field,value) )
             elif field == "Al2O3":
-                column.Al2O3.append( read_value(field,value) )
+                column.Al2O3.insert( appendindex , read_value(field,value) )
             elif field == "MgO":
-                column.MgO.append( read_value(field,value) )
+                column.MgO.insert( appendindex , read_value(field,value) )
             elif field == "FeO":
-                column.FeO.append( read_value(field,value) )
+                column.FeO.insert( appendindex , read_value(field,value) )
             elif field == "CaO":
-                column.CaO.append( read_value(field,value) )
+                column.CaO.insert( appendindex , read_value(field,value) )
             elif field == "MgNum" or field == "Mg#":
-                column.MgNum.append( read_value(field,value) )
+                column.MgNum.insert( appendindex , read_value(field,value) )
             elif field == "Type":
                 if value is not None: column.gn.assign_gn(value, len(column.depth)-1)
 
+# check the layer boundaries
+print (len(column.depth))
+if args.depthrev: column.gn.reverse_gn(len(column.depth)-1)
+column.gn.report_gn(column.depth)
 
 # convert to SI units
-if args.udepth == "km":   column.depth *= 1000
-if args.utemp == "C":     column.temperature += 273.15
-if args.uvp == "km/s":    column.Vp *= 1000
-if args.uvs == "km/s":    column.Vs *= 1000
-if args.udens == "g/cm3": column.density *= 1000
+if args.udepth == "km":   column.depth   = [x*1000 if x is not None else None for x in column.depth]
+if args.uvp == "km/s":    column.Vp      = [x*1000 if x is not None else None for x in column.Vp]
+if args.uvs == "km/s":    column.Vs      = [x*1000 if x is not None else None for x in column.Vs]
+if args.udens == "g/cm3": column.density = [x*1000 if x is not None else None for x in column.density]
+if args.utemp == "C":     column.temperature = [x+273.15 if x is not None else None for x in column.temperature]
 
 # check geological layers
 check_layers(column)
@@ -241,20 +256,19 @@ check_layer_depth(column)
 recompute_vp_vs(column)
 recompute_mgnum(column)
 
-
 # convert data to numpy arrays
-column.depth = np.asarray(column.depth)
-column.SiO2  = np.asarray(column.SiO2)
-column.Al2O3 = np.asarray(column.Al2O3)
-column.MgNum = np.asarray(column.MgNum)
-column.MgO   = np.asarray(column.MgO)
-column.FeO   = np.asarray(column.FeO)
-column.CaO   = np.asarray(column.CaO)
-column.temperature = np.asarray(column.temperature)
-column.Vp      = np.asarray(column.Vp)
-column.Vs      = np.asarray(column.Vs)
-column.VpVs    = np.asarray(column.VpVs)
-column.density = np.asarray(column.density)
+column.depth = np.asarray(column.depth,dtype=float)
+column.SiO2  = np.asarray(column.SiO2,dtype=float)
+column.Al2O3 = np.asarray(column.Al2O3,dtype=float)
+column.MgNum = np.asarray(column.MgNum,dtype=float)
+column.MgO   = np.asarray(column.MgO,dtype=float)
+column.FeO   = np.asarray(column.FeO,dtype=float)
+column.CaO   = np.asarray(column.CaO,dtype=float)
+column.temperature = np.asarray(column.temperature,dtype=float)
+column.Vp      = np.asarray(column.Vp,dtype=float)
+column.Vs      = np.asarray(column.Vs,dtype=float)
+column.VpVs    = np.asarray(column.VpVs,dtype=float)
+column.density = np.asarray(column.density,dtype=float)
 
 
 # check the datum
@@ -275,7 +289,6 @@ elif column.coordsys == "Cartesian":
         print (error() + "a value for y coordinate was not provided")
         exit()
 
-column.gn.report_gn(column.depth)
 
 # read pressure model
 

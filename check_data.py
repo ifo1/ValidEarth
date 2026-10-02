@@ -38,27 +38,27 @@ def check_layers(column):
         if column.Vs and column.Vp:
             if column.Vs[i] is not None and column.Vp[i] is not None and column.Vs[i+1] is not None and column.Vp[i+1] is not None:
                 if column.Vp[i]/column.Vs[i] > sed_vpvs and column.Vp[i+1]/column.Vs[i+1] < sed_vpvs:
-                    column.gn.assign_gn("sediments", i)
                     print ("A layer of " + highlight("sediments") + " detected using high Vp/Vs ratio with bedding depth of " + highlight(column.depth[i]) + " m")
+                    column.gn.assign_gn("sediments", i)
 
         # Moho
         if column.density:
             if column.density[i] is not None and column.density[i+1] is not None:
                 if column.density[i] < mantle_density and column.density[i+1] > mantle_density:
-                    column.gn.assign_gn("moho", i)
                     print ("The " + highlight("Moho") + " detected using density contrast right beneath " + highlight(column.depth[i]) + " m")
+                    column.gn.assign_gn("moho", i)
                     mantle = True
         elif column.Vs:
             if column.Vs[i] is not None and column.Vs[i+1] is not None:
                 if column.Vs[i] < mantle_vs and column.Vs[i+1] > mantle_vs:
-                    column.gn.assign_gn("moho", i)
                     print ("The " + highlight("Moho") + " detected using Vs contrast right beneath " + highlight(column.depth[i]) + " m")
+                    column.gn.assign_gn("moho", i)
                     mantle = True
         elif column.Vs:
             if column.Vp[i] is not None and column.Vp[i+1] is not None:
                 if column.Vp[i] < mantle_vp and column.Vp[i+1] > mantle_vp:
-                    column.gn.assign_gn("moho", i)
                     print ("The " + highlight("Moho") + " detected using Vp contrast right beneath " + highlight(column.depth[i]) + " m")
+                    column.gn.assign_gn("moho", i)
                     mantle = True
 
 
@@ -108,7 +108,7 @@ def check_layer_depth(column):
     # Moho depth
     if column.gn.crust_lower >= 0:
 
-        thickness = column.depth[column.gn.crust_lower]
+        thickness = column.depth[column.gn.crust_lower-1]
         if column.gn.water >= 0:
             thickness -= column.depth[column.gn.water]
 
