@@ -122,6 +122,10 @@ def check_layer_depth(column):
     if column.gn.crust_lower >= 0:
 
         thickness = column.depth[column.gn.crust_lower-1]
+        if thickness < 0:
+            print (error() + "the total crustal thickness is negative - check whether the -depthneg flag is required")
+            exit()
+
         if column.gn.water >= 0:
             thickness -= column.depth[column.gn.water]
 
@@ -137,6 +141,9 @@ def check_layer_depth(column):
     if column.gn.mantle_litho >= 0:
 
         thickness = column.depth[column.gn.mantle_litho]
+        if thickness < 0:
+            print (error() + "the total lithospheric thickness is negative - check whether the -depthneg flag is required")
+            exit()
 
         for region in LAB_depths:
             if geosetting == region["type"] and thickness <= region["depth"]:
