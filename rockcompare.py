@@ -90,7 +90,7 @@ def find_matching_rocks(refrocks, inputrocks, verbose = False):
                 if ref.lithology not in matching:
                     matching.append(ref.lithology)
         if not matching:
-            print (error() + "Cannot find a reference matching rock " + inp.name + " with the following properties: ", end='')
+            print (error() + "Cannot find a reference sample matching rock " + inp.name + " with the following properties: ", end='')
             for prop in inp.properties:
                 print(str(prop.parameter) + " = " + str(prop.mean), end='')
             print('')
