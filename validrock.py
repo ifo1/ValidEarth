@@ -8,7 +8,6 @@ plotcolours = ["red", "blue", "green", "orange", "violet", "brown"]
 # local modules
 from read_values import read_field, read_float, read_value
 from colouredstrings import error, warning, highlight
-from check_data import check_velocities
 from rockcompare import find_matching_rocks, plot_rock_properties
 
 # local classes
@@ -19,15 +18,11 @@ from classes import rocktype, rockproperty
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", dest="inputfile", default="", help="An input file with structure to verify")
 parser.add_argument("-delim", dest="delimiter", default=None, help="Delimiter between all columns")
-parser.add_argument("-utemp", dest="utemp", default="K", help="Temperature units: K [default] or C")
-parser.add_argument("-uvp", dest="uvp", default="m/s", help="Vp units: m/s [default] or km/s")
-parser.add_argument("-uvs", dest="uvs", default="m/s", help="Vs units: m/s [default] or km/s")
-parser.add_argument("-udepth", dest="udepth", default="m", help="Depth units: m [default] or km")
-parser.add_argument("-udens", dest="udens", default="kg/m3", help="Density units: kg/m3 [default] or g/cm3")
 parser.add_argument("-refmodels", dest="file_refmodels", default="configrocks.txt", help="A list of reference models to compare the data with")
-parser.add_argument("-detailed", dest="d",action="store_true",help="Print out a detailed layer-by-layer comparison")
+parser.add_argument("-detailed", dest="detailed",action="store_true",help="Highlight rock matching criteria")
 parser.add_argument("-pdf", dest="pdf",action="store_true",help="Create pdf plots")
 parser.add_argument("-png", dest="png",action="store_true",help="Create png plots")
+parser.add_argument("-output", dest="output",default="./",help="A directory to store images figures")
 args = parser.parse_args()
 
 # verify the input file exists
@@ -39,8 +34,6 @@ if not os.path.isfile(args.inputfile):
 if not os.path.isfile(args.file_refmodels):
     print (error() + "catalog file "+args.file_refmodels+" does not exist!")
     exit()
-
-print ("Reading a list of rock properties from " + highlight (args.file_refmodels))
 
 
 def read_rock_file(inputfile):
@@ -123,6 +116,7 @@ def read_rock_file(inputfile):
 
 
 # read reference models
+print ("Reading reference rock properties from " + highlight (args.file_refmodels))
 refrocks = []
 
 with open(args.file_refmodels) as myfile:
@@ -144,17 +138,15 @@ with open(args.file_refmodels) as myfile:
 
 
 # read data file
+print ("Reading rock properties from " + highlight (args.inputfile))
 inputrocks = read_rock_file(args.inputfile)
 
-find_matching_rocks(refrocks, inputrocks)
+find_matching_rocks(refrocks, inputrocks, args.detailed)
 
 for rock in inputrocks:
     print(rock.name + " matches " + " - ".join(rock.matching))
 
-plot_rock_properties(
-    refrocks,
-    inputrocks,
-    output_dir="rock_plots",
-)
+if args.pdf or args.png:
+    plot_rock_properties(refrocks, inputrocks, output_dir=args.output)
 
 

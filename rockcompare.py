@@ -2,9 +2,11 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
+from colouredstrings import error
+
 Nsigma = 3
 
-def find_matching_rocks(refrocks, inputrocks):
+def find_matching_rocks(refrocks, inputrocks, verbose = False):
     """
     For each input rock, find reference lithologies for which all
     available input property bounds are contained within the
@@ -38,7 +40,7 @@ def find_matching_rocks(refrocks, inputrocks):
                 for p in ref.properties
             }
 
-            ok = True
+            ok = False
             # for each physical property of the input rocks
             for parameter, ip in input_props.items():
 
@@ -53,7 +55,6 @@ def find_matching_rocks(refrocks, inputrocks):
                 input_max = ip.max if ip.max is not None else ip.mean
 
                 # Reference interval
-
                 if rp.min is not None:
                     ref_min = rp.min
                 elif rp.stdev is not None:
@@ -69,22 +70,30 @@ def find_matching_rocks(refrocks, inputrocks):
                     ref_max = rp.mean
 
                 # At least part of the interval is within the bounds
-                if not np.isfinite(ref_min) or not np.isfinite(ref_max) : continue
+                if not np.isfinite(ref_min) or not np.isfinite(ref_max) :
+                    continue
 
                 if input_min > ref_max or input_max < ref_min:
                     # remove from the list if anything contradicts
                     if ref.lithology in matching:
-                        print (inp.name + ": removing " + ref.lithology + " based on the " + parameter + " from " + ref.citation)
+                        if verbose: print (inp.name + ": removing " + ref.lithology + " based on the " + parameter + " from " + ref.citation)
                         matching.remove(ref.lithology)
                     ok = False
                     break
 
-                # print (inp.name + ": parameter " + parameter + " minmax " + str(input_min) + " " + str(input_max) + \
-                #        " vs " + ref.lithology + " [" + ref.citation + "] with minmax " + str(ref_min) + " " + str(ref_max) + ": " + str(ok))
+                ok = True
+
+            #print (inp.name + ": parameter " + parameter + " minmax " + str(input_min) + " " + str(input_max) + \
+            #        " vs " + ref.lithology + " [" + ref.citation + "] with minmax " + str(ref_min) + " " + str(ref_max) + ": " + str(ok))
 
             if ok:
                 if ref.lithology not in matching:
                     matching.append(ref.lithology)
+        if not matching:
+            print (error() + "Cannot find a reference matching rock " + inp.name + " with the following properties: ", end='')
+            for prop in inp.properties:
+                print(str(prop.parameter) + " = " + str(prop.mean), end='')
+            print('')
         inp.matching = matching
 
 

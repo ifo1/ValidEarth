@@ -445,7 +445,7 @@ class goldennaildata:
                 self.crust_regolith = n
             case "sediments":
                 if self.crust_sediment != -1 and self.crust_sediment != n:
-                    print (error() + "the sedimentary layer node is not consistent - leaving it as it is")
+                    print (warning() + "the sedimentary layer node is not consistent - leaving it as it is")
                 else:
                     self.crust_sediment = n
             case "crustupper":
