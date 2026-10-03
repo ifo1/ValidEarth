@@ -41,25 +41,38 @@ def check_layers(column):
                     print ("A layer of " + highlight("sediments") + " detected using high Vp/Vs ratio with bedding depth of " + highlight(column.depth[i]) + " m")
                     column.gn.assign_gn("sediments", i)
 
-        # Moho
+        # Moho - all these conditions must be met!
         if column.density:
             if column.density[i] is not None and column.density[i+1] is not None:
                 if column.density[i] < mantle_density and column.density[i+1] > mantle_density:
                     print ("The " + highlight("Moho") + " detected using density contrast right beneath " + highlight(column.depth[i]) + " m")
                     column.gn.assign_gn("moho", i)
-                    mantle = True
-        elif column.Vs:
+                    if mantle:
+                        print (error() + "The mantle has already been detected using Vs!")
+                        exit()
+                    else:
+                        mantle = True
+        if column.Vs:
             if column.Vs[i] is not None and column.Vs[i+1] is not None:
                 if column.Vs[i] < mantle_vs and column.Vs[i+1] > mantle_vs:
                     print ("The " + highlight("Moho") + " detected using Vs contrast right beneath " + highlight(column.depth[i]) + " m")
                     column.gn.assign_gn("moho", i)
-                    mantle = True
-        elif column.Vs:
+                    if mantle:
+                        print (error() + "The mantle has already been detected using density!")
+                        exit()
+                    else:
+                        mantle = True
+        if column.Vp:
             if column.Vp[i] is not None and column.Vp[i+1] is not None:
                 if column.Vp[i] < mantle_vp and column.Vp[i+1] > mantle_vp:
                     print ("The " + highlight("Moho") + " detected using Vp contrast right beneath " + highlight(column.depth[i]) + " m")
                     column.gn.assign_gn("moho", i)
-                    mantle = True
+                    if mantle:
+                        print (error() + "The mantle has already been detected using Vp!")
+                        exit()
+                    else:
+                        mantle = True
+
 
 
 # water depth level ranges
