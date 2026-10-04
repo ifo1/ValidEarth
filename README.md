@@ -83,7 +83,7 @@ A reference model may use either Pressure or Depth as its independent variable. 
 
 A default list of reference models is stored in the **config.txt** file (the file lists relative or absolute paths to the models, one path per line). The user can use command line options to specify a custom config file or amend the existing one.
 
-ValidEarth performs some checks even if no reference file was provided, including the depth of major geological boundaries. Use **-noref** to perform only the basic checks.
+ValidEarth performs some checks even if no reference file was provided, including the depth of major geological boundaries. Use **-refmodels noref** to perform only the basic checks.
 
 ## 3D Reference Models
 
@@ -128,11 +128,11 @@ ValidEarth comes with a set of standard models such as PREM, as135f and others. 
 
 ## Graphic Outputs
 
-ValidEarth can automatically create plots (PDF or PNG) for each assessed physical quantity showing the relevant Earth reference models just next to it.
+ValidEarth and ValidRock can automatically create plots (PDF or PNG) for each assessed physical quantity showing the relevant Earth reference models just next to it.
 
 ## Detailed Profiles
 
-ValidEarth can produce tables with the properties of interest and relevant Earth reference models.
+ValidEarth can produce tables comparing properties along the supplied profiles and relevant Earth reference models.
 
 # Derived and Mutually-Dependent Parameters
 
@@ -143,13 +143,13 @@ ValidEarth aims to tackle these issues and it calculates the third parameter if 
 # Available Options
 
 Run:
-
-python validearth.py --help
-
+```console
+python3 validearth.py --help
+```
 or 
-
-python validrock.py --help
-
+```console
+python3 validrock.py --help
+```
 to display the available command-line options.
 
 ValidEarth comes with several examples, the expected outputs (logs, might be slightly different from the actual outputs) are stored in the models/ directory next to the input files:
@@ -157,7 +157,9 @@ ValidEarth comes with several examples, the expected outputs (logs, might be sli
 ## Example 1 
 
 Run
+```console
 python3 ./validearth.py -i examples/example1.dat
+```
 to assess the example column using a set of 1D models. The code automatically looks for the matching column names and compares the data.
 
 The plots will show not only the input model and reference profiles, but also a highlighted area marking one standard deviation in each direction from the reference values.  
@@ -167,15 +169,17 @@ The plots will show not only the input model and reference profiles, but also a 
 Requires a valid ECM1 model file to be provided (see above)! Update the config file to include a path to the produced ValidEarth reference model file!
 
 Run
+```console
 python3 ./validearth.py -i examples/example1.dat -dist 100 -pdf
-
+```
 to assess the example column using a 3D model. The density, Vp and Vs charts allow to compare the properties of individual layers along the profile. 
 
 ## Example 2
 
 Run
+```console
 python3 ./validearth.py -i examples/example1.dat
-
+```
 to assess the example column using a set of 1D models. The code automatically looks for the matching column names and compares the data.
 
 The plots will show the input model and a highighted area marking the range between minumum and maximum allowed values.  
@@ -183,8 +187,9 @@ The plots will show the input model and a highighted area marking the range betw
 ## Example 3
 
 Run
+```console
 python3 ./validearth.py -i examples/example3.dat
-
+```
 to assess the example column using a set of 1D models. The code automatically looks for the matching column names and compares the data.
 
 The plots will show not only the input model and reference profiles, but also a highlighted area marking one standard deviation in each direction from the reference values.  
@@ -192,15 +197,28 @@ The plots will show not only the input model and reference profiles, but also a 
 ## Example 4
 
 Run
+```console
 python3 ./validearth.py -i examples/example4.dat -pdf -detailed
-
+```
 to assess a geothermal profile using one of the reference lithospheric geotherms and solidus and liquidus curves. ValidEarth will produce the interpolated liquidus and solidus temperatures along the studied profile, as well as a short summary in the end. 
+
+# Automatisation
+
+The current version of ValidEarth and ValidRock allows to process only one file per call. However, it can be easily automated using simplistic shell scripts like:
+
+```console
+for file in /my/folder/with/model/files/*.txt ; do python3 validearth.py -i $file -depthrev -depthneg -udens g/cm3 ; done &>> log.txt &
+```
+
+During initial model assessment, it might be very useful to produce a list of columns that contain obvious errors. An additional shell script provided with the tool can do this job for you:
+
+```console
+./validearth_find_errors.sh log.txt
+```
 
 # To Do
 
 Planned development of the toolkit include:
-
-- Tool for comparing with reference specimens instead of profile-to-profile comparisons.
 
 - Gradient analysis between adjacent vertical profiles, enabling the identification of spatial variations and potentially anomalous transitions between neighbouring profiles.
 
