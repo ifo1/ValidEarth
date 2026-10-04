@@ -1,14 +1,16 @@
 # ValidEarth
 
-ValidEarth is a geophysical Quality-Assurance toolkit for Deep Earth studies. Its core purpose is to assess differences between provided Earth physical-property profiles and established regional or global reference models. By simultaneously checking a wide range of parameters, the toolkit automates much of the routine work involved in data validation and helps identify genuine anomalies - or signals - that may indicate previously unrecognised features in the data.
+**ValidEarth** is a geophysical Quality-Assurance toolkit for Deep Earth studies. Its core purpose is to assess differences between provided Earth physical-property profiles and established regional or global reference models. By simultaneously checking a wide range of parameters, the toolkit automates much of the routine work involved in data validation and helps identify genuine anomalies - or signals - that may indicate previously unrecognised features in the data.
 
 The assessable properties include key parameters such as density, temperature, bulk and shear seismic velocities and their ratio, and the chemical composition of the mantle. The toolkit can be readily extended to support additional physical quantities and reference models.
 
 For each parameter, ValidEarth provides a set of well-established reference models based on experimental and seismic data, with all sources documented in the bibliography. Each reference data point is associated with an independent relative or absolute uncertainty, allowing comparisons to account for the expected variability and uncertainty of the reference models. By default, the tool reports differences exceeding three standard deviations (3σ). When multiple reference models are available for a parameter - for example, geotherms corresponding to different geological settings - the toolkit automatically identifies the best-matching reference profile.
 
-**ValidRock** is an additional tool for checking the rock properties. It assesses whether the combinations of given rock properties such as density, Vp, and Vs fall within the reported ranges of any rock species. It can rapidly identify the combinations of rock properties that are non-physical and potential problematic areas within the model.
+**ValidRock** is an additional tool for quality-checking rock properties. It assesses whether combinations of properties such as density, Vp, and Vs fall within the ranges reported for known rock types. It can rapidly identify physically implausible combinations and highlight potentially problematic areas within a geological or geophysical model.
 
-*This tool cannot replace a careful examination of models by a qualified specialist having access to modern technical reports and scientific artices on the region of interest. The author is looking forward to collaboration with those interested in Quality Assurance for geological and geophysical models.*
+*ValidEarth and ValidRock are not a substitute for expert geological interpretation. A thorough assessment should always be performed by a qualified specialist with access to up-to-date regional geological information, technical reports, and relevant scientific literature.*
+
+The author welcomes collaboration with researchers and practitioners interested in improving Quality Assurance for geological and geophysical models and developing more reliable, transparent, and reproducible modelling workflows.
 
 
 # Input Data Format
