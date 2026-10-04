@@ -81,9 +81,13 @@ A reference model may use either Pressure or Depth as its independent variable. 
 
 ## Configuring reference models
 
-A default list of reference models is stored in the **config.txt** file (the file lists relative or absolute paths to the models, one path per line). The user can use command line options to specify a custom config file or amend the existing one.
+ValidEarth comes with a set of standard models such as PREM, as135f and others. Some of them, like PREM, are not suitable for the continental crust, as they severely underestimate the Moho depth and impose an ocean at the Earth's surface. Other models might be also not so good for the cratonic areas, and so on. The Earth is very diverse, and this toolkit is an instrument to automate and accelerate Quality Assessment, but not to replace it.
 
-ValidEarth performs some checks even if no reference file was provided, including the depth of major geological boundaries. Use **-refmodels noref** to perform only the basic checks.
+A default list of reference models is stored in the **config.txt** file (the file lists relative or absolute paths to the models, one path per line). The user can use a command line option (**-refmodels**) to specify a custom config file or amend the existing one.
+
+ValidEarth performs some checks even if no reference file was provided, including the depths of major geological boundaries. Use **-refmodels noref** to perform only the basic checks.
+
+Some models (like solidi and liquidi) use pressure instead of depth, so that the temperature-depth dependency must be computed during a separate step. ValidEarth allows to switch between pressure-depth models (look-up and interpolation tables) using the **-pressuremodel** command line option. By default, the PREM pressure model is used to convert mantle solidi and liquidi to depth profiles.
 
 ## 3D Reference Models
 
@@ -120,19 +124,11 @@ The most important section, however, is a comparison table with the following co
 - **Stdev** and **Abs** show the absolute difference between the reference model and the input file, represented by the number of standard deviations and by absolute value. The code shows separately differences for the predictions greater and less than the reference curve.
 - **Rel** and **Abs** appear for the reference parameters that come with the Minimum and Maximum boundaries and show the distance from the minimum and maximum values (if the value is out of the range). The Relative column shows the absolute difference divided by the range. 
 
-## Is the fit good or not?
+## Graphic Outputs and Detailed Profiles
 
-A good question!
+Use **-png** or **-pdf**, so that ValidEarth and ValidRock will automatically create plots for each assessed physical quantity showing the relevant Earth reference models or available rock property dataset just next to it.
 
-ValidEarth comes with a set of standard models such as PREM, as135f and others. Some of them, like PREM, are not suitable for the continental crust, as they severely underestimate the Moho depth and impose an ocean at the Earth's surface. Other models might be also not so good for the cratonic areas, and so on. The Earth is very diverse, and this toolkit is an instrument to automate and accelerate Quality Assessment, but not to replace it.
-
-## Graphic Outputs
-
-ValidEarth and ValidRock can automatically create plots (PDF or PNG) for each assessed physical quantity showing the relevant Earth reference models just next to it.
-
-## Detailed Profiles
-
-ValidEarth can produce tables comparing properties along the supplied profiles and relevant Earth reference models.
+ValidEarth can produce detailed tables comparing properties along the supplied profiles and relevant Earth reference models (using **-detailed**).
 
 # Derived and Mutually-Dependent Parameters
 
@@ -140,7 +136,7 @@ Some important parameters are mutually dependent, for example, the Vp/Vs ratio a
 
 ValidEarth aims to tackle these issues and it calculates the third parameter if the other two are provided.
 
-# Available Options
+# Available Options and Examples
 
 Run:
 ```console
