@@ -9,6 +9,8 @@ eps_mgnum = 0.1
 
 # everything over this Vp/Vs value is considered sediments (if not provided in the input file)
 sed_vpvs = 2.0
+# the maximum thickness of sediments (rocks with Vp/Vs over 2)
+sed_maxthick = 5000
 # threshold values for the Moho/mantle
 mantle_density = 3300
 mantle_vp = 7700
@@ -35,7 +37,7 @@ def check_layers(column):
                 continue
 
         # sediments
-        if column.VpVs is not None:
+        if column.VpVs is not None and not mantle:
             if column.VpVs[i] > sed_vpvs and column.VpVs[i+1] < sed_vpvs:
                 print ("A layer of " + highlight("sediments") + " detected using high Vp/Vs ratio with bedding depth of " + highlight(column.depth[i]) + " m")
                 sediments = i
@@ -99,6 +101,8 @@ LAB_depths   = [{"type" :   "oceanic", "region": "hotspot / too thin for ocean",
                 {"type" :   "continental", "region": "platform",                 "depth": 160000, "colour": green }, 
                 {"type" :   "continental", "region": "craton",                   "depth": 230000, "colour": yellow }]
 
+
+
 def check_layer_depth(column):
     # check that the main layer boundaries are within reasonable ranges
 
@@ -107,26 +111,31 @@ def check_layer_depth(column):
     #if there is no water, it is a continent
     geosetting = "continental"
     # the depth of water body
+    waterdepth = 0
     if column.gn.water >= 0:
-        thickness = column.depth[column.gn.water]
+        waterdepth = column.depth[column.gn.water]
         for region in water_depths:
-            if thickness <= region["depth"]:
-                print ("According to the water body depth of " + str(thickness) + " m, the region is " + region["colour"](region["setting"]))
+            if waterdepth <= region["depth"]:
+                print ("According to the water body depth of " + str(waterdepth) + " m, the region is " + region["colour"](region["setting"]))
                 geosetting = region["setting"].split(' ', 1)[0]
                 break
         else:
-            print (error() + "The depth of water layer (" + str(thickness) + " m) exceeds the plausible range")
+            print (error() + "The depth of water layer (" + str(waterdepth) + " m) exceeds the plausible range")
+            exit()
+
+    # check the thickness of sediments
+    if column.gn.crust_sediment >= 0:
+        sed_thickness = column.depth[column.gn.crust_sediment] - waterdepth
+        if sed_thickness > sed_maxthick:
+            print (error() + "the thickness of sedimentary layer exceeds the maximum allowed thickness: " + str(sed_thickness) + " vs " + str(sed_maxthick) + " m")
             exit()
 
     # Moho depth
     if column.gn.crust_lower >= 0:
-        thickness = column.depth[column.gn.crust_lower]
+        thickness = column.depth[column.gn.crust_lower] - waterdepth
         if thickness < 0:
             print (error() + "the total crustal thickness is negative - check whether the -depthneg flag is required")
             exit()
-
-        if column.gn.water >= 0:
-            thickness -= column.depth[column.gn.water]
 
         for region in crust_thick:
             if geosetting == region["type"] and thickness <= region["depth"]:

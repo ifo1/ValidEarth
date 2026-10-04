@@ -152,9 +152,9 @@ python3 validrock.py --help
 ```
 to display the available command-line options.
 
-ValidEarth comes with several examples, the expected outputs (logs, might be slightly different from the actual outputs) are stored in the models/ directory next to the input files:
+ValidEarth comes with several examples, the expected outputs (*.log files) are stored in the models/ directory next to the input files.
 
-## Example 1 
+### Example 1 
 
 Run
 ```console
@@ -164,7 +164,7 @@ to assess the example column using a set of 1D models. The code automatically lo
 
 The plots will show not only the input model and reference profiles, but also a highlighted area marking one standard deviation in each direction from the reference values.  
 
-## Example 1a
+### Example 1a: using a 3D reference
 
 Requires a valid ECM1 model file to be provided (see above)! Update the config file to include a path to the produced ValidEarth reference model file!
 
@@ -174,7 +174,7 @@ python3 ./validearth.py -i examples/example1.dat -dist 100 -pdf
 ```
 to assess the example column using a 3D model. The density, Vp and Vs charts allow to compare the properties of individual layers along the profile. 
 
-## Example 2
+### Example 2: mantle chemistry
 
 Run
 ```console
@@ -186,7 +186,7 @@ Error: at the depth of 286000.0 The following MgO, FeO, Mg# values are inconsist
 ```
 as ValidEarth verifies that the value of Mg# matches the provided MgO and FeO contents, however, the execution continues and all the other reports are produced.
 
-## Example 3
+### Example 3: the missed Moho
 
 Run
 ```console
@@ -198,7 +198,7 @@ Error: The crustal-mantle transition has no density contrast!
 ```
 as ValidEarth verifies that all the available physical properties (such as density, Vp, and Vs) change simultaneously and consistently at the Moho.
 
-## Example 4
+### Example 4: the geotherm
 
 Run
 ```console
@@ -206,7 +206,7 @@ python3 ./validearth.py -i examples/example4.dat -pdf -detailed
 ```
 to assess a geothermal profile using one of the reference lithospheric geotherms and solidus and liquidus curves. ValidEarth will produce the interpolated liquidus and solidus temperatures along the studied profile, as well as a short summary in the end. 
 
-## Example 5
+### Example 5
 
 Run
 ```console
@@ -214,13 +214,29 @@ python3 ./validearth.py -i examples/example5.dat -pdf -detailed
 ```
 to try a yet another example of profile assessment and produce reference plots. ValidEarth will automatically select matching column names from the available models to perform the assessment. The plots will show not only the input model and reference profiles, but also a highlighted area marking one standard deviation in each direction from the reference values.  
 
-## Example 6
+### Example 6: the non-consistent Moho
 
 Run
 ```console
 python3 ./validearth.py -i examples/example6.dat
 ```
-this example should result in failure; the code should detect that the actual depth of Moho layer according to the physical properties is not consistent with the annotated value.
+this example should result in failure; the code should detect that the actual depth of Moho layer according to the physical properties is not consistent with the annotated value, annotating the numbers of rows:
+```console
+The Moho detected using Vs contrast right beneath -23000.0 m
+Error: the Moho depth is not consistent: 61 vs 84
+```
+
+### Example 7: the sediments are too thick
+
+Run
+```console
+python3 ./validearth.py -i examples/example6.dat
+```
+This run should fail reporting:
+```console
+Error: the thickness of sedimentary layer exceeds the maximum allowed thickness: 7000.0 vs 5000 m
+```
+ValidEarth uses Vp/Vs > 2 to deem rocks as unconsolidated sediments; it should be a feasible hreshold for a vast majority of cases. However, every such a reporting should be assessed individually.  
 
 # Automatisation
 

@@ -1,0 +1,24 @@
+python3 ./validearth.py -i examples/example7.dat
+Reading a list of reference models from config.txt
+ - models/ak135f-sph-deviation.dat
+ - models/PREM.dat
+ - models/ak135f-sph.dat
+ - models/MantleChemistry.dat
+ - models/Geotherm_TC1.dat
+ - models/Liquidus-HerzbergZhang1996.dat
+ - models/Solidus-Andraut2018.dat
+Reading file examples/example7.dat
+Longitude: 149.41667
+Latitude: -33.03333
+The following golden nails are used
+ - Lower crust ends at depth 25500.0 (record #27)
+Vp/Vs was computed automatically
+Checking layer structure
+A layer of water detected using Vs=0 with bottom depth of 2500.0 m
+A layer of sediments detected using high Vp/Vs ratio with bedding depth of 9500.0 m
+The Moho detected using density contrast right beneath 25500.0 m
+The Moho detected using Vs contrast right beneath 25500.0 m
+The Moho detected using Vp contrast right beneath 25500.0 m
+Checking layer boundaries
+According to the water body depth of 2500.0 m, the region is continental slope
+Error: the thickness of sedimentary layer exceeds the maximum allowed thickness: 7000.0 vs 5000 m

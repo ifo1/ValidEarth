@@ -1,4 +1,4 @@
-python3 ./validearth.py -i examples/example5.dat -pdf -detailed
+python3 ./validearth.py -i examples/example5.dat -detailed
 Reading a list of reference models from config.txt
  - models/ak135f-sph-deviation.dat
  - models/PREM.dat
