@@ -1,17 +1,27 @@
+python3 ./validearth.py -i examples/example2.dat
 Reading a list of reference models from config.txt
+ - models/ak135f-sph-deviation.dat
  - models/PREM.dat
  - models/ak135f-sph.dat
  - models/MantleChemistry.dat
  - models/Geotherm_TC1.dat
+ - models/Liquidus-HerzbergZhang1996.dat
+ - models/Solidus-Andraut2018.dat
 Reading file examples/example2.dat
 Name: Warrumbungles
 The following golden nails are used
  - Lower crust ends at depth 45000.0 (record #1)
+Error: at the depth of 286000.0 The following MgO, FeO, Mg# values are inconsistent: 30.08 / 8.16 ≠ 89.27
+Checking layer structure
+Checking layer boundaries
+The crust with total thickness 45000.0 m is identified as platform
 Reading Pressure-Depth parameterisation from models/PREM.dat
 Using PREM as a pressure-depth dependency model
 Assessing the following input model physical quantities: 
 SiO2 - Al2O3 - FeO - MgO - CaO - MgNum
 Assessing SiO2
+Reading models/ak135f-sph-deviation.dat for model ak135-f
+Field not found; skipping
 Reading models/PREM.dat for model PREM
 Field not found; skipping
 Reading models/ak135f-sph.dat for model ak135-f
@@ -23,7 +33,13 @@ Layer index - Bedding depth -                      - Bedding depth - Layer index
          70 -   326000.00 m -   Undifferentiated   -   410000.00 m -    5        -   1.15 -    9.2 -    0.00 -    0.0
 Reading models/Geotherm_TC1.dat for model TC1
 Field not found; skipping
+Reading models/Liquidus-HerzbergZhang1996.dat for model Herzberg_Zhang_1996
+Field not found; skipping
+Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
+Field not found; skipping
 Assessing Al2O3
+Reading models/ak135f-sph-deviation.dat for model ak135-f
+Field not found; skipping
 Reading models/PREM.dat for model PREM
 Field not found; skipping
 Reading models/ak135f-sph.dat for model ak135-f
@@ -34,8 +50,14 @@ Layer index - Bedding depth -                      - Bedding depth - Layer index
           0 -    45000.00 m -     Lower Crust      -    35000.00 m -    2        -   0.00 -    0.0 -    0.00 -    0.0
          70 -   326000.00 m -   Undifferentiated   -   410000.00 m -    5        -   0.00 -    0.0 -    0.00 -    0.0
 Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+Reading models/Liquidus-HerzbergZhang1996.dat for model Herzberg_Zhang_1996
+Field not found; skipping
+Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
 Field not found; skipping
 Assessing FeO
+Reading models/ak135f-sph-deviation.dat for model ak135-f
+Field not found; skipping
 Reading models/PREM.dat for model PREM
 Field not found; skipping
 Reading models/ak135f-sph.dat for model ak135-f
@@ -47,7 +69,13 @@ Layer index - Bedding depth -                      - Bedding depth - Layer index
          70 -   326000.00 m -   Undifferentiated   -   410000.00 m -    5        -   0.00 -    0.0 -    0.00 -    0.0
 Reading models/Geotherm_TC1.dat for model TC1
 Field not found; skipping
+Reading models/Liquidus-HerzbergZhang1996.dat for model Herzberg_Zhang_1996
+Field not found; skipping
+Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
+Field not found; skipping
 Assessing MgO
+Reading models/ak135f-sph-deviation.dat for model ak135-f
+Field not found; skipping
 Reading models/PREM.dat for model PREM
 Field not found; skipping
 Reading models/ak135f-sph.dat for model ak135-f
@@ -59,7 +87,13 @@ Layer index - Bedding depth -                      - Bedding depth - Layer index
          70 -   326000.00 m -   Undifferentiated   -   410000.00 m -    5        -   0.27 -    4.9 -    0.00 -    0.0
 Reading models/Geotherm_TC1.dat for model TC1
 Field not found; skipping
+Reading models/Liquidus-HerzbergZhang1996.dat for model Herzberg_Zhang_1996
+Field not found; skipping
+Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
+Field not found; skipping
 Assessing CaO
+Reading models/ak135f-sph-deviation.dat for model ak135-f
+Field not found; skipping
 Reading models/PREM.dat for model PREM
 Field not found; skipping
 Reading models/ak135f-sph.dat for model ak135-f
@@ -70,8 +104,14 @@ Layer index - Bedding depth -                      - Bedding depth - Layer index
           0 -    45000.00 m -     Lower Crust      -    35000.00 m -    2        -   0.00 -    0.0 -    0.00 -    0.0
          70 -   326000.00 m -   Undifferentiated   -   410000.00 m -    5        -   0.00 -    0.0 -    0.00 -    0.0
 Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+Reading models/Liquidus-HerzbergZhang1996.dat for model Herzberg_Zhang_1996
+Field not found; skipping
+Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
 Field not found; skipping
 Assessing MgNum
+Reading models/ak135f-sph-deviation.dat for model ak135-f
+Field not found; skipping
 Reading models/PREM.dat for model PREM
 Field not found; skipping
 Reading models/ak135f-sph.dat for model ak135-f
@@ -83,4 +123,7 @@ Layer index - Bedding depth -                      - Bedding depth - Layer index
          70 -   326000.00 m -   Undifferentiated   -   410000.00 m -    5        -   0.00 -    0.0 -    0.00 -    0.0
 Reading models/Geotherm_TC1.dat for model TC1
 Field not found; skipping
-
+Reading models/Liquidus-HerzbergZhang1996.dat for model Herzberg_Zhang_1996
+Field not found; skipping
+Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
+Field not found; skipping

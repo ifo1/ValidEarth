@@ -178,11 +178,13 @@ to assess the example column using a 3D model. The density, Vp and Vs charts all
 
 Run
 ```console
-python3 ./validearth.py -i examples/example1.dat
+python3 ./validearth.py -i examples/example2.dat
 ```
-to assess the example column using a set of 1D models. The code automatically looks for the matching column names and compares the data.
-
-The plots will show the input model and a highighted area marking the range between minumum and maximum allowed values.  
+This run should report
+```console
+Error: at the depth of 286000.0 The following MgO, FeO, Mg# values are inconsistent: 30.08 / 8.16 ≠ 89.27
+```
+as ValidEarth verifies that the value of Mg# matches the provided MgO and FeO contents, however, the execution continues and all the other reports are produced.
 
 ## Example 3
 
@@ -190,9 +192,11 @@ Run
 ```console
 python3 ./validearth.py -i examples/example3.dat
 ```
-to assess the example column using a set of 1D models. The code automatically looks for the matching column names and compares the data.
-
-The plots will show not only the input model and reference profiles, but also a highlighted area marking one standard deviation in each direction from the reference values.  
+This run should terminate saying
+```console
+Error: The crustal-mantle transition has no density contrast!
+```
+as ValidEarth verifies that all the available physical properties (such as density, Vp, and Vs) change simultaneously and consistently at the Moho.
 
 ## Example 4
 
@@ -206,9 +210,9 @@ to assess a geothermal profile using one of the reference lithospheric geotherms
 
 Run
 ```console
-python3 ./validearth.py -i examples/example5.dat
+python3 ./validearth.py -i examples/example5.dat -pdf -detailed
 ```
-to try a yet another example of profile assessment.
+to try a yet another example of profile assessment and produce reference plots. ValidEarth will automatically select matching column names from the available models to perform the assessment. The plots will show not only the input model and reference profiles, but also a highlighted area marking one standard deviation in each direction from the reference values.  
 
 ## Example 6
 

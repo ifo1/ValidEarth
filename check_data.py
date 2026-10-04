@@ -9,7 +9,7 @@ eps_mgnum = 0.1
 
 # everything over this Vp/Vs value is considered sediments (if not provided in the input file)
 sed_vpvs = 2.0
-# threshold values for the Moho
+# threshold values for the Moho/mantle
 mantle_density = 3300
 mantle_vp = 7700
 mantle_vs = 4200
@@ -21,58 +21,56 @@ def check_layers(column):
 
     print ("Checking layer structure")
 
+    sediments = -1
     mantle = False
 
     for i in range(n-1):
         # water
-        if column.Vs:
-            if column.Vs[i] is not None and column.Vs[i+1] is not None:
-                if column.Vs[i] < 0.01 and column.Vs[i+1] > 0.01:
-                    print ("A layer of " + highlight("water") + " detected using Vs=0 with bottom depth of " + highlight(column.depth[i]) + " m")
-                    column.gn.assign_gn("water", i)
-                    continue
-                elif column.Vs[i] < 0.01:
-                    continue
+        if column.Vs is not None:
+            if column.Vs[i] < 0.01 and column.Vs[i+1] > 0.01:
+                print ("A layer of " + highlight("water") + " detected using Vs=0 with bottom depth of " + highlight(column.depth[i]) + " m")
+                column.gn.assign_gn("water", i)
+                continue
+            elif column.Vs[i] < 0.01:
+                continue
 
         # sediments
-        if column.Vs and column.Vp:
-            if column.Vs[i] is not None and column.Vp[i] is not None and column.Vs[i+1] is not None and column.Vp[i+1] is not None:
-                if column.Vp[i]/column.Vs[i] > sed_vpvs and column.Vp[i+1]/column.Vs[i+1] < sed_vpvs:
-                    print ("A layer of " + highlight("sediments") + " detected using high Vp/Vs ratio with bedding depth of " + highlight(column.depth[i]) + " m")
-                    column.gn.assign_gn("sediments", i)
+        if column.VpVs is not None:
+            if column.VpVs[i] > sed_vpvs and column.VpVs[i+1] < sed_vpvs:
+                print ("A layer of " + highlight("sediments") + " detected using high Vp/Vs ratio with bedding depth of " + highlight(column.depth[i]) + " m")
+                sediments = i
 
         # Moho - all these conditions must be met!
-        if column.density:
-            if column.density[i] is not None and column.density[i+1] is not None:
-                if column.density[i] < mantle_density and column.density[i+1] > mantle_density:
-                    print ("The " + highlight("Moho") + " detected using density contrast right beneath " + highlight(column.depth[i]) + " m")
-                    column.gn.assign_gn("moho", i)
-                    if mantle:
-                        print (error() + "The mantle has already been detected using Vs!")
-                        exit()
-                    else:
-                        mantle = True
-        if column.Vs:
-            if column.Vs[i] is not None and column.Vs[i+1] is not None:
-                if column.Vs[i] < mantle_vs and column.Vs[i+1] > mantle_vs:
-                    print ("The " + highlight("Moho") + " detected using Vs contrast right beneath " + highlight(column.depth[i]) + " m")
-                    column.gn.assign_gn("moho", i)
-                    if not mantle:
-                        print (error() + "The crustal-mantle transition has no density contrast!")
-                        exit()
-                    else:
-                        mantle = True
-        if column.Vp:
-            if column.Vp[i] is not None and column.Vp[i+1] is not None:
-                if column.Vp[i] < mantle_vp and column.Vp[i+1] > mantle_vp:
-                    print ("The " + highlight("Moho") + " detected using Vp contrast right beneath " + highlight(column.depth[i]) + " m")
-                    column.gn.assign_gn("moho", i)
-                    if not mantle:
-                        print (error() + "The crustal-mantle transition has no density or Vp contrast!")
-                        exit()
-                    else:
-                        mantle = True
+        if column.density is not None:
+            if column.density[i] < mantle_density and column.density[i+1] > mantle_density:
+                print ("The " + highlight("Moho") + " detected using density contrast right beneath " + highlight(column.depth[i]) + " m")
+                column.gn.assign_gn("moho", i)
+                if mantle:
+                    print (error() + "The mantle has already been detected using Vs!")
+                    exit()
+                else:
+                    mantle = True
+        if column.Vs is not None:
+            if column.Vs[i] < mantle_vs and column.Vs[i+1] > mantle_vs:
+                print ("The " + highlight("Moho") + " detected using Vs contrast right beneath " + highlight(column.depth[i]) + " m")
+                column.gn.assign_gn("moho", i)
+                if not mantle:
+                    print (error() + "The crustal-mantle transition has no density contrast!")
+                    exit()
+                else:
+                    mantle = True
+        if column.Vp is not None:
+            if column.Vp[i] < mantle_vp and column.Vp[i+1] > mantle_vp:
+                print ("The " + highlight("Moho") + " detected using Vp contrast right beneath " + highlight(column.depth[i]) + " m")
+                column.gn.assign_gn("moho", i)
+                if not mantle:
+                    print (error() + "The crustal-mantle transition has no density or Vp contrast!")
+                    exit()
+                else:
+                    mantle = True
 
+    # try to assign sediments after the deepest layer with sedimentary properties was identified
+    column.gn.assign_gn("sediments", sediments )
 
 
 # water depth level ranges
@@ -122,8 +120,7 @@ def check_layer_depth(column):
 
     # Moho depth
     if column.gn.crust_lower >= 0:
-
-        thickness = column.depth[column.gn.crust_lower-1]
+        thickness = column.depth[column.gn.crust_lower]
         if thickness < 0:
             print (error() + "the total crustal thickness is negative - check whether the -depthneg flag is required")
             exit()
@@ -164,22 +161,22 @@ def sanity_checks (column):
 def recompute_vp_vs(column):
 
     # size of all arrays
-    n = len(column.depth)
+    n = column.depth.size
 
     Vpadded = False
     Vsadded = False
     VpVsadded = False
 
     # allocate arrays if necessary
-    if not column.Vp:
+    if column.Vp.size == 0:
         column.Vp = np.empty((n))
         column.Vp[:] = np.nan
         Vpadded = True
-    if not column.Vs:
+    if column.Vs.size == 0:
         column.Vs = np.empty((n))
         column.Vs[:] = np.nan
         Vsadded = True
-    if not column.VpVs:
+    if column.VpVs.size == 0:
         column.VpVs = np.empty((n))
         column.VpVs[:] = np.nan
         VpVsadded = True
@@ -216,21 +213,30 @@ def recompute_vp_vs(column):
             print (highlight("Vp was computed automatically"))
             column.columns.append("Vp")
         else:
-            column.Vp = []
+            column.Vp = None
 
     if Vsadded:
         if np.any (np.isfinite(column.Vs)):
             print (highlight("Vs was computed automatically"))
             column.columns.append("Vs")
         else:
-            column.Vs = []
+            column.Vs = None
 
     if VpVsadded:
+
         if np.any (np.isfinite(column.VpVs)):
             print (highlight("Vp/Vs was computed automatically"))
             column.columns.append("VpVs")
         else:
-            column.VpVs = []
+            column.VpVs = None
+
+    # check physical boundary
+    if isinstance(column.VpVs,np.ndarray):
+        for i in range(column.VpVs.size):
+            if np.isfinite(column.VpVs[i]):
+                if column.VpVs[i] < 1.333:
+                    print (error() + "the Vp/Vs ratio is less than 4/3!")
+                    exit()
 
 
 def MgFe2MgNum (MgO, FeO):
@@ -249,22 +255,22 @@ def FeMgNum2Mg (FeO, MgNum):
 def recompute_mgnum(column):
 
     # size of all arrays
-    n = len(column.depth)
+    n = column.depth.size
 
     MgNumadded = False
     MgOadded = False
     FeOadded = False
 
     # allocate arrays if necessary
-    if not column.MgNum:
+    if column.MgNum.size == 0:
         column.MgNum = np.empty((n))
         column.MgNum[:] = np.nan
         MgNumadded = True
-    if not column.MgO:
+    if column.MgO.size == 0:
         column.MgO = np.empty((n))
         column.MgO[:] = np.nan
         MgOadded = True
-    if not column.FeO:
+    if column.FeO.size == 0:
         column.FeO = np.empty((n))
         column.FeO[:] = np.nan
         FeOadded = True
@@ -278,7 +284,7 @@ def recompute_mgnum(column):
             if np.isfinite(column.MgO[i]) and np.isfinite(column.FeO[i]):
                 eps = abs( column.MgNum[i] - MgFe2MgNum (column.MgO[i], column.FeO[i]) )
                 if eps > eps_mgnum:
-                    print (error(Depth[i]) + "The following MgO, FeO, Mg# values are inconsistent: " + str(column.MgO[i]) + " / " + str(column.FeO[i]) + " ≠ " + str(column.MgNum[i]))
+                    print (error(column.depth[i]) + "The following MgO, FeO, Mg# values are inconsistent: " + str(column.MgO[i]) + " / " + str(column.FeO[i]) + " ≠ " + str(column.MgNum[i]))
 
             elif np.isfinite(column.MgO[i]):
                 column.FeO[i] = MgMgNum2Fe (column.MgO[i], column.MgNum[i])
@@ -297,19 +303,19 @@ def recompute_mgnum(column):
             print (highlight("MgNum was computed automatically"))
             column.columns.append("MgNum")
         else:
-            column.MgNum = []
+            column.MgNum = None
 
     if MgOadded:
         if np.any (np.isfinite(column.MgO)):
             print (highlight("MgO was computed automatically"))
             column.columns.append("MgO")
         else:
-            column.MgO = []
+            column.MgO = None
 
     if FeOadded:
         if np.any (np.isfinite(column.FeO)):
             print (highlight("FeO was computed automatically"))
             column.columns.append("FeO")
         else:
-            column.FeO = []
+            column.FeO = None
 

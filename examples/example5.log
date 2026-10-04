@@ -1,0 +1,364 @@
+python3 ./validearth.py -i examples/example5.dat -pdf -detailed
+Reading a list of reference models from config.txt
+ - models/ak135f-sph-deviation.dat
+ - models/PREM.dat
+ - models/ak135f-sph.dat
+ - models/MantleChemistry.dat
+ - models/Geotherm_TC1.dat
+ - models/Liquidus-HerzbergZhang1996.dat
+ - models/Solidus-Andraut2018.dat
+Reading file examples/example5.dat
+Name: WineglassBay
+Longitude: 148.298333
+Latitude: -42.125278
+The following golden nails are used
+ - Lower crust ends at depth 25500.0 (record #27)
+Vp/Vs was computed automatically
+Checking layer structure
+A layer of water detected using Vs=0 with bottom depth of 2500.0 m
+A layer of sediments detected using high Vp/Vs ratio with bedding depth of 4000.0 m
+The Moho detected using density contrast right beneath 25500.0 m
+The Moho detected using Vs contrast right beneath 25500.0 m
+The Moho detected using Vp contrast right beneath 25500.0 m
+Checking layer boundaries
+According to the water body depth of 2500.0 m, the region is continental slope
+The crust with total thickness 23000.0 m is identified as too thin for continent
+Reading Pressure-Depth parameterisation from models/PREM.dat
+Using PREM as a pressure-depth dependency model
+Assessing the following input model physical quantities: 
+Density - Vp - Vs - Type
+Assessing Density
+Reading models/ak135f-sph-deviation.dat for model ak135-f
+       Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
+Layer index - Bedding depth -                      - Bedding depth - Layer index -   Rel   -  Abs  -   Rel   -  Abs
+          2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.00 -    0.0 -    0.00 -    0.0
+         26 -    25500.00 m -     Lower Crust      -    18000.00 m -    7        -   0.00 -    0.0 -    0.00 -    0.0
+         31 -    30000.00 m -   Undifferentiated   -  2891500.00 m -   74        -   0.34 -   49.1 -    0.00 -    0.0
+Reading models/PREM.dat for model PREM
+Printing a full comparison for Density using PREM as a reference
+Layer#   -   Depth  -  Value    - Reference -   StDev   - Difference
+   0 -      500.00  -  1030.00  -  1020.00  -    10.20  -   -10.00 
+   1 -     1500.00  -  1030.00  -  1020.00  -    10.20  -   -10.00 
+   2 -     2500.00  -  1030.00  -  1020.00  -    10.20  -   -10.00 
+   3 -     3500.00  -  1800.00  -  2600.00  -    26.00  -   800.00 
+   4 -     4000.00  -  1800.00  -  2600.00  -    26.00  -   800.00 
+   5 -     4500.00  -  2700.00  -  2600.00  -    26.00  -  -100.00 
+   6 -     5500.00  -  2700.00  -  2600.00  -    26.00  -  -100.00 
+   7 -     6500.00  -  2900.00  -  2600.00  -    26.00  -  -300.00 
+   8 -     7500.00  -  2900.00  -  2600.00  -    26.00  -  -300.00 
+   9 -     8500.00  -  2900.00  -  2600.00  -    26.00  -  -300.00 
+  10 -     9500.00  -  2900.00  -  2600.00  -    26.00  -  -300.00 
+  11 -    10500.00  -  2950.00  -  2600.00  -    26.00  -  -350.00 
+  12 -    11500.00  -  2950.00  -  2600.00  -    26.00  -  -350.00 
+  13 -    12500.00  -  2950.00  -  2600.00  -    26.00  -  -350.00 
+  14 -    13500.00  -  2950.00  -  2600.00  -    26.00  -  -350.00 
+  15 -    14500.00  -  2950.00  -  2600.00  -    26.00  -  -350.00 
+  16 -    15500.00  -  2950.00  -  2900.00  -    29.00  -   -50.00 
+  17 -    16500.00  -  2950.00  -  2900.00  -    29.00  -   -50.00 
+  18 -    17500.00  -  2950.00  -  2900.00  -    29.00  -   -50.00 
+  19 -    18500.00  -  3100.00  -  2900.00  -    29.00  -  -200.00 
+  20 -    19500.00  -  3100.00  -  2900.00  -    29.00  -  -200.00 
+  21 -    20500.00  -  3100.00  -  2900.00  -    29.00  -  -200.00 
+  22 -    21500.00  -  3100.00  -  2900.00  -    29.00  -  -200.00 
+  23 -    22500.00  -  3100.00  -  2900.00  -    29.00  -  -200.00 
+  24 -    23500.00  -  3100.00  -  2900.00  -    29.00  -  -200.00 
+  25 -    24500.00  -  3100.00  -  2900.00  -    29.00  -  -200.00 
+  26 -    25500.00  -  3100.00  -  2900.00  -    29.00  -  -200.00 
+  27 -    26000.00  -  3500.00  -  3380.00  -    33.80  -  -120.00 
+  28 -    27000.00  -  3500.00  -  3380.00  -    33.80  -  -120.00 
+  29 -    28000.00  -  3500.00  -  3380.00  -    33.80  -  -120.00 
+  30 -    29000.00  -  3500.00  -  3380.00  -    33.80  -  -120.00 
+  31 -    30000.00  -  3500.00  -  3380.00  -    33.80  -  -120.00 
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+          2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.98 -   10.0 -    0.00 -    0.0
+         26 -    25500.00 m -     Lower Crust      -    24400.00 m -    5        -  13.46 -  350.0 -   30.77 -  800.0
+         31 -    30000.00 m -   Undifferentiated   -  6371000.00 m -   84        -   3.55 -  120.0 -    0.00 -    0.0
+Reading models/ak135f-sph.dat for model ak135-f
+Printing a full comparison for Density using ak135-f as a reference
+Layer#   -   Depth  -  Value    - Reference -   StDev   - Difference
+   0 -      500.00  -  1030.00  -  1020.00  -    10.20  -   -10.00 
+   1 -     1500.00  -  1030.00  -  1020.00  -    10.20  -   -10.00 
+   2 -     2500.00  -  1030.00  -  1020.00  -    10.20  -   -10.00 
+   3 -     3500.00  -  1800.00  -  2600.00  -    26.00  -   800.00 
+   4 -     4000.00  -  1800.00  -  2600.00  -    26.00  -   800.00 
+   5 -     4500.00  -  2700.00  -  2600.00  -    26.00  -  -100.00 
+   6 -     5500.00  -  2700.00  -  2600.00  -    26.00  -  -100.00 
+   7 -     6500.00  -  2900.00  -  2600.00  -    26.00  -  -300.00 
+   8 -     7500.00  -  2900.00  -  2600.00  -    26.00  -  -300.00 
+   9 -     8500.00  -  2900.00  -  2600.00  -    26.00  -  -300.00 
+  10 -     9500.00  -  2900.00  -  2600.00  -    26.00  -  -300.00 
+  11 -    10500.00  -  2950.00  -  2920.00  -    29.20  -   -30.00 
+  12 -    11500.00  -  2950.00  -  2920.00  -    29.20  -   -30.00 
+  13 -    12500.00  -  2950.00  -  2920.00  -    29.20  -   -30.00 
+  14 -    13500.00  -  2950.00  -  2920.00  -    29.20  -   -30.00 
+  15 -    14500.00  -  2950.00  -  2920.00  -    29.20  -   -30.00 
+  16 -    15500.00  -  2950.00  -  2920.00  -    29.20  -   -30.00 
+  17 -    16500.00  -  2950.00  -  2920.00  -    29.20  -   -30.00 
+  18 -    17500.00  -  2950.00  -  2920.00  -    29.20  -   -30.00 
+  19 -    18500.00  -  3100.00  -  2920.00  -    29.20  -  -180.00 
+  20 -    19500.00  -  3100.00  -  2920.00  -    29.20  -  -180.00 
+  21 -    20500.00  -  3100.00  -  2920.00  -    29.20  -  -180.00 
+  22 -    21500.00  -  3100.00  -  2920.00  -    29.20  -  -180.00 
+  23 -    22500.00  -  3100.00  -  2920.00  -    29.20  -  -180.00 
+  24 -    23500.00  -  3100.00  -  2920.00  -    29.20  -  -180.00 
+  25 -    24500.00  -  3100.00  -  2920.00  -    29.20  -  -180.00 
+  26 -    25500.00  -  3100.00  -  2920.00  -    29.20  -  -180.00 
+  27 -    26000.00  -  3500.00  -  3621.51  -    36.22  -   121.51 
+  28 -    27000.00  -  3500.00  -  3619.08  -    36.19  -   119.08 
+  29 -    28000.00  -  3500.00  -  3616.64  -    36.17  -   116.64 
+  30 -    29000.00  -  3500.00  -  3614.20  -    36.14  -   114.20 
+  31 -    30000.00  -  3500.00  -  3611.77  -    36.12  -   111.77 
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+          2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.98 -   10.0 -    0.00 -    0.0
+         26 -    25500.00 m -     Lower Crust      -    18000.00 m -    7        -  11.54 -  300.0 -   30.77 -  800.0
+         31 -    30000.00 m -   Undifferentiated   -  6371000.00 m -  144        -   0.00 -    0.0 -    3.36 -  121.5
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+Field not found; skipping
+Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+Reading models/Liquidus-HerzbergZhang1996.dat for model Herzberg_Zhang_1996
+Field not found; skipping
+Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
+Field not found; skipping
+Assessing Vp
+Reading models/ak135f-sph-deviation.dat for model ak135-f
+       Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
+Layer index - Bedding depth -                      - Bedding depth - Layer index -   Rel   -  Abs  -   Rel   -  Abs
+          2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.00 -    0.0 -    0.00 -    0.0
+         26 -    25500.00 m -     Lower Crust      -    18000.00 m -    7        -   0.00 -    0.0 -    0.00 -    0.0
+         31 -    30000.00 m -   Undifferentiated   -  2891500.00 m -   74        -   0.00 -    0.0 -    0.00 -    0.0
+Reading models/PREM.dat for model PREM
+Printing a full comparison for Vp using PREM as a reference
+Layer#   -   Depth  -  Value    - Reference -   StDev   - Difference
+   0 -      500.00  -  1450.00  -  1450.00  -    14.50  -     0.00 
+   1 -     1500.00  -  1450.00  -  1450.00  -    14.50  -     0.00 
+   2 -     2500.00  -  1450.00  -  1450.00  -    14.50  -     0.00 
+   3 -     3500.00  -  2000.00  -  5800.00  -    58.00  -  3800.00 
+   4 -     4000.00  -  2000.00  -  5800.00  -    58.00  -  3800.00 
+   5 -     4500.00  -  3000.00  -  5800.00  -    58.00  -  2800.00 
+   6 -     5500.00  -  3000.00  -  5800.00  -    58.00  -  2800.00 
+   7 -     6500.00  -  5500.00  -  5800.00  -    58.00  -   300.00 
+   8 -     7500.00  -  5500.00  -  5800.00  -    58.00  -   300.00 
+   9 -     8500.00  -  5500.00  -  5800.00  -    58.00  -   300.00 
+  10 -     9500.00  -  5500.00  -  5800.00  -    58.00  -   300.00 
+  11 -    10500.00  -  6500.00  -  5800.00  -    58.00  -  -700.00 
+  12 -    11500.00  -  6500.00  -  5800.00  -    58.00  -  -700.00 
+  13 -    12500.00  -  6500.00  -  5800.00  -    58.00  -  -700.00 
+  14 -    13500.00  -  6500.00  -  5800.00  -    58.00  -  -700.00 
+  15 -    14500.00  -  6500.00  -  5800.00  -    58.00  -  -700.00 
+  16 -    15500.00  -  6500.00  -  6800.00  -    68.00  -   300.00 
+  17 -    16500.00  -  6500.00  -  6800.00  -    68.00  -   300.00 
+  18 -    17500.00  -  6500.00  -  6800.00  -    68.00  -   300.00 
+  19 -    18500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  20 -    19500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  21 -    20500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  22 -    21500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  23 -    22500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  24 -    23500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  25 -    24500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  26 -    25500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  27 -    26000.00  -  8000.00  -  8108.97  -    81.09  -   108.97 
+  28 -    27000.00  -  8000.00  -  8108.33  -    81.08  -   108.33 
+  29 -    28000.00  -  8000.00  -  8107.68  -    81.08  -   107.68 
+  30 -    29000.00  -  8000.00  -  8107.04  -    81.07  -   107.04 
+  31 -    30000.00  -  8000.00  -  8106.39  -    81.06  -   106.39 
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+          2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.00 -    0.0 -    0.00 -    0.0
+         26 -    25500.00 m -     Lower Crust      -    24400.00 m -    5        -  12.07 -  700.0 -   65.52 - 3800.0
+         31 -    30000.00 m -   Undifferentiated   -  6371000.00 m -   84        -   0.00 -    0.0 -    1.34 -  109.0
+Reading models/ak135f-sph.dat for model ak135-f
+Printing a full comparison for Vp using ak135-f as a reference
+Layer#   -   Depth  -  Value    - Reference -   StDev   - Difference
+   0 -      500.00  -  1450.00  -  1450.00  -    14.50  -     0.00 
+   1 -     1500.00  -  1450.00  -  1450.00  -    14.50  -     0.00 
+   2 -     2500.00  -  1450.00  -  1450.00  -    14.50  -     0.00 
+   3 -     3500.00  -  2000.00  -  5800.00  -    58.00  -  3800.00 
+   4 -     4000.00  -  2000.00  -  5800.00  -    58.00  -  3800.00 
+   5 -     4500.00  -  3000.00  -  5800.00  -    58.00  -  2800.00 
+   6 -     5500.00  -  3000.00  -  5800.00  -    58.00  -  2800.00 
+   7 -     6500.00  -  5500.00  -  5800.00  -    58.00  -   300.00 
+   8 -     7500.00  -  5500.00  -  5800.00  -    58.00  -   300.00 
+   9 -     8500.00  -  5500.00  -  5800.00  -    58.00  -   300.00 
+  10 -     9500.00  -  5500.00  -  5800.00  -    58.00  -   300.00 
+  11 -    10500.00  -  6500.00  -  6800.00  -    68.00  -   300.00 
+  12 -    11500.00  -  6500.00  -  6800.00  -    68.00  -   300.00 
+  13 -    12500.00  -  6500.00  -  6800.00  -    68.00  -   300.00 
+  14 -    13500.00  -  6500.00  -  6800.00  -    68.00  -   300.00 
+  15 -    14500.00  -  6500.00  -  6800.00  -    68.00  -   300.00 
+  16 -    15500.00  -  6500.00  -  6800.00  -    68.00  -   300.00 
+  17 -    16500.00  -  6500.00  -  6800.00  -    68.00  -   300.00 
+  18 -    17500.00  -  6500.00  -  6800.00  -    68.00  -   300.00 
+  19 -    18500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  20 -    19500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  21 -    20500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  22 -    21500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  23 -    22500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  24 -    23500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  25 -    24500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  26 -    25500.00  -  7000.00  -  6800.00  -    68.00  -  -200.00 
+  27 -    26000.00  -  8000.00  -  8036.27  -    80.36  -    36.27 
+  28 -    27000.00  -  8000.00  -  8036.36  -    80.36  -    36.36 
+  29 -    28000.00  -  8000.00  -  8036.46  -    80.36  -    36.46 
+  30 -    29000.00  -  8000.00  -  8036.56  -    80.37  -    36.56 
+  31 -    30000.00  -  8000.00  -  8036.65  -    80.37  -    36.65 
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+          2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.00 -    0.0 -    0.00 -    0.0
+         26 -    25500.00 m -     Lower Crust      -    18000.00 m -    7        -   2.94 -  200.0 -   65.52 - 3800.0
+         31 -    30000.00 m -   Undifferentiated   -  6371000.00 m -  144        -   0.00 -    0.0 -    0.46 -   36.7
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+Field not found; skipping
+Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+Reading models/Liquidus-HerzbergZhang1996.dat for model Herzberg_Zhang_1996
+Field not found; skipping
+Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
+Field not found; skipping
+Assessing Vs
+Reading models/ak135f-sph-deviation.dat for model ak135-f
+       Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
+Layer index - Bedding depth -                      - Bedding depth - Layer index -   Rel   -  Abs  -   Rel   -  Abs
+          2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.00 -    0.0 -    0.00 -    0.0
+         26 -    25500.00 m -     Lower Crust      -    18000.00 m -    7        -   0.00 -    0.0 -    0.00 -    0.0
+         31 -    30000.00 m -   Undifferentiated   -  2891500.00 m -   74        -   0.00 -    0.0 -    0.00 -    0.0
+Reading models/PREM.dat for model PREM
+Printing a full comparison for Vs using PREM as a reference
+Layer#   -   Depth  -  Value    - Reference -   StDev   - Difference
+   0 -      500.00  -     0.00  -     0.00  -     0.10  -     0.00 
+   1 -     1500.00  -     0.00  -     0.00  -     0.10  -     0.00 
+   2 -     2500.00  -     0.00  -     0.00  -     0.10  -     0.00 
+   3 -     3500.00  -   200.00  -  3200.00  -    32.00  -  3000.00 
+   4 -     4000.00  -   200.00  -  3200.00  -    32.00  -  3000.00 
+   5 -     4500.00  -  1800.00  -  3200.00  -    32.00  -  1400.00 
+   6 -     5500.00  -  1800.00  -  3200.00  -    32.00  -  1400.00 
+   7 -     6500.00  -  2800.00  -  3200.00  -    32.00  -   400.00 
+   8 -     7500.00  -  2800.00  -  3200.00  -    32.00  -   400.00 
+   9 -     8500.00  -  2800.00  -  3200.00  -    32.00  -   400.00 
+  10 -     9500.00  -  2800.00  -  3200.00  -    32.00  -   400.00 
+  11 -    10500.00  -  3500.00  -  3200.00  -    32.00  -  -300.00 
+  12 -    11500.00  -  3500.00  -  3200.00  -    32.00  -  -300.00 
+  13 -    12500.00  -  3500.00  -  3200.00  -    32.00  -  -300.00 
+  14 -    13500.00  -  3500.00  -  3200.00  -    32.00  -  -300.00 
+  15 -    14500.00  -  3500.00  -  3200.00  -    32.00  -  -300.00 
+  16 -    15500.00  -  3500.00  -  3900.00  -    39.00  -   400.00 
+  17 -    16500.00  -  3500.00  -  3900.00  -    39.00  -   400.00 
+  18 -    17500.00  -  3500.00  -  3900.00  -    39.00  -   400.00 
+  19 -    18500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  20 -    19500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  21 -    20500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  22 -    21500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  23 -    22500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  24 -    23500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  25 -    24500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  26 -    25500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  27 -    26000.00  -  4500.00  -  4489.31  -    44.89  -   -10.69 
+  28 -    27000.00  -  4500.00  -  4488.88  -    44.89  -   -11.12 
+  29 -    28000.00  -  4500.00  -  4488.45  -    44.88  -   -11.55 
+  30 -    29000.00  -  4500.00  -  4488.03  -    44.88  -   -11.97 
+  31 -    30000.00  -  4500.00  -  4487.60  -    44.88  -   -12.40 
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+          2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.00 -    0.0 -    0.00 -    0.0
+         26 -    25500.00 m -     Lower Crust      -    24400.00 m -    5        -   9.38 -  300.0 -   93.75 - 3000.0
+         31 -    30000.00 m -   Undifferentiated   -  6371000.00 m -   84        -   0.28 -   12.4 -    0.00 -    0.0
+Reading models/ak135f-sph.dat for model ak135-f
+Printing a full comparison for Vs using ak135-f as a reference
+Layer#   -   Depth  -  Value    - Reference -   StDev   - Difference
+   0 -      500.00  -     0.00  -     0.00  -     0.10  -     0.00 
+   1 -     1500.00  -     0.00  -     0.00  -     0.10  -     0.00 
+   2 -     2500.00  -     0.00  -     0.00  -     0.10  -     0.00 
+   3 -     3500.00  -   200.00  -  3200.00  -    32.00  -  3000.00 
+   4 -     4000.00  -   200.00  -  3200.00  -    32.00  -  3000.00 
+   5 -     4500.00  -  1800.00  -  3200.00  -    32.00  -  1400.00 
+   6 -     5500.00  -  1800.00  -  3200.00  -    32.00  -  1400.00 
+   7 -     6500.00  -  2800.00  -  3200.00  -    32.00  -   400.00 
+   8 -     7500.00  -  2800.00  -  3200.00  -    32.00  -   400.00 
+   9 -     8500.00  -  2800.00  -  3200.00  -    32.00  -   400.00 
+  10 -     9500.00  -  2800.00  -  3200.00  -    32.00  -   400.00 
+  11 -    10500.00  -  3500.00  -  3900.00  -    39.00  -   400.00 
+  12 -    11500.00  -  3500.00  -  3900.00  -    39.00  -   400.00 
+  13 -    12500.00  -  3500.00  -  3900.00  -    39.00  -   400.00 
+  14 -    13500.00  -  3500.00  -  3900.00  -    39.00  -   400.00 
+  15 -    14500.00  -  3500.00  -  3900.00  -    39.00  -   400.00 
+  16 -    15500.00  -  3500.00  -  3900.00  -    39.00  -   400.00 
+  17 -    16500.00  -  3500.00  -  3900.00  -    39.00  -   400.00 
+  18 -    17500.00  -  3500.00  -  3900.00  -    39.00  -   400.00 
+  19 -    18500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  20 -    19500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  21 -    20500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  22 -    21500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  23 -    22500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  24 -    23500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  25 -    24500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  26 -    25500.00  -  3700.00  -  3900.00  -    39.00  -   200.00 
+  27 -    26000.00  -  4500.00  -  4484.44  -    44.84  -   -15.56 
+  28 -    27000.00  -  4500.00  -  4484.51  -    44.85  -   -15.49 
+  29 -    28000.00  -  4500.00  -  4484.58  -    44.85  -   -15.42 
+  30 -    29000.00  -  4500.00  -  4484.65  -    44.85  -   -15.35 
+  31 -    30000.00  -  4500.00  -  4484.72  -    44.85  -   -15.28 
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+          2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.00 -    0.0 -    0.00 -    0.0
+         26 -    25500.00 m -     Lower Crust      -    18000.00 m -    7        -   0.00 -    0.0 -   93.75 - 3000.0
+         31 -    30000.00 m -   Undifferentiated   -  6371000.00 m -  144        -   0.35 -   15.6 -    0.00 -    0.0
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+Field not found; skipping
+Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+Reading models/Liquidus-HerzbergZhang1996.dat for model Herzberg_Zhang_1996
+Field not found; skipping
+Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
+Field not found; skipping
+Assessing VpVs
+Reading models/ak135f-sph-deviation.dat for model ak135-f
+Field not found; skipping
+Reading models/PREM.dat for model PREM
+Printing a full comparison for VpVs using PREM as a reference
+Layer#   -   Depth  -  Value    - Reference -   StDev   - Difference
+   3 -     3500.00  -    10.00  -     1.81  -     0.10  -    -8.19 
+   4 -     4000.00  -    10.00  -     1.81  -     0.10  -    -8.19 
+   5 -     4500.00  -     1.67  -     1.81  -     0.10  -     0.15 
+   6 -     5500.00  -     1.67  -     1.81  -     0.10  -     0.15 
+   7 -     6500.00  -     1.96  -     1.81  -     0.10  -    -0.15 
+   8 -     7500.00  -     1.96  -     1.81  -     0.10  -    -0.15 
+   9 -     8500.00  -     1.96  -     1.81  -     0.10  -    -0.15 
+  10 -     9500.00  -     1.96  -     1.81  -     0.10  -    -0.15 
+  11 -    10500.00  -     1.86  -     1.81  -     0.10  -    -0.04 
+  12 -    11500.00  -     1.86  -     1.81  -     0.10  -    -0.04 
+  13 -    12500.00  -     1.86  -     1.81  -     0.10  -    -0.04 
+  14 -    13500.00  -     1.86  -     1.81  -     0.10  -    -0.04 
+  15 -    14500.00  -     1.86  -     1.81  -     0.10  -    -0.04 
+  16 -    15500.00  -     1.86  -     1.74  -     0.10  -    -0.11 
+  17 -    16500.00  -     1.86  -     1.74  -     0.10  -    -0.11 
+  18 -    17500.00  -     1.86  -     1.74  -     0.10  -    -0.11 
+  19 -    18500.00  -     1.89  -     1.74  -     0.10  -    -0.15 
+  20 -    19500.00  -     1.89  -     1.74  -     0.10  -    -0.15 
+  21 -    20500.00  -     1.89  -     1.74  -     0.10  -    -0.15 
+  22 -    21500.00  -     1.89  -     1.74  -     0.10  -    -0.15 
+  23 -    22500.00  -     1.89  -     1.74  -     0.10  -    -0.15 
+  24 -    23500.00  -     1.89  -     1.74  -     0.10  -    -0.15 
+  25 -    24500.00  -     1.89  -     1.74  -     0.10  -    -0.15 
+  26 -    25500.00  -     1.89  -     1.74  -     0.10  -    -0.15 
+  27 -    26000.00  -     1.78  -     1.81  -     0.10  -     0.03 
+  28 -    27000.00  -     1.78  -     1.81  -     0.10  -     0.03 
+  29 -    28000.00  -     1.78  -     1.81  -     0.10  -     0.03 
+  30 -    29000.00  -     1.78  -     1.81  -     0.10  -     0.03 
+  31 -    30000.00  -     1.78  -     1.81  -     0.10  -     0.03 
+       Input Model          -      Layer Name      -       Reference model       - Below Reference - Above Reference
+Layer index - Bedding depth -                      - Bedding depth - Layer index -  StDev  -  Abs  -  StDev  -  Abs
+          2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.00 -    0.0 -    0.00 -    0.0
+         26 -    25500.00 m -     Lower Crust      -    24400.00 m -    5        -  81.88 -    8.2 -    1.46 -    0.1
+         31 -    30000.00 m -   Undifferentiated   -  6371000.00 m -   84        -   0.00 -    0.0 -    0.29 -    0.0
+Reading models/ak135f-sph.dat for model ak135-f
+Field not found; skipping
+Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
+Field not found; skipping
+Reading models/Geotherm_TC1.dat for model TC1
+Field not found; skipping
+Reading models/Liquidus-HerzbergZhang1996.dat for model Herzberg_Zhang_1996
+Field not found; skipping
+Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
+Field not found; skipping

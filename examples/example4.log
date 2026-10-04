@@ -1,4 +1,6 @@
+python3 ./validearth.py -i examples/example4.dat -pdf -detailed
 Reading a list of reference models from config.txt
+ - models/ak135f-sph-deviation.dat
  - models/PREM.dat
  - models/ak135f-sph.dat
  - models/MantleChemistry.dat
@@ -7,11 +9,15 @@ Reading a list of reference models from config.txt
  - models/Solidus-Andraut2018.dat
 Reading file examples/example4.dat
 Name: Canobolas
+Checking layer structure
+Checking layer boundaries
 Reading Pressure-Depth parameterisation from models/PREM.dat
 Using PREM as a pressure-depth dependency model
 Assessing the following input model physical quantities: 
 Temperature
 Assessing Temperature
+Reading models/ak135f-sph-deviation.dat for model ak135-f
+Field not found; skipping
 Reading models/PREM.dat for model PREM
 Field not found; skipping
 Reading models/ak135f-sph.dat for model ak135-f
@@ -131,4 +137,3 @@ Layer#   -   Depth  - Temperature - Solidus - Liquidus
   31 -    90000.00  -   1390.61 -   1720.39 -     N/A
   32 -    95000.00  -   1432.40 -   1730.36 -     N/A
 Some sections along the profile should be partially molten
-

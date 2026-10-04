@@ -244,21 +244,6 @@ with open(args.inputfile) as myfile:
 if args.depthrev: column.gn.reverse_gn(len(column.depth)-1)
 column.gn.report_gn(column.depth)
 
-# convert to SI units
-if args.udepth == "km":   column.depth   = [x*1000 if x is not None else None for x in column.depth]
-if args.uvp == "km/s":    column.Vp      = [x*1000 if x is not None else None for x in column.Vp]
-if args.uvs == "km/s":    column.Vs      = [x*1000 if x is not None else None for x in column.Vs]
-if args.udens == "g/cm3": column.density = [x*1000 if x is not None else None for x in column.density]
-if args.utemp == "C":     column.temperature = [x+273.15 if x is not None else None for x in column.temperature]
-
-# check geological layers
-check_layers(column)
-check_layer_depth(column)
-
-# compute or verify derived fields
-recompute_vp_vs(column)
-recompute_mgnum(column)
-
 # convert data to numpy arrays
 column.depth = np.asarray(column.depth,dtype=float)
 column.SiO2  = np.asarray(column.SiO2,dtype=float)
@@ -272,6 +257,32 @@ column.Vp      = np.asarray(column.Vp,dtype=float)
 column.Vs      = np.asarray(column.Vs,dtype=float)
 column.VpVs    = np.asarray(column.VpVs,dtype=float)
 column.density = np.asarray(column.density,dtype=float)
+
+# convert to SI units
+if args.udepth == "km":    column.depth   *= 1000
+if args.uvp    == "km/s":  column.Vp      *= 1000
+if args.uvs    == "km/s":  column.Vs      *= 1000
+if args.udens  == "g/cm3": column.density *= 1000
+if args.utemp  == "C":     column.temperature += 273.15
+
+# compute or verify derived fields
+recompute_vp_vs(column)
+recompute_mgnum(column)
+
+# discard absent data arrays
+if column.density.size == 0: column.density = None
+if column.SiO2.size == 0: column.SiO2 = None
+if column.Al2O3.size == 0: column.Al2O3 = None
+if column.MgNum is not None and column.MgNum.size == 0: column.MgNum = None
+if column.MgO is not None and column.MgO.size == 0: column.MgO = None
+if column.FeO is not None and column.FeO.size == 0: column.FeO = None
+if column.CaO.size == 0: column.CaO = None
+if column.temperature.size == 0: column.temperature = None
+
+
+# check geological layers
+check_layers(column)
+check_layer_depth(column)
 
 
 # check the datum

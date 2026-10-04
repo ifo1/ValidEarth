@@ -1,7 +1,7 @@
 models/ak135f-sph-deviation.dat
-#models/PREM.dat
-#models/ak135f-sph.dat
-#models/MantleChemistry.dat
-#models/Geotherm_TC1.dat
-#models/Liquidus-HerzbergZhang1996.dat
-#models/Solidus-Andraut2018.dat
+models/PREM.dat
+models/ak135f-sph.dat
+models/MantleChemistry.dat
+models/Geotherm_TC1.dat
+models/Liquidus-HerzbergZhang1996.dat
+models/Solidus-Andraut2018.dat

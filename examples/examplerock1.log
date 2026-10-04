@@ -1,4 +1,4 @@
-$ python3 ./validrock.py -i examples/examplerock1.dat
+python3 ./validrock.py -i examples/examplerock1.dat -pdf
 Reading reference rock properties from configrocks.txt
  - refrocks/rocks_minmax.txt
 Reading rock properties from examples/examplerock1.dat
