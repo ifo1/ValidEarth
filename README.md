@@ -202,6 +202,22 @@ python3 ./validearth.py -i examples/example4.dat -pdf -detailed
 ```
 to assess a geothermal profile using one of the reference lithospheric geotherms and solidus and liquidus curves. ValidEarth will produce the interpolated liquidus and solidus temperatures along the studied profile, as well as a short summary in the end. 
 
+## Example 5
+
+Run
+```console
+python3 ./validearth.py -i examples/example5.dat
+```
+to try a yet another example of profile assessment.
+
+## Example 6
+
+Run
+```console
+python3 ./validearth.py -i examples/example6.dat
+```
+this example should result in failure; the code should detect that the actual depth of Moho layer according to the physical properties is not consistent with the annotated value.
+
 # Automatisation
 
 The current version of ValidEarth and ValidRock allows to process only one file per call. However, it can be easily automated using simplistic shell scripts like:

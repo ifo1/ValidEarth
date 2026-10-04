@@ -57,8 +57,8 @@ def check_layers(column):
                 if column.Vs[i] < mantle_vs and column.Vs[i+1] > mantle_vs:
                     print ("The " + highlight("Moho") + " detected using Vs contrast right beneath " + highlight(column.depth[i]) + " m")
                     column.gn.assign_gn("moho", i)
-                    if mantle:
-                        print (error() + "The mantle has already been detected using density!")
+                    if not mantle:
+                        print (error() + "The crustal-mantle transition has no density contrast!")
                         exit()
                     else:
                         mantle = True
@@ -67,8 +67,8 @@ def check_layers(column):
                 if column.Vp[i] < mantle_vp and column.Vp[i+1] > mantle_vp:
                     print ("The " + highlight("Moho") + " detected using Vp contrast right beneath " + highlight(column.depth[i]) + " m")
                     column.gn.assign_gn("moho", i)
-                    if mantle:
-                        print (error() + "The mantle has already been detected using Vp!")
+                    if not mantle:
+                        print (error() + "The crustal-mantle transition has no density or Vp contrast!")
                         exit()
                     else:
                         mantle = True
@@ -104,6 +104,8 @@ LAB_depths   = [{"type" :   "oceanic", "region": "hotspot / too thin for ocean",
 def check_layer_depth(column):
     # check that the main layer boundaries are within reasonable ranges
 
+    print ("Checking layer boundaries")
+
     #if there is no water, it is a continent
     geosetting = "continental"
     # the depth of water body
@@ -111,7 +113,7 @@ def check_layer_depth(column):
         thickness = column.depth[column.gn.water]
         for region in water_depths:
             if thickness <= region["depth"]:
-                print ("According to the depth of " + str(thickness) + " m, the region is " + region["colour"](region["setting"]))
+                print ("According to the water body depth of " + str(thickness) + " m, the region is " + region["colour"](region["setting"]))
                 geosetting = region["setting"].split(' ', 1)[0]
                 break
         else:
