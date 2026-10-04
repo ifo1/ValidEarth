@@ -7,7 +7,7 @@ plotcolours = ["red", "blue", "green", "orange", "violet", "brown"]
 
 # local modules
 from read_values import read_field, read_float, read_value
-from colouredstrings import error, warning, highlight
+from colouredstrings import error, warning, highlight, green, red
 from rockcompare import find_matching_rocks, plot_rock_properties
 
 # local classes
@@ -144,7 +144,10 @@ inputrocks = read_rock_file(args.inputfile)
 find_matching_rocks(refrocks, inputrocks, args.detailed)
 
 for rock in inputrocks:
-    print(rock.name + " matches " + " - ".join(rock.matching))
+    if rock.matching:
+        print(rock.name + green(" matches ") + " - ".join(rock.matching))
+    else:
+        print(rock.name + red(" does not match any reference"))
 
 if args.pdf or args.png:
     plot_rock_properties(refrocks, inputrocks, output_dir=args.output)

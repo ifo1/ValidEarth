@@ -2,7 +2,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-from colouredstrings import error
+from colouredstrings import error, red
 
 Nsigma = 3
 
@@ -90,9 +90,9 @@ def find_matching_rocks(refrocks, inputrocks, verbose = False):
                 if ref.lithology not in matching:
                     matching.append(ref.lithology)
         if not matching:
-            print (error() + "Cannot find a reference sample matching rock " + inp.name + " with the following properties: ", end='')
+            print (error() + "Cannot find a reference sample matching rock '" + red(inp.name) + "' with the following properties: ", end='')
             for prop in inp.properties:
-                print(str(prop.parameter) + " = " + str(prop.mean), end='')
+                print(str(prop.parameter) + " = " + str(prop.mean) + " ", end='')
             print('')
         inp.matching = matching
 
