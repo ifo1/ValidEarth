@@ -207,11 +207,11 @@ with open(args.inputfile) as myfile:
                 if len(column.depth) > 1:
                     if args.depthrev:
                         if locdepth > column.depth[-1]:
-                            print (error() + "the depth is not non-decreasing in the input file: " + str (column.depth[-1]) + " vs "  + str (locdepth))
+                            print (error() + "the depth is not non-decreasing in the input file: " + str (column.depth[-1]) + " vs "  + str (locdepth)+ "; probably, -depthrev flag might help")
                             exit()
                     else:
                         if locdepth < column.depth[-1]:
-                            print (error() + "the depth is not non-increasing in the input file: " + str (column.depth[-1]) + " vs "  + str (locdepth))
+                            print (error() + "the depth is not non-increasing in the input file: " + str (column.depth[-1]) + " vs "  + str (locdepth) + "; probably, -depthrev flag might help")
                             exit()
                 column.depth.insert( appendindex , locdepth )
             elif field == "Temperature":

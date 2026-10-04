@@ -216,7 +216,23 @@ Run
 ```console
 python3 ./validearth.py -i examples/example6.dat
 ```
-this example should result in failure; the code should detect that the actual depth of Moho layer according to the physical properties is not consistent with the annotated value, annotating the numbers of rows:
+this example should result in failure; is reads:
+```console
+Error at the depth of -200000.0: the depth cannot be less than -9000 (exceeding the highest mountain on the Earth); probably, -depthneg flag might help
+```
+Indicating that the depth scale is wrong and offering a solution. However, once applied, it should return:
+```console
+Error: the depth is not non-increasing in the input file: 195000.0 vs 190000.0; probably, -depthrev flag might help
+```
+Indicating a yet another problem. However, with these two flags the example should go a bit further and crash again:
+```console
+Error at the depth of 10050.0: the density is less than 10 kg/m3; probably, the units are wrong - kg/m3 expected. Check the -udens flag
+```
+Finally, we can assemble a correct line:
+```console
+python3 ./validearth.py -i examples/example6.dat -depthneg -depthrev -udens g/cm3
+```
+the code should detect that the actual depth of Moho layer according to the physical properties is not consistent with the annotated value, annotating the numbers of rows:
 ```console
 The Moho detected using Vs contrast right beneath -23000.0 m
 Error: the Moho depth is not consistent: 61 vs 84

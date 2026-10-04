@@ -10,7 +10,7 @@ Reading a list of reference models from config.txt
 Reading file examples/example2.dat
 The following golden nails are used
  - Lower crust ends at depth 45000.0 (record #1)
-Error: at the depth of 286000.0 The following MgO, FeO, Mg# values are inconsistent: 30.08 / 8.16 ≠ 89.27
+Error at the depth of 286000.0: The following MgO, FeO, Mg# values are inconsistent: 30.08 / 8.16 ≠ 89.27
 Checking layer structure
 Checking layer boundaries
 The crust with total thickness 45000.0 m is identified as platform

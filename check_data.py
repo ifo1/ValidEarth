@@ -27,6 +27,19 @@ def check_layers(column):
     mantle = False
 
     for i in range(n-1):
+        # check the depths are ok
+        if column.depth[i] < -9000:
+            print (error(column.depth[i]) + "the depth cannot be less than -9000 (exceeding the highest mountain on the Earth); probably, -depthneg flag might help")
+            exit()
+
+        # check some basic units
+        if column.density is not None and column.density[i] < 10:
+            print (error(column.depth[i]) + "the density is less than 10 kg/m3; probably, the units are wrong - kg/m3 expected. Check the -udens flag")
+            exit()
+        if column.Vp is not None and column.Vp[i] < 10:
+            print (error(column.depth[i]) + "the Vp is less than 10 m/sec; probably, the units are wrong - kg/m3 expected. Check the -uvp flag")
+            exit()
+
         # water
         if column.Vs is not None:
             if column.Vs[i] < 0.01 and column.Vs[i+1] > 0.01:
@@ -61,6 +74,7 @@ def check_layers(column):
                     exit()
                 else:
                     mantle = True
+
         if column.Vp is not None:
             if column.Vp[i] < mantle_vp and column.Vp[i+1] > mantle_vp:
                 print ("The " + highlight("Moho") + " detected using Vp contrast right beneath " + highlight(column.depth[i]) + " m")

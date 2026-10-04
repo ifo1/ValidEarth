@@ -1,4 +1,4 @@
-python3 ./validearth.py -i examples/example6.dat
+python3 ./validearth.py -i examples/example6.dat -depthneg -depthrev -udens g/cm3
 Reading a list of reference models from config.txt
  - models/ak135f-sph-deviation.dat
  - models/PREM.dat
@@ -11,8 +11,8 @@ Reading file examples/example6.dat
 Longitude: 158.86
 Latitude: -54.63
 The following golden nails are used
- - Lower crust ends at depth -34500.0 (record #62)
+ - Lower crust ends at depth 34500.0 (record #85)
 Vp/Vs was computed automatically
 Checking layer structure
-The Moho detected using Vs contrast right beneath -23000.0 m
-Error: the Moho depth is not consistent: 61 vs 84
+The Moho detected using Vs contrast right beneath 12000.0 m
+Error: the Moho depth is not consistent: 84 vs 39
