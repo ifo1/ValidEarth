@@ -8,7 +8,6 @@ Reading a list of reference models from config.txt
  - models/Liquidus-HerzbergZhang1996.dat
  - models/Solidus-Andraut2018.dat
 Reading file examples/example5.dat
-Name: WineglassBay
 Longitude: 148.298333
 Latitude: -42.125278
 The following golden nails are used
@@ -28,7 +27,7 @@ Using PREM as a pressure-depth dependency model
 Assessing the following input model physical quantities: 
 Density - Vp - Vs - Type
 Assessing Density
-Reading models/ak135f-sph-deviation.dat for model ak135-f
+Reading models/ak135f-sph-deviation.dat for model ak135-f Deviation
        Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
 Layer index - Bedding depth -                      - Bedding depth - Layer index -   Rel   -  Abs  -   Rel   -  Abs
           2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.00 -    0.0 -    0.00 -    0.0
@@ -74,8 +73,8 @@ Layer index - Bedding depth -                      - Bedding depth - Layer index
           2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.98 -   10.0 -    0.00 -    0.0
          26 -    25500.00 m -     Lower Crust      -    24400.00 m -    5        -  13.46 -  350.0 -   30.77 -  800.0
          31 -    30000.00 m -   Undifferentiated   -  6371000.00 m -   84        -   3.55 -  120.0 -    0.00 -    0.0
-Reading models/ak135f-sph.dat for model ak135-f
-Printing a full comparison for Density using ak135-f as a reference
+Reading models/ak135f-sph.dat for model ak135-f - spherical average structure
+Printing a full comparison for Density using ak135-f - spherical average structure as a reference
 Layer#   -   Depth  -  Value    - Reference -   StDev   - Difference
    0 -      500.00  -  1030.00  -  1020.00  -    10.20  -   -10.00 
    1 -     1500.00  -  1030.00  -  1020.00  -    10.20  -   -10.00 
@@ -123,7 +122,7 @@ Field not found; skipping
 Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
 Field not found; skipping
 Assessing Vp
-Reading models/ak135f-sph-deviation.dat for model ak135-f
+Reading models/ak135f-sph-deviation.dat for model ak135-f Deviation
        Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
 Layer index - Bedding depth -                      - Bedding depth - Layer index -   Rel   -  Abs  -   Rel   -  Abs
           2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.00 -    0.0 -    0.00 -    0.0
@@ -169,8 +168,8 @@ Layer index - Bedding depth -                      - Bedding depth - Layer index
           2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.00 -    0.0 -    0.00 -    0.0
          26 -    25500.00 m -     Lower Crust      -    24400.00 m -    5        -  12.07 -  700.0 -   65.52 - 3800.0
          31 -    30000.00 m -   Undifferentiated   -  6371000.00 m -   84        -   0.00 -    0.0 -    1.34 -  109.0
-Reading models/ak135f-sph.dat for model ak135-f
-Printing a full comparison for Vp using ak135-f as a reference
+Reading models/ak135f-sph.dat for model ak135-f - spherical average structure
+Printing a full comparison for Vp using ak135-f - spherical average structure as a reference
 Layer#   -   Depth  -  Value    - Reference -   StDev   - Difference
    0 -      500.00  -  1450.00  -  1450.00  -    14.50  -     0.00 
    1 -     1500.00  -  1450.00  -  1450.00  -    14.50  -     0.00 
@@ -218,7 +217,7 @@ Field not found; skipping
 Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
 Field not found; skipping
 Assessing Vs
-Reading models/ak135f-sph-deviation.dat for model ak135-f
+Reading models/ak135f-sph-deviation.dat for model ak135-f Deviation
        Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
 Layer index - Bedding depth -                      - Bedding depth - Layer index -   Rel   -  Abs  -   Rel   -  Abs
           2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.00 -    0.0 -    0.00 -    0.0
@@ -264,8 +263,8 @@ Layer index - Bedding depth -                      - Bedding depth - Layer index
           2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.00 -    0.0 -    0.00 -    0.0
          26 -    25500.00 m -     Lower Crust      -    24400.00 m -    5        -   9.38 -  300.0 -   93.75 - 3000.0
          31 -    30000.00 m -   Undifferentiated   -  6371000.00 m -   84        -   0.28 -   12.4 -    0.00 -    0.0
-Reading models/ak135f-sph.dat for model ak135-f
-Printing a full comparison for Vs using ak135-f as a reference
+Reading models/ak135f-sph.dat for model ak135-f - spherical average structure
+Printing a full comparison for Vs using ak135-f - spherical average structure as a reference
 Layer#   -   Depth  -  Value    - Reference -   StDev   - Difference
    0 -      500.00  -     0.00  -     0.00  -     0.10  -     0.00 
    1 -     1500.00  -     0.00  -     0.00  -     0.10  -     0.00 
@@ -313,7 +312,7 @@ Field not found; skipping
 Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
 Field not found; skipping
 Assessing VpVs
-Reading models/ak135f-sph-deviation.dat for model ak135-f
+Reading models/ak135f-sph-deviation.dat for model ak135-f Deviation
 Field not found; skipping
 Reading models/PREM.dat for model PREM
 Printing a full comparison for VpVs using PREM as a reference
@@ -352,7 +351,7 @@ Layer index - Bedding depth -                      - Bedding depth - Layer index
           2 -     2500.00 m -        Water         -     3000.00 m -    1        -   0.00 -    0.0 -    0.00 -    0.0
          26 -    25500.00 m -     Lower Crust      -    24400.00 m -    5        -  81.88 -    8.2 -    1.46 -    0.1
          31 -    30000.00 m -   Undifferentiated   -  6371000.00 m -   84        -   0.00 -    0.0 -    0.29 -    0.0
-Reading models/ak135f-sph.dat for model ak135-f
+Reading models/ak135f-sph.dat for model ak135-f - spherical average structure
 Field not found; skipping
 Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
 Field not found; skipping

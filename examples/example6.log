@@ -8,7 +8,6 @@ Reading a list of reference models from config.txt
  - models/Liquidus-HerzbergZhang1996.dat
  - models/Solidus-Andraut2018.dat
 Reading file examples/example6.dat
-Name: MacquarieIsland
 Longitude: 158.86
 Latitude: -54.63
 The following golden nails are used

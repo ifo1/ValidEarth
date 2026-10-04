@@ -81,10 +81,10 @@ if args.file_refmodels != "noref":
                     tmp = line.strip().split()
                     
                     if tmp[0] == "Name":
-                        refmodel.name = tmp[1]
+                        refmodel.name = line.partition(' ')[2].strip()
 
                     elif tmp[0] == "Citation":
-                        refmodel.citation.append(line.partition(' ')[2])
+                        refmodel.citation.append(line.partition(' ')[2].strip())
 
                     elif tmp[0] == "Depth" or tmp[0] == "Pressure":
                         # the number of line (starting from zero) where the datatable begins
@@ -148,8 +148,7 @@ with open(args.inputfile) as myfile:
         # check the header
         if not datatable:
 
-            column.name, flag = read_field("Name", tmp, column.name)
-            if flag: continue
+            column.name = line.partition(' ')[2].strip()
 
             column.coordsys, flag = read_field("CoordinateSystem", tmp, column.coordsys)
             if flag: continue

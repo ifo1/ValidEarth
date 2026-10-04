@@ -8,7 +8,6 @@ Reading a list of reference models from config.txt
  - models/Liquidus-HerzbergZhang1996.dat
  - models/Solidus-Andraut2018.dat
 Reading file examples/example4.dat
-Name: Canobolas
 Checking layer structure
 Checking layer boundaries
 Reading Pressure-Depth parameterisation from models/PREM.dat
@@ -16,11 +15,11 @@ Using PREM as a pressure-depth dependency model
 Assessing the following input model physical quantities: 
 Temperature
 Assessing Temperature
-Reading models/ak135f-sph-deviation.dat for model ak135-f
+Reading models/ak135f-sph-deviation.dat for model ak135-f Deviation
 Field not found; skipping
 Reading models/PREM.dat for model PREM
 Field not found; skipping
-Reading models/ak135f-sph.dat for model ak135-f
+Reading models/ak135f-sph.dat for model ak135-f - spherical average structure
 Field not found; skipping
 Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
 Field not found; skipping

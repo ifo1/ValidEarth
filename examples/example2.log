@@ -8,7 +8,6 @@ Reading a list of reference models from config.txt
  - models/Liquidus-HerzbergZhang1996.dat
  - models/Solidus-Andraut2018.dat
 Reading file examples/example2.dat
-Name: Warrumbungles
 The following golden nails are used
  - Lower crust ends at depth 45000.0 (record #1)
 Error: at the depth of 286000.0 The following MgO, FeO, Mg# values are inconsistent: 30.08 / 8.16 ≠ 89.27
@@ -20,11 +19,11 @@ Using PREM as a pressure-depth dependency model
 Assessing the following input model physical quantities: 
 SiO2 - Al2O3 - FeO - MgO - CaO - MgNum
 Assessing SiO2
-Reading models/ak135f-sph-deviation.dat for model ak135-f
+Reading models/ak135f-sph-deviation.dat for model ak135-f Deviation
 Field not found; skipping
 Reading models/PREM.dat for model PREM
 Field not found; skipping
-Reading models/ak135f-sph.dat for model ak135-f
+Reading models/ak135f-sph.dat for model ak135-f - spherical average structure
 Field not found; skipping
 Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
        Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
@@ -38,11 +37,11 @@ Field not found; skipping
 Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
 Field not found; skipping
 Assessing Al2O3
-Reading models/ak135f-sph-deviation.dat for model ak135-f
+Reading models/ak135f-sph-deviation.dat for model ak135-f Deviation
 Field not found; skipping
 Reading models/PREM.dat for model PREM
 Field not found; skipping
-Reading models/ak135f-sph.dat for model ak135-f
+Reading models/ak135f-sph.dat for model ak135-f - spherical average structure
 Field not found; skipping
 Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
        Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
@@ -56,11 +55,11 @@ Field not found; skipping
 Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
 Field not found; skipping
 Assessing FeO
-Reading models/ak135f-sph-deviation.dat for model ak135-f
+Reading models/ak135f-sph-deviation.dat for model ak135-f Deviation
 Field not found; skipping
 Reading models/PREM.dat for model PREM
 Field not found; skipping
-Reading models/ak135f-sph.dat for model ak135-f
+Reading models/ak135f-sph.dat for model ak135-f - spherical average structure
 Field not found; skipping
 Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
        Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
@@ -74,11 +73,11 @@ Field not found; skipping
 Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
 Field not found; skipping
 Assessing MgO
-Reading models/ak135f-sph-deviation.dat for model ak135-f
+Reading models/ak135f-sph-deviation.dat for model ak135-f Deviation
 Field not found; skipping
 Reading models/PREM.dat for model PREM
 Field not found; skipping
-Reading models/ak135f-sph.dat for model ak135-f
+Reading models/ak135f-sph.dat for model ak135-f - spherical average structure
 Field not found; skipping
 Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
        Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
@@ -92,11 +91,11 @@ Field not found; skipping
 Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
 Field not found; skipping
 Assessing CaO
-Reading models/ak135f-sph-deviation.dat for model ak135-f
+Reading models/ak135f-sph-deviation.dat for model ak135-f Deviation
 Field not found; skipping
 Reading models/PREM.dat for model PREM
 Field not found; skipping
-Reading models/ak135f-sph.dat for model ak135-f
+Reading models/ak135f-sph.dat for model ak135-f - spherical average structure
 Field not found; skipping
 Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
        Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum
@@ -110,11 +109,11 @@ Field not found; skipping
 Reading models/Solidus-Andraut2018.dat for model Andrault_etal_2018
 Field not found; skipping
 Assessing MgNum
-Reading models/ak135f-sph-deviation.dat for model ak135-f
+Reading models/ak135f-sph-deviation.dat for model ak135-f Deviation
 Field not found; skipping
 Reading models/PREM.dat for model PREM
 Field not found; skipping
-Reading models/ak135f-sph.dat for model ak135-f
+Reading models/ak135f-sph.dat for model ak135-f - spherical average structure
 Field not found; skipping
 Reading models/MantleChemistry.dat for model Afonso2013&Liu2023
        Input Model          -      Layer Name      -       Reference model       -  Below Minimum  -  Above Maximum

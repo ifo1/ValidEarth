@@ -8,7 +8,6 @@ Reading a list of reference models from config.txt
  - models/Liquidus-HerzbergZhang1996.dat
  - models/Solidus-Andraut2018.dat
 Reading file examples/example3.dat
-Name: Pomani
 Vp/Vs was computed automatically
 Checking layer structure
 A layer of sediments detected using high Vp/Vs ratio with bedding depth of 1600.0 m

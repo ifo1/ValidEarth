@@ -19,7 +19,7 @@ A valid input file should contain the following sections:
 - Column headers
 - Data table
 
-Optional keywords include **Name** (an arbitrary string without whitespace), **CoordinateSystem** (Geographic or Cartesian), **Longitude**, and **Latitude**. Each keyword must be specified on a separate line.
+Optional keywords include **Name** (an arbitrary string), **CoordinateSystem** (Geographic or Cartesian), **Longitude**, and **Latitude**. Each keyword must be specified on a separate line.
 
 The first column header must be **Depth**. It can be followed by any of the following headers:
 - **Temperature**, K
@@ -107,7 +107,7 @@ The author of this tool is highly interested in adding new databases to ValidEar
 ```console
 python3 ./validrock.py -i examples/examplerock1.dat -pdf
 ```
-Its expected output is stored in examples/examplerock2.log
+Its expected output is stored in examples/examplerock1.log
 
 # Understanding Program Outputs
 
