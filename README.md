@@ -104,9 +104,9 @@ While ValidEarth operates using "pre-known" parameters listed in the correspondi
 The author of this tool is highly interested in adding new databases to ValidEarth and ValidRock. Should there be any interest to develop a new database, please, contact me to discuss the best possible ways to implement and maintain it. 
 
 **ValidRock** comes with its own example; this example contains a list of valid records and a botched one, that should be successfully identified:
-
+```console
 python3 ./validrock.py -i examples/examplerock1.dat -pdf
-
+```
 Its expected output is stored in examples/examplerock2.log
 
 # Understanding Program Outputs
@@ -251,5 +251,4 @@ Refer to the bibliography.bib file in the root directory for all the reference m
 
 # Authorship
 
-This code was written by Ilya Fomin
 (C) Ilya Fomin, 2026
