@@ -6,6 +6,11 @@ The assessable properties include key parameters such as density, temperature, b
 
 For each parameter, ValidEarth provides a set of well-established reference models based on experimental and seismic data, with all sources documented in the bibliography. Each reference data point is associated with an independent relative or absolute uncertainty, allowing comparisons to account for the expected variability and uncertainty of the reference models. By default, the tool reports differences exceeding three standard deviations (3σ). When multiple reference models are available for a parameter - for example, geotherms corresponding to different geological settings - the toolkit automatically identifies the best-matching reference profile.
 
+**ValidRock** is an additional tool for checking the rock properties. It assesses whether the combinations of given rock properties such as density, Vp, and Vs fall within the reported ranges of any rock species. It can rapidly identify the combinations of rock properties that are non-physical and potential problematic areas within the model.
+
+*This tool cannot replace a careful examination of models by a qualified specialist having access to modern technical reports and scientific artices on the region of interest. The author is looking forward to collaboration with those interested in Quality Assurance for geological and geophysical models.*
+
+
 # Input Data Format
 
 A valid input file should contain the following sections:
@@ -29,7 +34,9 @@ The first column header must be **Depth**. It can be followed by any of the foll
 - **CaO**, wt.%
 - **MgNum** or Mg#, mol.%
 
-The header line must be followed by a data table containing the values to be validated. By default, ValidEarth assumes that physical quantities are expressed in SI units unless otherwise specified. Selected automatic unit conversions can be enabled using command-line options.
+The header line must be followed by a data table containing the values to be validated. The table must be ordered by depth (increasing or decresing), the depth can be positive or negative above sea level (check flags **-depthneg** and **-depthrev**). The values by default are treated as nodes-centred (i.e. value at point). To use cell based approach (a value assigned to a volume, or voxel), specify the depth level at the beginning and at the end of each cell; ValidEarth allows repeating depth values for adjacent cells.
+
+By default, ValidEarth assumes that physical quantities are expressed in SI units unless otherwise specified. Selected automatic unit conversions can be enabled using command-line options.
 
 The input format also supports tags identifying distinct geological domains or layers. These tags should appear as the last entry in each data row. The optional header Type can be used to identify this column.
 
@@ -58,7 +65,9 @@ All lines beginning with #, /, %, or ! are treated as comments and ignored.
 
 # Profile Validation
 
-ValidEarth provides two main methods for profile validation:
+ValidEarth provides three main methods for profile validation:
+
+- **Depth interval validation**: the main boundaries such as the water body depth, the thickness of unconsolidated sediments, and the Moho depth to be within certain feasible boundaries according to the modern sceintific data.
 
 - **Range validation**: flags values outside a physically feasible range. The reference model must provide ParameterMin and ParameterMax columns for this type of validation.
 
@@ -70,9 +79,11 @@ An additional test is provided to assess whether melting may occur within the pr
 
 A reference model may use either Pressure or Depth as its independent variable. When pressure is used, it is converted to depth according to a supplied pressure-depth model.
 
-## Config file
+## Configuring reference models
 
 A default list of reference models is stored in the **config.txt** file (the file lists relative or absolute paths to the models, one path per line). The user can use command line options to specify a custom config file or amend the existing one.
+
+ValidEarth performs some checks even if no reference file was provided, including the depth of major geological boundaries. Use **-noref** to perform only the basic checks.
 
 ## 3D Reference Models
 
@@ -82,7 +93,21 @@ ValidEarth allows the user to specify a certain distance (in metres) using the *
 
 Notice, that the code uses a simplified Haversine formula for the distance test.
 
-The ValidEarth package contains a file called ecm2validearth.py (located in models/) that allows the user to convert the **ECM1** dataset to a ValidEarth 3D reference model file. 
+The ValidEarth package contains a file called **ecm2validearth.py** (located in models/) that allows the user to convert the **ECM1** dataset to a ValidEarth 3D reference model file. 
+
+# ValidRock
+
+**ValidRock** (validrock.py) is an independent tool to verify the rock properties. This tool comes with its own databases (stored in **refrocks/** and specified in **configrocks.txt**) that allow to check whether the properties of rocks from a supplied file match any provided references. While many studies do not provide reference ranges for all rock properties simultaneously, **ValidRock** automatically checks all the provided reference models for different properties (e.g. the value for density may come from one study, and the values for Vp and Vs may be taken from another report). Like ValidEarth, ValidRock supports basic unit conversions and can produce **PNG** or **PDF** plots for each assessed physical quantity.
+
+While ValidEarth operates using "pre-known" parameters listed in the corresponding section of this guide, **ValidRock** can operate with any physical quantities (while it cannot assess whether they are spelled correctly). The users can compile and add their own reference databases for rock resisitivity, conductivity, porosity, anisotropy or any other properties of interest. 
+
+The author of this tool is highly interested in adding new databases to ValidEarth and ValidRock. Should there be any interest to develop a new database, please, contact me to discuss the best possible ways to implement and maintain it. 
+
+**ValidRock** comes with its own example; this example contains a list of valid records and a botched one, that should be successfully identified:
+
+python3 ./validrock.py -i examples/examplerock1.dat -pdf
+
+Its expected output is stored in examples/examplerock2.log
 
 # Understanding Program Outputs
 
@@ -120,6 +145,10 @@ ValidEarth aims to tackle these issues and it calculates the third parameter if 
 Run:
 
 python validearth.py --help
+
+or 
+
+python validrock.py --help
 
 to display the available command-line options.
 
