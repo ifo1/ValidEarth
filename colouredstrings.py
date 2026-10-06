@@ -4,7 +4,7 @@ def warning(depth = None):
     if depth is None:
         return colored ("Warning: ", 'yellow', attrs=["bold"])
     else:
-        return colored ("Warning", 'yellow', attrs=["bold"]) + "at the depth of " + colored (str(depth) + ": ", 'yellow', attrs=["bold"])
+        return colored ("Warning ", 'yellow', attrs=["bold"]) + "at the depth of " + colored (str(depth) + ": ", 'yellow', attrs=["bold"])
 
 def error(depth = None):
     if depth is None:

@@ -9,6 +9,8 @@ eps_mgnum = 0.1
 
 # everything over this Vp/Vs value is considered sediments (if not provided in the input file)
 sed_vpvs = 2.0
+# everything below this Vp/Vs value is considered quartzite (if not provided in the input file)
+qtz_vpvs = 1.6
 # the maximum thickness of sediments (rocks with Vp/Vs over 2)
 sed_maxthick = 5000
 # threshold values for the Moho/mantle
@@ -17,8 +19,8 @@ mantle_vp = 7700
 mantle_vs = 4200
 
 
-def check_layers(column):
-    # this function checks the column structure and uses some simplistic thresholds to find out the depths of main dvisions
+def check_layers(column, allowqtz, maxsedthick):
+    # this function checks the column structure and uses some simplistic thresholds to find out the depths of main divisions
     n = len(column.depth)
 
     print ("Checking layer structure")
@@ -50,10 +52,25 @@ def check_layers(column):
                 continue
 
         # sediments
-        if column.VpVs is not None and not mantle:
+        if isinstance(column.VpVs,np.ndarray):
             if column.VpVs[i] > sed_vpvs and column.VpVs[i+1] < sed_vpvs:
                 print ("A layer of " + highlight("sediments") + " detected using high Vp/Vs ratio with bedding depth of " + highlight(column.depth[i]) + " m")
                 sediments = i
+            elif column.VpVs[i] > sed_vpvs and column.depth[i] > max(maxsedthick,sed_maxthick):
+                print (error(column.depth[i]) + "The thickness of " + highlight("sediments") + " exceeds the maximum allowed one of " + str(max(maxsedthick,sed_maxthick)) + " m")
+                print ("To allow thicker sedimentary deposits, check the -allowthicksed command line option.")
+                exit()
+            elif column.VpVs[i] < qtz_vpvs:
+                if allowqtz:
+                    if column.VpVs[i] < 1.4:
+                        print (error(column.depth[i]) + "the " + highlight("Vp/Vs") + " ratio is less than ")
+                        exit ()
+                    else:
+                        print (warning(column.depth[i]) + "the " + highlight("Vp/Vs") + " ratio of " + str(column.VpVs[i]) + " is less than "+str(qtz_vpvs))
+                else:
+                    print (error(column.depth[i]) + "the " + highlight("Vp/Vs") + " ratio of " + str(column.VpVs[i]) + " is less than " + str(qtz_vpvs) + " and can only be explained by quartzites (alpha-quartz).")
+                    print ("To allow quartzite, check the -allowqtz command line option.")
+                    exit ()
 
         # Moho - all these conditions must be met!
         if column.density is not None:
@@ -141,8 +158,9 @@ def check_layer_depth(column):
     if column.gn.crust_sediment >= 0:
         sed_thickness = column.depth[column.gn.crust_sediment] - waterdepth
         if sed_thickness > sed_maxthick:
-            print (error() + "the thickness of sedimentary layer exceeds the maximum allowed thickness: " + str(sed_thickness) + " vs " + str(sed_maxthick) + " m")
-            exit()
+            # if it was an error, it was already suppressed
+            print (warning() + "the thickness of sedimentary layer exceeds the maximum expected value: " + str(sed_thickness) + " vs " + str(sed_maxthick) + " m")
+
 
     # Moho depth
     if column.gn.crust_lower >= 0:

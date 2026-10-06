@@ -184,13 +184,22 @@ Error: at the depth of 286000.0 The following MgO, FeO, Mg# values are inconsist
 ```
 as ValidEarth verifies that the value of Mg# matches the provided MgO and FeO contents, however, the execution continues and all the other reports are produced.
 
-### Example 3: the missed Moho
+### Example 3: the quartzites and missed Moho
 
 Run
 ```console
 python3 ./validearth.py -i examples/example3.dat
 ```
 This run should terminate saying
+```console
+Error at the depth of 6250.0: the Vp/Vs ratio of 1.5133290113958557 is less than 1.6 and can only be explained by quartzites (alpha-quartz).
+To allow quartzite, check the -allowqtz command line option.
+```
+This check allows to find anomalous Vp/Vs values, as quartzites is probably the only rock species with very low Vp/Vs ratios. In case they are expected in the region, one can proceed and rerun the test saying:
+```console
+python3 ./validearth.py -i examples/example3.dat -allowqtz
+```
+This run will produce numerous warning about low Vp/Vs ratios and finally stop saying:
 ```console
 Error: The crustal-mantle transition has no density contrast!
 ```
@@ -248,9 +257,14 @@ python3 ./validearth.py -i examples/example6.dat
 ```
 This run should fail reporting:
 ```console
-Error: the thickness of sedimentary layer exceeds the maximum allowed thickness: 7000.0 vs 5000 m
+Error at the depth of 5500.0: The thickness of sediments exceeds the maximum allowed one of 5000 m
+To allow thicker sedimentary deposits, check the -allowthicksed command line option.
 ```
-ValidEarth uses Vp/Vs > 2 to deem rocks as unconsolidated sediments; it should be a feasible hreshold for a vast majority of cases. However, every such a reporting should be assessed individually.  
+ValidEarth uses Vp/Vs > 2 to deem rocks as unconsolidated sediments; it should be a feasible threshold for a vast majority of cases. However, every such a reporting should be assessed individually, and if a very thick layer of sediments is present in the area, this error can be suppressed: 
+```console
+python3 ./validearth.py -i examples/example7.dat -allowthicksed 10000
+```
+And the code will still warn about a potential issue, but will proceed to other comparisons.
 
 # Automatisation
 

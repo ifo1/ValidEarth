@@ -34,6 +34,8 @@ parser.add_argument("-png", dest="png",action="store_true",help="Create png plot
 parser.add_argument("-dist", dest="dist", default=0.0,type=float,help="The maximum distance (m) from the reference model to the input column")
 parser.add_argument("-depthneg", dest="depthneg",action="store_true",help="The depths below sea level are negative")
 parser.add_argument("-depthrev", dest="depthrev",action="store_true",help="The depth is decreasing towards the end of the file (e.g. mantle first, crust second)")
+parser.add_argument("-allowqtz", dest="allowquartz",action="store_true",help="Allow low Vp/Vs ratios down to 1.4 associated with quartzites")
+parser.add_argument("-allowthicksed", dest="maxsedthick", default=0.0,type=float,help="The maximum thickness (m) of sediments (Vp/Vs > 2)")
 args = parser.parse_args()
 
 # verify the input file exists
@@ -280,7 +282,7 @@ if column.temperature.size == 0: column.temperature = None
 
 
 # check geological layers
-check_layers(column)
+check_layers(column, args.allowquartz, args.maxsedthick)
 check_layer_depth(column)
 
 

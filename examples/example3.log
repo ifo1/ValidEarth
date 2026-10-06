@@ -1,4 +1,4 @@
-python3 ./validearth.py -i examples/example3.dat
+python3 ./validearth.py -i examples/example3.dat -allowqtz
 Reading a list of reference models from config.txt
  - models/ak135f-sph-deviation.dat
  - models/PREM.dat
@@ -11,5 +11,13 @@ Reading file examples/example3.dat
 Vp/Vs was computed automatically
 Checking layer structure
 A layer of sediments detected using high Vp/Vs ratio with bedding depth of 1600.0 m
+Warning at the depth of 6250.0: the Vp/Vs ratio of 1.5133290113958557 is less than 1.6
+Warning at the depth of 6300.0: the Vp/Vs ratio of 1.5130659686354304 is less than 1.6
+Warning at the depth of 6350.0: the Vp/Vs ratio of 1.5128032432629221 is less than 1.6
+Warning at the depth of 6400.0: the Vp/Vs ratio of 1.512540834704236 is less than 1.6
+Warning at the depth of 6450.0: the Vp/Vs ratio of 1.5122826702405627 is less than 1.6
+Warning at the depth of 6500.0: the Vp/Vs ratio of 1.5120208905478578 is less than 1.6
+Warning at the depth of 6550.0: the Vp/Vs ratio of 1.511759425959458 is less than 1.6
+Warning at the depth of 6600.0: the Vp/Vs ratio of 1.5114982759067694 is less than 1.6
 The Moho detected using Vs contrast right beneath 31500.0 m
 Error: The crustal-mantle transition has no density contrast!
