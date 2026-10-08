@@ -815,7 +815,7 @@ class pressuredepth:
                             self.pressures.append( read_value(field,value) )
 
         self.depths = np.asarray(self.depths)
-        self.pressures  = np.asarray(self.pressures)
+        self.pressures = np.asarray(self.pressures)
 
 
     def pressure_to_depth(self, pressure):
@@ -826,15 +826,16 @@ class pressuredepth:
 class rockproperty():
     def __init__ (self, name):
         self.parameter = name
-        self.mean = None
-        self.stdev = None
-        self.min  = None
-        self.max = None
+        self.mean = np.nan
+        self.stdev = np.nan
+        self.min  = np.nan
+        self.max = np.nan
 
 
 class rocktype():
     def __init__ (self, filename, lithology = None, name = None, citation = None):
         self.lithology = lithology
+        self.genesis = []
         self.name = name
         self.filename = filename
         self.citation = citation

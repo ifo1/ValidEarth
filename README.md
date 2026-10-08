@@ -107,6 +107,17 @@ The ValidEarth package contains a file called **ecm2validearth.py** (located in 
 
 While ValidEarth operates using "pre-known" parameters listed in the corresponding section of this guide, **ValidRock** can operate with any physical quantities (while it cannot assess whether they are spelled correctly). The users can compile and add their own reference databases for rock resisitivity, conductivity, porosity, anisotropy or any other properties of interest. 
 
+**ValidRock** also supports rock type specification (field Type) from the following list:
+
+- **Intrusive**, such as granite, dunite, gabbro
+- **Volcanic**, such as basalt, tuff, rhyolite
+- **Regolith**, such as sand, permafrost, soil, marl, lignite, ice
+- **Sedimentary**, such as limestone, clay, gypsum, salt, anhydrite, dolomite
+- **Liquids**, such as air, water, petroleum
+- **Metamorphic**, such as marble, eclogite, schist, phyllite, diabase, gneiss
+
+Use only the first letter of each rock type; several rock types can be specified using either in the input file (separated by "+", no white space), or using the **-rt** option (several **-rt** entries are allowed). If no information about the rock type is available, use **N**. 
+
 The author of this tool is highly interested in adding new databases to ValidEarth and ValidRock. Should there be any interest to develop a new database, please, contact me to discuss the best possible ways to implement and maintain it. 
 
 **ValidRock** comes with its own example; this example contains a list of valid records and a botched one, that should be successfully identified:

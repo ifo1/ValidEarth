@@ -4,17 +4,17 @@ Reading reference rock properties from configrocks.txt
 Reading rock properties from examples/examplerock1.dat
  - examples/examplerock1.dat
 Error: Cannot find a reference sample matching rock 'bad' with the following properties: vp = 30.0 vs = 50.0 density = 70.0 
-deep1 matches amphibolite - andesite - basalt - diabase - gabbro - gneiss - schist - trachite
-basement1 matches andesite - anorthosite - diabase - dolomite - gneiss - granite - limestone - marble - mudstone - phyllite - porphyrite - quartzite - schist - serpentinite - shale - syenite - trachite
-basement2 matches andesite - anorthosite - diabase - dolomite - gneiss - granite - limestone - marble - mudstone - phyllite - porphyrite - quartzite - schist - serpentinite - shale - syenite - trachite
-layer1 matches andesite - anorthosite - diabase - gneiss - granite - limestone - marble - mudstone - phyllite - porphyrite - quartzite - schist - serpentinite - shale - syenite - trachite
-layer2 matches andesite - anorthosite - diabase - dolomite - gneiss - granite - limestone - marble - mudstone - phyllite - porphyrite - quartzite - schist - serpentinite - shale - syenite - trachite
-layer3 matches andesite - diabase - dolomite - granite - marl - mudstone - rhyolite - sandstone - schist - serpentinite - shale - trachite
-layer4 matches andesite - anorthosite - basalt - diabase - diorite - dolomite - gabbro - gneiss - granite - granodiorite - marble - phyllite - porphyrite - quartzdiorite - schist - shale - syenite - trachite
-layer5 matches andesite - anorthosite - diabase - dolomite - gneiss - granite - granodiorite - limestone - marble - mudstone - phyllite - porphyrite - quartzite - schist - serpentinite - shale - syenite - trachite
-layer6 matches andesite - anorthosite - diabase - gneiss - granite - limestone - marble - mudstone - phyllite - porphyrite - quartzite - schist - serpentinite - shale - trachite
-layer7 matches marl - mudstone - rhyolite - sandstone - shale
-layer8 matches gypsum - marl - rhyolite - salt - sandstone - shale - tuff
-layer9 matches chalk - clay - conglomerate - slate - soil - tuff
-layer10 matches chalk - clay - conglomerate - slate - soil - tuff
+deep1 matches amphibolite - diabase - gabbro - gneiss - schist - trachyte
+basement1 matches diabase - gneiss - granite - marble - phyllite - porphyrite - quartzite - schist - serpentinite - syenite - trachyte
+basement2 matches diabase - gneiss - granite - marble - phyllite - porphyrite - quartzite - schist - serpentinite - syenite - trachyte
+layer1 matches limestone - mudstone - shale
+layer2 matches dolomite - limestone - mudstone - shale
+layer3 matches dolomite - mudstone - sandstone - shale
+layer4 matches dolomite - shale
+layer5 matches dolomite - limestone - mudstone - shale
+layer6 matches limestone - mudstone - shale
+layer7 matches mudstone - sandstone - shale
+layer8 matches gypsum - salt - sandstone - shale
+layer9 matches chalk - clay - conglomerate - slate
+layer10 matches chalk - clay - conglomerate - slate
 bad does not match any reference

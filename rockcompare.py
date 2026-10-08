@@ -40,6 +40,11 @@ def find_matching_rocks(refrocks, inputrocks, verbose = False):
                 for p in ref.properties
             }
 
+            # check that the rock type matches
+            if ref.genesis and inp.genesis:
+                if not any(map(lambda v: v in inp.genesis, ref.genesis)):
+                    continue
+
             ok = False
             # for each physical property of the input rocks
             for parameter, ip in input_props.items():
@@ -50,21 +55,21 @@ def find_matching_rocks(refrocks, inputrocks, verbose = False):
                     continue
 
                 # Input interval
-
-                input_min = ip.min if ip.min is not None else ip.mean
-                input_max = ip.max if ip.max is not None else ip.mean
+                input_min = ip.min if np.isfinite(ip.min) else ip.mean
+                input_max = ip.max if np.isfinite(ip.max) else ip.mean
+                # print (parameter, input_min, input_max, ip.min, ip.mean, ip.max)
 
                 # Reference interval
-                if rp.min is not None:
+                if np.isfinite(rp.min):
                     ref_min = rp.min
-                elif rp.stdev is not None:
+                elif np.isfinite(rp.stdev):
                     ref_min = rp.mean - Nsigma * rp.stdev
                 else:
                     ref_min = rp.mean
 
-                if rp.max is not None:
+                if np.isfinite(rp.max):
                     ref_max = rp.max
-                elif rp.stdev is not None:
+                elif np.isfinite(rp.stdev):
                     ref_max = rp.mean + Nsigma * rp.stdev
                 else:
                     ref_max = rp.mean
@@ -83,8 +88,8 @@ def find_matching_rocks(refrocks, inputrocks, verbose = False):
 
                 ok = True
 
-            #print (inp.name + ": parameter " + parameter + " minmax " + str(input_min) + " " + str(input_max) + \
-            #        " vs " + ref.lithology + " [" + ref.citation + "] with minmax " + str(ref_min) + " " + str(ref_max) + ": " + str(ok))
+                #print (inp.name + ": parameter " + parameter + " minmax " + str(input_min) + " " + str(input_max) + \
+                #    " vs " + ref.lithology + " [" + ref.citation + "] with minmax " + str(ref_min) + " " + str(ref_max) + ": " + str(ok))
 
             if ok:
                 if ref.lithology not in matching:
