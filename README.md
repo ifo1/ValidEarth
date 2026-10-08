@@ -316,6 +316,13 @@ Refer to the bibliography.bib file in the root directory for all the reference m
 - Python 3.10
 - modules termcolor, numpy, os, argparse, matplotlib
 
+### Troubleshooting 
+
+If the code fails saying "ModuleNotFoundError: No module named", the potential causes might be:
+- a module is not installed
+- a proper virtual envinronment was not loaded
+- you are running the code without python3, so that it uses a global one instead of the one from virtual environment; always prepend it with python3.
+
 # Authorship
 
 (C) Ilya Fomin, 2026
