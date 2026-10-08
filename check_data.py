@@ -19,7 +19,7 @@ mantle_vp = 7700
 mantle_vs = 4200
 
 
-def check_layers(column, allowqtz, maxsedthick):
+def check_layers(column, allowqtz, maxsedthick, allowuhp, allowsalt):
     # this function checks the column structure and uses some simplistic thresholds to find out the depths of main divisions
     n = len(column.depth)
 
@@ -72,8 +72,22 @@ def check_layers(column, allowqtz, maxsedthick):
                     print ("To allow quartzite, check the -allowqtz command line option.")
                     exit ()
 
+        # check density inversions in the crust
+        # TODO: check what's going on in the mantle
+        if isinstance(column.density,np.ndarray) and not mantle:
+            # check whether there is a negative density contrast with a reasonable threshold
+            diff = column.density[i+1] - column.density[i]
+            if diff < -25:
+                if diff > -150 and allowuhp and column.depth[i+1] > max(maxsedthick,sed_maxthick):
+                    print (warning(column.depth[i+1]) + "is " + str(abs(dens)) + " kg/m3 lighter than the overlying rocks")
+                elif column.density[i+1] > 2000 and allowsalt and column.depth[i+1] < max(maxsedthick,sed_maxthick):
+                    print (warning(column.depth[i+1]) + "a potential salt layer starts")
+                else:
+                    print (error(column.depth[i+1]) + "a negative density contrast is detected! Check -allowsalt, -allowuhp, and -allowthicksed options")
+                    exit()
+
         # Moho - all these conditions must be met!
-        if column.density is not None:
+        if isinstance(column.density,np.ndarray):
             if column.density[i] < mantle_density and column.density[i+1] > mantle_density:
                 print ("The " + highlight("Moho") + " detected using density contrast right beneath " + highlight(column.depth[i]) + " m")
                 column.gn.assign_gn("moho", i)
@@ -82,7 +96,8 @@ def check_layers(column, allowqtz, maxsedthick):
                     exit()
                 else:
                     mantle = True
-        if column.Vs is not None:
+
+        if isinstance(column.Vs,np.ndarray):
             if column.Vs[i] < mantle_vs and column.Vs[i+1] > mantle_vs:
                 print ("The " + highlight("Moho") + " detected using Vs contrast right beneath " + highlight(column.depth[i]) + " m")
                 column.gn.assign_gn("moho", i)
@@ -92,12 +107,12 @@ def check_layers(column, allowqtz, maxsedthick):
                 else:
                     mantle = True
 
-        if column.Vp is not None:
+        if isinstance(column.Vp,np.ndarray):
             if column.Vp[i] < mantle_vp and column.Vp[i+1] > mantle_vp:
                 print ("The " + highlight("Moho") + " detected using Vp contrast right beneath " + highlight(column.depth[i]) + " m")
                 column.gn.assign_gn("moho", i)
                 if not mantle:
-                    print (error() + "The crustal-mantle transition has no density or Vp contrast!")
+                    print (error() + "The crustal-mantle transition has no density and Vs contrast!")
                     exit()
                 else:
                     mantle = True
@@ -160,7 +175,6 @@ def check_layer_depth(column):
         if sed_thickness > sed_maxthick:
             # if it was an error, it was already suppressed
             print (warning() + "the thickness of sedimentary layer exceeds the maximum expected value: " + str(sed_thickness) + " vs " + str(sed_maxthick) + " m")
-
 
     # Moho depth
     if column.gn.crust_lower >= 0:

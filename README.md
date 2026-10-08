@@ -184,13 +184,21 @@ Error: at the depth of 286000.0 The following MgO, FeO, Mg# values are inconsist
 ```
 as ValidEarth verifies that the value of Mg# matches the provided MgO and FeO contents, however, the execution continues and all the other reports are produced.
 
-### Example 3: the quartzites and missed Moho
+### Example 3: the quartzites, density inversios, and missed Moho
 
 Run
 ```console
 python3 ./validearth.py -i examples/example3.dat
 ```
 This run should terminate saying
+```console
+Error at the depth of 1650.0: a negative density contrast is detected! Check -allowsalt, -allowuhp, and -allowthicksed options
+```
+The code is reporting a layer of lower density underneath a layer of higher density, which is a geologically possible situation. However, it is worth flagging it because of the possible errors during data compilation etc. To proceed, one can use:
+```console
+python3 ./validearth.py -i examples/example3.dat -allowsalt
+```
+This run will terminate again, sayinh:
 ```console
 Error at the depth of 6250.0: the Vp/Vs ratio of 1.5133290113958557 is less than 1.6 and can only be explained by quartzites (alpha-quartz).
 To allow quartzite, check the -allowqtz command line option.
