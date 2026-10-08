@@ -37,7 +37,7 @@ parser.add_argument("-depthrev", dest="depthrev",action="store_true",help="The d
 parser.add_argument("-allowqtz", dest="allowquartz",action="store_true",help="Allow low Vp/Vs ratios down to 1.4 associated with quartzites (check Christensen 1996 paper)")
 parser.add_argument("-allowthicksed", dest="maxsedthick", default=0.0,type=float,help="The maximum thickness (m) of sediments (Vp/Vs > 2)")
 parser.add_argument("-allowsalt", dest="allowsalt", action="store_true",help="Allow low-density rock salt layers within the profile (with density >= 2000 kg/m3 and depth up to the maximum depth of sediments)")
-parser.add_argument("-allowuhp", dest="allowuhp", action="store_true",help="Allow low-density rocks (with density contrast less than 200 kg/m3); the option is designed for exhumating ultra-high pressure complexes and works below the maximum possible depth of sediments")
+parser.add_argument("-allowuhp", dest="allowuhp", action="store_true",help="Allow low-density rocks (with density contrast less than 200 kg/m3); the option is designed for exhumating ultra-high pressure complexes and applies below the maximum possible depth of sediments (check Gerya 2001 paper)")
 args = parser.parse_args()
 
 args.allowuhp, args.allowsalt
