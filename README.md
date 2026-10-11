@@ -134,7 +134,12 @@ For presentation purposes, it might be convinient to stack the figures for each 
 ```console
 strings=(LIST) ; for i in "${strings[@]}"; do montage ${i}-*.png -tile 4x1 -geometry +0+0 ${i}.png ; done
 ```
-Where LIST is the list of distinct rock types exactly as it appears in the program output.
+Where LIST is the list of distinct rock types exactly as it appears in the program output:
+```console
+The following rock types were detected: L1 L2 L3 L4 L5 L6 L7 L8 L9 L10 L12 L11 L13
+```
+
+These histograms can easily identify the situations when the properties are not exhibiting expected correlations.
 
 # Understanding Program Outputs
 
