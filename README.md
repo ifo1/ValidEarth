@@ -120,11 +120,21 @@ Use only the first letter of each rock type; several rock types can be specified
 
 The author of this tool is highly interested in adding new databases to ValidEarth and ValidRock. Should there be any interest to develop a new database, please, contact me to discuss the best possible ways to implement and maintain it. 
 
-**ValidRock** comes with its own example; this example contains a list of valid records and a botched one, that should be successfully identified:
+**ValidRock** comes with its own example case; this example contains a list of valid records and a botched one, that should be successfully identified:
 ```console
 python3 ./validrock.py -i examples/examplerock1.dat -pdf
 ```
 Its expected output is stored in examples/examplerock1.log
+
+## ValidRock Histograms
+
+ValidRock allow to plot histograms of rock properties in automated mode using command line flag **-histograms**. It automatically searches for all distinct rock names and treats all the records sharing the same **name** as samples from the same distribution. ValidRock automatically plots histograms for each rock property for each rock type in the preferred format.
+
+For presentation purposes, it might be convinient to stack the figures for each rock type together. It can be done (for example) by using:
+```console
+strings=(LIST) ; for i in "${strings[@]}"; do montage ${i}-*.png -tile 4x1 -geometry +0+0 ${i}.png ; done
+```
+Where LIST is the list of distinct rock types exactly as it appears in the program output.
 
 # Understanding Program Outputs
 

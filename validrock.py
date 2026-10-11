@@ -28,6 +28,7 @@ parser.add_argument("-png", dest="png",action="store_true",help="Create png plot
 parser.add_argument("-output", dest="output",default="./",help="A directory to store images figures")
 parser.add_argument('-rt', '--rock-type', action="append", default=[], dest="rocktypes", help="Compare only the supplied rock types: Igneous, Metamorphic, Volcanic, Liquids, Regolith, Sedimentary")
 parser.add_argument("-minrefrockprop", dest="minrockprop",type=int,default=1,help="The minumum number of supplied physical properties for reference rocks to compare with.")
+parser.add_argument("-histograms", dest="histograms",action="store_true",help="Create histograms for all properties for all rock samples with the same name")
 args = parser.parse_args()
 
 # verify the input file exists
@@ -44,31 +45,33 @@ if not os.path.isfile(args.file_refmodels):
 args.rocktypes = [w.upper() for w in args.rocktypes]
 
 
-def read_rock_file(inputfile):
+def read_rock_file(inputfile, getname = None):
 
     rocks = []
 
+    if getname is not None: rock = rocktype(inputfile)
     with open(inputfile) as myfile:
-        print (" - " + inputfile)
-        iline = 0
+        if getname is not None: print (" - " + inputfile)
         for line in myfile:
-            iline += 1
 
             # skip empty lines and comments
-            if len(line.strip()) == 0: continue
-            char = line.strip()[0]
+            myline = line.strip()
+            if len(myline) == 0: continue
+            char = myline[0]
             if char == "#" or char == "!" or char == "/" or char == "%": continue
 
-            tmp = line.lower().strip().split()
-            if tmp[0] == "name" or tmp[0] == "lithology":
+            tmp = myline.split()
+            if tmp[0].lower() == "name" or tmp[0].lower() == "lithology":
                 # must be the first valid entry
-                columns = tmp
+                columns = [x.lower() for x in tmp]
                 continue
 
-            rock = rocktype(inputfile)
+            if getname is None: rock = rocktype(inputfile)
             for value, field in zip(tmp, columns):
 
                 if field == "name":
+                    if getname is not None:
+                        if value != getname: break
                     rock.name = value
                 elif field == "citation":
                     rock.citation = value
@@ -86,7 +89,6 @@ def read_rock_file(inputfile):
                 else:
                     # add a data field
                     fieldn = field
-                    #fieldn = ""
                     fieldtype = ""
                     for suffix in ["stdev","min","max"]:
                         if field.endswith(suffix):                  
@@ -97,33 +99,36 @@ def read_rock_file(inputfile):
                     target = next((d for d in rock.properties if d.parameter == fieldn), None)
                     new = target is None
                     if new:
-                        new = True
                         target = rockproperty(fieldn)
 
-                    # assign the value
-                    match fieldtype:
-                        case "stdev":
-                            target.stdev = read_value(field,value)
-                        case "min":
-                            target.min = read_value(field,value)
-                        case "max":
-                            target.max = read_value(field,value)
-                        case default:
-                            target.mean = read_value(field,value)
-                    attrs = vars(target)
-                    if new and (np.isfinite(target.mean) or np.isfinite(target.min) or np.isfinite(target.max) or np.isfinite(target.stdev)):
+                    if getname is not None:
+                        target.values.append(read_value(fieldn,value))
+                    else:
+                        # assign the value according to existing suffix
+                        match fieldtype:
+                            case "stdev":
+                                target.stdev = read_value(field,value)
+                            case "min":
+                                target.min = read_value(field,value)
+                            case "max":
+                                target.max = read_value(field,value)
+                            case default:
+                                target.mean = read_value(field,value)
+
+                    if new and (np.isfinite(target.mean) or np.isfinite(target.min) or np.isfinite(target.max) or np.isfinite(target.stdev) or len(target.values) > 0):
                         rock.properties.append(target)
 
-            # append only if this rock type was requested
-            if rock.genesis and args.rocktypes:
-                if any(map(lambda v: v in args.rocktypes, rock.genesis)):
+            if getname is None: 
+                # append only if this rock type was requested
+                if rock.genesis and args.rocktypes:
+                    if any(map(lambda v: v in args.rocktypes, rock.genesis)):
+                        # append only if there are more than N physical properties available
+                        if len(rock.properties) >= args.minrockprop:
+                            rocks.append(rock)
+                else:
                     # append only if there are more than N physical properties available
                     if len(rock.properties) >= args.minrockprop:
                         rocks.append(rock)
-            else:
-                # append only if there are more than N physical properties available
-                if len(rock.properties) >= args.minrockprop:
-                    rocks.append(rock)
 
     # for debugging
     if False:
@@ -135,7 +140,77 @@ def read_rock_file(inputfile):
                 print(', '.join("%s: %s" % item for item in attrs2.items()))
             print (rock)
 
-    return rocks
+    if getname is None: 
+        return rocks
+    else:
+        return rock
+
+
+# if create histograms, run a simpler version 
+if args.histograms:
+    print("Reading unique files types from " + highlight (args.inputfile))
+    uniqrocktypes = []
+    with open(args.inputfile) as myfile:
+        for line in myfile:
+            # skip empty lines and comments
+            myline = line.strip()
+            if len(myline) == 0: continue
+            char = myline[0]
+            if char == "#" or char == "!" or char == "/" or char == "%": continue
+
+            tmp = myline.split()
+            if tmp[0].lower() == "name":
+                # skip the header
+                continue
+            else:
+                # append rock name if new
+                if not tmp[0] in uniqrocktypes: uniqrocktypes.append(tmp[0])
+
+    print ("The following rock types were detected: " + " ".join(uniqrocktypes))
+
+    print ("Lithology - quantity - min - max - mean - stdev")
+
+    for uniqrocktype in uniqrocktypes:
+        print ("Gathering statistics for: " + uniqrocktype)
+        rocks = read_rock_file(args.inputfile, uniqrocktype)
+
+        # a separate plot for each parameter
+        for quantity in rocks.properties:
+            data = np.asarray(quantity.values)
+            data = data[np.isfinite(data)]
+            minval = np.min(data)
+            maxval = np.max(data)
+            mean = np.mean(data)
+            stdev = np.std(data)
+            print (uniqrocktype + " - " + quantity.parameter + " - " + str(minval) + " - " + str(maxval) + " - " + str(mean) + " - " + str(stdev ))
+
+            fig, ax = plt.subplots()
+
+            ax.hist(data, bins=30, alpha=0.7)
+
+            ax.axvline(mean, color="red", linestyle="-", label="Mean " + uniqrocktype + " " + quantity.parameter)
+
+            if stdev > 0:
+                for n in range(1,4):
+                    ax.axvline(mean + n * stdev, color="black", linestyle="--", alpha=0.6)
+                    ax.axvline(mean - n * stdev, color="black", linestyle="--", alpha=0.6)
+
+            ax.set_xlabel(uniqrocktype + " - " + quantity.parameter)
+            plt.ticklabel_format(style="plain", axis="x", useOffset=False)
+            ax.set_ylabel("Number of Values (Frequency)")
+            ax.legend()
+
+            plt.tight_layout()
+            fig.savefig(
+                os.path.join(
+                    args.output,
+                    uniqrocktype + "-" + quantity.parameter,
+                ),
+                bbox_inches="tight",
+            )
+            plt.close()
+
+    exit()
 
 
 # read reference models

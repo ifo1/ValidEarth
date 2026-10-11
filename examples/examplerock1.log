@@ -2,19 +2,18 @@ python3 ./validrock.py -i examples/examplerock1.dat
 Reading reference rock properties from configrocks.txt
  - refrocks/rocks_minmax.txt
 Reading rock properties from examples/examplerock1.dat
- - examples/examplerock1.dat
-Error: Cannot find a reference sample matching rock 'bad' with the following properties: vp = 30.0 vs = 50.0 density = 70.0 
-deep1 matches amphibolite - diabase - gabbro - gneiss - schist - trachyte
-basement1 matches diabase - gneiss - granite - marble - phyllite - porphyrite - quartzite - schist - serpentinite - syenite - trachyte
-basement2 matches diabase - gneiss - granite - marble - phyllite - porphyrite - quartzite - schist - serpentinite - syenite - trachyte
-layer1 matches limestone - mudstone - shale
-layer2 matches dolomite - limestone - mudstone - shale
-layer3 matches dolomite - mudstone - sandstone - shale
-layer4 matches dolomite - shale
-layer5 matches dolomite - limestone - mudstone - shale
-layer6 matches limestone - mudstone - shale
-layer7 matches mudstone - sandstone - shale
-layer8 matches gypsum - salt - sandstone - shale
-layer9 matches chalk - clay - conglomerate - slate
-layer10 matches chalk - clay - conglomerate - slate
-bad does not match any reference
+Error: Cannot find a reference sample matching rock 'BAD' with the following properties: vp = 30.0 vs = 50.0 density = 70.0 
+Deep1 matches amphibolite - diabase - gabbro - gneiss - schist - trachyte
+Basement1 matches diabase - gneiss - granite - marble - phyllite - porphyrite - quartzite - schist - serpentinite - syenite - trachyte
+Basement2 matches diabase - gneiss - granite - marble - phyllite - porphyrite - quartzite - schist - serpentinite - syenite - trachyte
+Layer1 matches limestone - mudstone - shale
+Layer2 matches dolomite - limestone - mudstone - shale
+Layer3 matches dolomite - mudstone - sandstone - shale
+Layer4 matches dolomite - shale
+Layer5 matches dolomite - limestone - mudstone - shale
+Layer6 matches limestone - mudstone - shale
+Layer7 matches mudstone - sandstone - shale
+Layer8 matches gypsum - salt - sandstone - shale
+Layer9 matches chalk - clay - conglomerate - slate
+Layer10 matches chalk - clay - conglomerate - slate
+BAD does not match any reference

@@ -830,6 +830,7 @@ class rockproperty():
         self.stdev = np.nan
         self.min  = np.nan
         self.max = np.nan
+        self.values = []
 
 
 class rocktype():
