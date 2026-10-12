@@ -126,9 +126,9 @@ python3 ./validrock.py -i examples/examplerock1.dat -pdf
 ```
 Its expected output is stored in examples/examplerock1.log
 
-## ValidRock Histograms
+## ValidRock Histograms and Scatterplot Matrices (SPLOM)
 
-ValidRock allow to plot histograms of rock properties in automated mode using command line flag **-histograms**. It automatically searches for all distinct rock names and treats all the records sharing the same **name** as samples from the same distribution. ValidRock automatically plots histograms for each rock property for each rock type in the preferred format.
+ValidRock allow to plot histograms of rock properties in automated mode using command line flag **-histograms**. It automatically searches for all distinct rock names and treats all the records sharing the same **name** as samples from the same distribution. ValidRock plots histograms and scatterplot matrices for each rock property for each rock type in the preferred file format.
 
 For presentation purposes, it might be convinient to stack the figures for each rock type together. It can be done (for example) by using:
 ```console
@@ -138,8 +138,12 @@ Where LIST is the list of distinct rock types exactly as it appears in the progr
 ```console
 The following rock types were detected: L1 L2 L3 L4 L5 L6 L7 L8 L9 L10 L12 L11 L13
 ```
+Alternatively, PDFs can be stacked using well-known tools like pdfunite:
+```console
+pdfunite *.pdf scatterplot_matrix.pdf
+```
 
-These histograms can easily identify the situations when the properties are not exhibiting expected correlations.
+These histograms and scatterplot matrices can easily identify the situations when the properties are not exhibiting expected correlations.
 
 # Understanding Program Outputs
 
