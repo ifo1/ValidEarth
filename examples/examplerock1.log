@@ -1,7 +1,8 @@
 python3 ./validrock.py -i examples/examplerock1.dat
 Reading reference rock properties from configrocks.txt
  - refrocks/rocks_minmax.txt
-Reading rock properties from examples/examplerock1.dat
+Reading rock properties from the input file
+ - examples/examplerock1.dat
 Error: Cannot find a reference sample matching rock 'BAD' with the following properties: vp = 30.0 vs = 50.0 density = 70.0 
 Deep1 matches amphibolite - diabase - gabbro - gneiss - schist - trachyte
 Basement1 matches diabase - gneiss - granite - marble - phyllite - porphyrite - quartzite - schist - serpentinite - syenite - trachyte

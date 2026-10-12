@@ -52,7 +52,7 @@ def read_rock_file(inputfile, getname = None):
 
     if getname is not None: rock = rocktype(inputfile)
     with open(inputfile) as myfile:
-        if getname is not None: print (" - " + inputfile)
+        if getname is None: print (" - " + inputfile)
         for line in myfile:
 
             # skip empty lines and comments
@@ -264,7 +264,7 @@ with open(args.file_refmodels) as myfile:
 
 
 # read data file
-print ("Reading rock properties from " + highlight (args.inputfile))
+print ("Reading rock properties from the input file")
 inputrocks = read_rock_file(args.inputfile)
 
 find_matching_rocks(refrocks, inputrocks, args.detailed)
