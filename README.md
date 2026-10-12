@@ -128,7 +128,7 @@ Its expected output is stored in examples/examplerock1.log
 
 ## ValidRock Histograms and Scatterplot Matrices (SPLOM)
 
-ValidRock allow to plot histograms of rock properties in automated mode using command line flag **-histograms**. It automatically searches for all distinct rock names and treats all the records sharing the same **name** as samples from the same distribution. ValidRock plots histograms and scatterplot matrices for each rock property for each rock type in the preferred file format.
+ValidRock allow to plot histograms and scatterplot matrices of rock properties in automated mode using command line flags **-histogram** and **-scatterplot**. It automatically searches for all distinct rock names and treats all the records sharing the same **name** as samples from the same distribution. ValidRock creates figures for every physical property for each rock type in the preferred file format.
 
 For presentation purposes, it might be convinient to stack the figures for each rock type together. It can be done (for example) by using:
 ```console

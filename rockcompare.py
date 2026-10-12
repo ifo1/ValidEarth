@@ -331,7 +331,7 @@ def plot_rock_properties( refrocks, inputrocks, output_dir="rock_plots", show_al
             plt.close(fig)
 
 
-def scatterplot_matrix(output_dir, filename, titles, arrays, sigmas):
+def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, png, pdf):
     n = len(titles)
     fig, axes = plt.subplots(
         n, n, figsize=(2.5 * n, 2.5 * n),
@@ -352,6 +352,7 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, sigmas):
                 continue
 
             ax.ticklabel_format(style="plain", axis="x", useOffset=False)
+            ax.ticklabel_format(style="plain", axis="y", useOffset=False)
 
             x = np.asarray(arrays[j], dtype=float)
 
@@ -360,6 +361,13 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, sigmas):
                     x[np.isfinite(x)], bins=30,
                     color="lightgray", edgecolor="black"
                 )
+
+                if sigmas[i] > 0:
+                    ax.axvline(means[i], color="black", linestyle="-")
+                    for k in range(1,4):
+                        ax.axvline(means[i] + k * sigmas[i], color="black", linestyle="--", alpha=0.6)
+                        ax.axvline(means[i] - k * sigmas[i], color="black", linestyle="--", alpha=0.6)
+
                 ax.set_yticklabels([])
                 ax.set_xlabel(titles[i], fontsize=axistitlefontsize)
                 ax.set_ylabel(titles[i], fontsize=axistitlefontsize)
@@ -370,7 +378,7 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, sigmas):
 
                 ax.scatter(x[valid], y[valid], c='black', s=8, alpha=0.6)
 
-                if valid.sum() > 1 and sigmas[i] and sigmas[j]:
+                if valid.sum() > 1 and sigmas[i] > 0 and sigmas[j] > 0:
                     r = np.corrcoef(x[valid], y[valid])[0, 1]
                     ax.text(
                         0.95, 0.95, f"$R^2 = {r**2:.3f}$",
@@ -414,9 +422,10 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, sigmas):
         wspace=0.05, hspace=0.05
     )
 
-    fig.savefig(
-        os.path.join(output_dir, f"{filename}.pdf" ),
-        bbox_inches="tight",
-    )
+    if png:
+        fig.savefig( os.path.join(output_dir, filename + ".png" ), bbox_inches="tight" )
+    if pdf:
+        fig.savefig( os.path.join(output_dir, filename + ".pdf" ), bbox_inches="tight" )
+
 
 

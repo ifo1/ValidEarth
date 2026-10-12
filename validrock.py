@@ -9,7 +9,7 @@ plotcolours = ["red", "blue", "green", "orange", "violet", "brown"]
 
 # local modules
 from read_values import read_field, read_float, read_value
-from colouredstrings import error, warning, highlight, green, red
+from colouredstrings import error, warning, highlight, green, red, yellow
 from rockcompare import find_matching_rocks, plot_rock_properties, scatterplot_matrix
 
 # local classes
@@ -28,7 +28,8 @@ parser.add_argument("-png", dest="png",action="store_true",help="Create png plot
 parser.add_argument("-output", dest="output",default="./",help="A directory to store images figures")
 parser.add_argument('-rt', '--rock-type', action="append", default=[], dest="rocktypes", help="Compare only the supplied rock types: Igneous, Metamorphic, Volcanic, Liquids, Regolith, Sedimentary")
 parser.add_argument("-minrefrockprop", dest="minrockprop",type=int,default=1,help="The minumum number of supplied physical properties for reference rocks to compare with.")
-parser.add_argument("-histograms", dest="histograms",action="store_true",help="Create histograms for all properties for all rock samples with the same name")
+parser.add_argument("-histogram", dest="histograms",action="store_true",help="Create histograms for all properties for all rock samples with the same name")
+parser.add_argument("-scatterplot", dest="scatterplots",action="store_true",help="Create Scatterplot Matrices for all properties for all rock samples with the same name")
 args = parser.parse_args()
 
 # verify the input file exists
@@ -147,7 +148,7 @@ def read_rock_file(inputfile, getname = None):
 
 
 # if create histograms, run a simpler version 
-if args.histograms:
+if args.histograms or args.scatterplots:
     print("Reading unique files types from " + highlight (args.inputfile))
     uniqrocktypes = []
     with open(args.inputfile) as myfile:
@@ -168,15 +169,16 @@ if args.histograms:
 
     print ("The following rock types were detected: " + " ".join(uniqrocktypes))
 
-    print ("Lithology - quantity - min - max - mean - stdev")
 
     for uniqrocktype in uniqrocktypes:
         print ("Gathering statistics for: " + uniqrocktype)
         rocks = read_rock_file(args.inputfile, uniqrocktype)
+        print ("Lithology - parameter - min - max - mean - stdev")
 
         property_collection = []
         title_collection = []
         stdev_collection = []
+        mean_collection = []
 
         # a separate plot for each parameter
         for quantity in rocks.properties:
@@ -190,11 +192,12 @@ if args.histograms:
             minval = np.min(data)
             maxval = np.max(data)
             mean = np.mean(data)
+            mean_collection.append(mean)
             stdev = np.std(data)
-            stdev_collection.append(stdev > 0)
+            stdev_collection.append(stdev)
             print (uniqrocktype + " - " + quantity.parameter + " - " + str(minval) + " - " + str(maxval) + " - " + str(mean) + " - " + str(stdev ))
 
-            if args.png or args.pdf:
+            if (args.png or args.pdf) and args.histograms:
                 fig, ax = plt.subplots()
 
                 ax.hist(data, bins=30, alpha=0.7)
@@ -213,12 +216,20 @@ if args.histograms:
 
                 plt.tight_layout()
                 if args.png:
-                    fig.savefig( os.path.join(args.output, uniqrocktype + "-" + quantity.parameter ), bbox_inches="tight" )
+                    fig.savefig( os.path.join(args.output, uniqrocktype + "-" + quantity.parameter + ".png" ), bbox_inches="tight" )
                 if args.pdf:
-                    fig.savefig( os.path.join(args.output, uniqrocktype + "-" + quantity.parameter ), bbox_inches="tight" )
+                    fig.savefig( os.path.join(args.output, uniqrocktype + "-" + quantity.parameter + ".pdf" ), bbox_inches="tight" )
                 plt.close()
+                
 
-        scatterplot_matrix(args.output, uniqrocktype, title_collection, property_collection, stdev_collection)
+        if (args.png or args.pdf) and args.scatterplots:
+            scatterplot_matrix(args.output, uniqrocktype, title_collection, property_collection, mean_collection, stdev_collection, args.png, args.pdf)
+
+    if not (args.png or args.pdf):
+        if args.histograms:
+            print (yellow("Attention! ValidRock does not produce any histograms as no output format was specified"))
+        if args.scatterplots:
+            print (yellow("Attention! ValidRock does not produce any scatterplot matrices as no output format was specified"))
 
     exit()
 
