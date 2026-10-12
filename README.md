@@ -143,7 +143,11 @@ Alternatively, PDFs can be stacked using well-known tools like pdfunite:
 pdfunite *.pdf scatterplot_matrix.pdf
 ```
 
-These histograms and scatterplot matrices can easily identify the situations when the properties are not exhibiting expected correlations.
+These histograms and scatterplot matrices can easily identify the situations when the rock properties are not exhibiting expected correlations. ValidRock comes with an example that emphatise the importance of such an analysis:
+```console
+python3 ./validrock.py -i examples/examplerock2.dat -pdf
+```
+Its expected output is stored in examples/examplerock2.log
 
 # Understanding Program Outputs
 
