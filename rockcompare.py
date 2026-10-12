@@ -330,3 +330,93 @@ def plot_rock_properties( refrocks, inputrocks, output_dir="rock_plots", show_al
 
             plt.close(fig)
 
+
+def scatterplot_matrix(output_dir, filename, titles, arrays, sigmas):
+    n = len(titles)
+    fig, axes = plt.subplots(
+        n, n, figsize=(2.5 * n, 2.5 * n),
+        squeeze=False
+    )
+
+    fig.suptitle("Scatterplot Matrix for "+filename, fontsize=16, y=0.99)
+
+    ticklabelfontsize=11
+    axistitlefontsize=15
+
+    for i in range(n):
+        for j in range(n):
+            ax = axes[i, j]
+
+            if i > j:
+                ax.set_visible(False)
+                continue
+
+            ax.ticklabel_format(style="plain", axis="x", useOffset=False)
+
+            x = np.asarray(arrays[j], dtype=float)
+
+            if i == j:
+                ax.hist(
+                    x[np.isfinite(x)], bins=30,
+                    color="lightgray", edgecolor="black"
+                )
+                ax.set_yticklabels([])
+                ax.set_xlabel(titles[i], fontsize=axistitlefontsize)
+                ax.set_ylabel(titles[i], fontsize=axistitlefontsize)
+
+            else:
+                y = np.asarray(arrays[i], dtype=float)
+                valid = np.isfinite(x) & np.isfinite(y)
+
+                ax.scatter(x[valid], y[valid], c='black', s=8, alpha=0.6)
+
+                if valid.sum() > 1 and sigmas[i] and sigmas[j]:
+                    r = np.corrcoef(x[valid], y[valid])[0, 1]
+                    ax.text(
+                        0.95, 0.95, f"$R^2 = {r**2:.3f}$",
+                        transform=ax.transAxes,
+                        ha="right", va="top", fontsize=ticklabelfontsize
+                    )
+
+                # Remove axis labels from non-diagonal plots
+                ax.set_xlabel("")
+                ax.set_ylabel("")
+                if j < n-1: ax.set_yticklabels([])
+                if i > 0: ax.set_xticklabels([])
+
+            # Variable titles along the top boundary
+            if i == 0:
+                ax.set_title(titles[j], pad=6, fontsize=axistitlefontsize)
+                ax.tick_params(axis="x", labeltop=True, direction="in", labelbottom=False, labelsize=ticklabelfontsize)
+                ax.xaxis.set_ticks_position("top")
+
+            if i == j == 0:
+                ax.tick_params(axis="x", labeltop=True, direction="in", labelbottom=True, labelsize=ticklabelfontsize)
+
+            # Tick labels and variable titles along the right boundary
+            if j == n - 1:
+                ax.tick_params(axis="y", labelright=True, labelleft=False, labelsize=ticklabelfontsize)
+                ax.yaxis.set_ticks_position("both")
+
+                #if i != j:
+                    #ax.set_ylabel(titles[i], rotation=270, labelpad=12)
+                    #ax.yaxis.set_label_position("right")
+
+            if i != j:
+                ax.tick_params(axis="both", which="both", direction="in", top=True, bottom=True, left=True, right=True, labelsize=ticklabelfontsize)
+
+
+
+    # Minimise spacing between plots
+    fig.subplots_adjust(
+        left=0.08, right=0.92,
+        bottom=0.08, top=0.92,
+        wspace=0.05, hspace=0.05
+    )
+
+    fig.savefig(
+        os.path.join(output_dir, f"{filename}.pdf" ),
+        bbox_inches="tight",
+    )
+
+
