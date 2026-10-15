@@ -331,17 +331,26 @@ def plot_rock_properties( refrocks, inputrocks, output_dir="rock_plots", show_al
             plt.close(fig)
 
 
-def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, png, pdf):
+def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, mins, maxs, png, pdf, hist2d, hexbin):
+
     n = len(titles)
     fig, axes = plt.subplots(
         n, n, figsize=(2.5 * n, 2.5 * n),
         squeeze=False
     )
 
-    fig.suptitle("Scatterplot Matrix for "+filename, fontsize=16, y=0.99)
+    fig.suptitle("Scatterplot Matrix for "+filename, fontsize=16, y=1.01)
 
     ticklabelfontsize=11
     axistitlefontsize=15
+
+    xlimmin = []
+    xlimmax = []
+    for i in range(n):
+        d = (maxs[i] - mins[i])/10
+        if d == 0.0: d = maxs[i]/100.0
+        xlimmin.append(mins[i]-d) 
+        xlimmax.append(maxs[i]+d) 
 
     for i in range(n):
         for j in range(n):
@@ -369,6 +378,7 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, png,
                         ax.axvline(means[i] - k * sigmas[i], color="black", linestyle="--", alpha=0.6)
 
                 ax.set_yticklabels([])
+                ax.set_xlim(xlimmin[j],xlimmax[j])
                 ax.set_xlabel(titles[i], fontsize=axistitlefontsize)
                 ax.set_ylabel(titles[i], fontsize=axistitlefontsize)
 
@@ -376,7 +386,48 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, png,
                 y = np.asarray(arrays[i], dtype=float)
                 valid = np.isfinite(x) & np.isfinite(y)
 
-                ax.scatter(x[valid], y[valid], c='black', s=8, alpha=0.6)
+                if sigmas[j] == 0 and sigmas[i] == 0:
+                    # Both variables are constant: plot a single point
+                    ax.scatter(x[0], y[0], color="black", s=30)
+
+                elif sigmas[j] == 0:
+                    # X is constant: rug plot along the Y axis
+                    ax.plot(
+                        np.full(len(y), x[0]), y,
+                        "|", color="black", markersize=6
+                    )
+
+                elif sigmas[i] == 0:
+                    # Y is constant: rug plot along the X axis
+                    ax.plot(
+                        x, np.full(len(x), y[0]),
+                        "_", color="black", markersize=6
+                    )
+
+                else:
+                    if hist2d:
+                        H, xedges, yedges = np.histogram2d(x[valid], y[valid], 40)
+                        H = np.ma.masked_equal(H, 1)
+                        mesh = ax.pcolormesh(
+                            xedges, yedges, H.T,
+                            cmap="Greys",
+                            shading="flat",
+                            edgecolors="none",
+                            linewidth=0
+                        )
+
+                    if hexbin:
+                        ax.scatter(x[valid], y[valid], c='black', s=8, alpha=0.6)
+                        ax.hexbin(
+                            x[valid], y[valid],
+                            gridsize=40,
+                            cmap="Greys",
+                            mincnt=1,
+                            edgecolors="black",
+                            linewidths=0.3 )
+
+                    if not (hexbin or hist2d):
+                        ax.scatter(x[valid], y[valid], c='black', s=8, alpha=0.6)
 
                 if valid.sum() > 1 and sigmas[i] > 0 and sigmas[j] > 0:
                     r = np.corrcoef(x[valid], y[valid])[0, 1]
@@ -386,6 +437,8 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, png,
                         ha="right", va="top", fontsize=ticklabelfontsize
                     )
 
+                ax.set_xlim(xlimmin[j],xlimmax[j])
+                ax.set_ylim(xlimmin[i],xlimmax[i])
                 # Remove axis labels from non-diagonal plots
                 ax.set_xlabel("")
                 ax.set_ylabel("")

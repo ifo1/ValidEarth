@@ -13,7 +13,7 @@ from colouredstrings import error, warning, highlight, green, red, yellow
 from rockcompare import find_matching_rocks, plot_rock_properties, scatterplot_matrix
 
 # local classes
-from classes import rocktype, rockproperty
+from classes import rocktype, rockproperty, rockaggregation
 
 # read command line arguments
 
@@ -30,6 +30,8 @@ parser.add_argument('-rt', '--rock-type', action="append", default=[], dest="roc
 parser.add_argument("-minrefrockprop", dest="minrockprop",type=int,default=1,help="The minumum number of supplied physical properties for reference rocks to compare with.")
 parser.add_argument("-histogram", dest="histograms",action="store_true",help="Create histograms for all properties for all rock samples with the same name")
 parser.add_argument("-scatterplot", dest="scatterplots",action="store_true",help="Create Scatterplot Matrices for all properties for all rock samples with the same name")
+parser.add_argument("-hist2d", dest="hist2d",action="store_true",help="Use 2D histogram (square tiles) for Scatterplot Matrices instead of a scatter plot (for big datasets)")
+parser.add_argument("-hexbin", dest="hexbin",action="store_true",help="Use 2D HexBin histogram (hexagon tiles) for Scatterplot Matrices instead of a scatter plot (for big datasets)")
 args = parser.parse_args()
 
 # verify the input file exists
@@ -179,6 +181,8 @@ if args.histograms or args.scatterplots:
         title_collection = []
         stdev_collection = []
         mean_collection = []
+        min_collection = []
+        max_collection = []
 
         # a separate plot for each parameter
         for quantity in rocks.properties:
@@ -190,7 +194,9 @@ if args.histograms or args.scatterplots:
             # filter the data
             data = data[np.isfinite(data)]
             minval = np.min(data)
+            min_collection.append(minval)
             maxval = np.max(data)
+            max_collection.append(maxval)
             mean = np.mean(data)
             mean_collection.append(mean)
             stdev = np.std(data)
@@ -223,7 +229,9 @@ if args.histograms or args.scatterplots:
                 
 
         if (args.png or args.pdf) and args.scatterplots:
-            scatterplot_matrix(args.output, uniqrocktype, title_collection, property_collection, mean_collection, stdev_collection, args.png, args.pdf)
+            scatterplot_matrix(args.output, uniqrocktype, title_collection, property_collection, \
+                                mean_collection, stdev_collection, min_collection, max_collection, \
+                                args.png, args.pdf, args.hist2d, args.hexbin)
 
     if not (args.png or args.pdf):
         if args.histograms:
@@ -268,6 +276,19 @@ print ("Reading rock properties from the input file")
 inputrocks = read_rock_file(args.inputfile)
 
 find_matching_rocks(refrocks, inputrocks, args.detailed)
+
+
+#if args.aggregate:
+#    aggregatedrocks = []
+#    for rock in inputrocks:
+#        if aggregatedrocks and any([aggrock.name == rock.name for aggrock in aggregatedrocks]):
+#            for lithology in rock.matching:
+#                if lithology not in aggrock.lithologies:
+#                    aggrock.lithologies.append(lithology)
+#        else:
+
+
+    
 
 for rock in inputrocks:
     if rock.matching:
