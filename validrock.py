@@ -23,8 +23,9 @@ parser.add_argument("-delim", dest="delimiter", default=None, help="Delimiter be
 parser.add_argument("-refmodels", dest="file_refmodels", default="configrocks.txt", help="A list of reference models to compare the data with")
 parser.add_argument("-printrefmodels", dest="report_file_refmodels", action="store_true", help="Print a list with all loaded reference models (mostly for testing/debugging purposes)")
 parser.add_argument("-detailed", dest="detailed",action="store_true",help="Highlight rock matching criteria")
-parser.add_argument("-pdf", dest="pdf",action="store_true",help="Create pdf plots")
-parser.add_argument("-png", dest="png",action="store_true",help="Create png plots")
+parser.add_argument("-pdf", dest="pdf",action="store_true",help="Save plots as PDF documents")
+parser.add_argument("-png", dest="png",action="store_true",help="Save plots as PNG images")
+parser.add_argument("-pngdpi", dest="pngdpi",type=int,default=300,help="The resolution (DPI) of PNG images; the default value is 300")
 parser.add_argument("-output", dest="output",default="./",help="A directory to store images figures")
 parser.add_argument('-rt', '--rock-type', action="append", default=[], dest="rocktypes", help="Compare only the supplied rock types: Igneous, Metamorphic, Volcanic, Liquids, Regolith, Sedimentary")
 parser.add_argument("-minrefrockprop", dest="minrockprop",type=int,default=1,help="The minumum number of supplied physical properties for reference rocks to compare with.")
@@ -222,7 +223,7 @@ if args.histograms or args.scatterplots:
 
                 plt.tight_layout()
                 if args.png:
-                    fig.savefig( os.path.join(args.output, uniqrocktype + "-" + quantity.parameter + ".png" ), bbox_inches="tight" )
+                    fig.savefig( os.path.join(args.output, uniqrocktype + "-" + quantity.parameter + ".png" ), bbox_inches="tight", dpi=args.pngdpi )
                 if args.pdf:
                     fig.savefig( os.path.join(args.output, uniqrocktype + "-" + quantity.parameter + ".pdf" ), bbox_inches="tight" )
                 plt.close()
@@ -231,7 +232,7 @@ if args.histograms or args.scatterplots:
         if (args.png or args.pdf) and args.scatterplots:
             scatterplot_matrix(args.output, uniqrocktype, title_collection, property_collection, \
                                 mean_collection, stdev_collection, min_collection, max_collection, \
-                                args.png, args.pdf, args.hist2d, args.hexbin)
+                                args.png, args.pngdpi, args.pdf, args.hist2d, args.hexbin)
 
     if not (args.png or args.pdf):
         if args.histograms:

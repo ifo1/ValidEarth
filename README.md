@@ -337,7 +337,7 @@ Refer to the bibliography.bib file in the root directory for all the reference m
 # Requirements
 
 - Python 3.10
-- modules termcolor, numpy, os, argparse, matplotlib
+- modules termcolor, numpy, os, argparse, matplotlib (3.11.2 or newer due to a bug with PDF export of hexbin plots in older versions)
 
 ### Troubleshooting 
 

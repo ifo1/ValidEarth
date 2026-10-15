@@ -331,7 +331,25 @@ def plot_rock_properties( refrocks, inputrocks, output_dir="rock_plots", show_al
             plt.close(fig)
 
 
-def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, mins, maxs, png, pdf, hist2d, hexbin):
+def trimming(minval, maxval, vector, vector2):
+    n = vector.size
+    if n <= 200:
+        return vector, vector2
+    # leave no more than 100 points.
+    d = (maxval-minval)/100.0
+    ind = np.argsort(vector)
+    svector2 = vector2[ind]
+    svector = vector[ind]
+    newvector = [svector[0]]
+    newvector2  = [svector2[0]]
+    for i in range(n-1):
+        if svector[i+1] - newvector[-1] > d:
+            newvector.append(svector[i+1])
+            newvector2.append(svector2[i+1])
+    return newvector, newvector2
+
+
+def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, mins, maxs, png, pngdpi, pdf, hist2d, hexbin):
 
     n = len(titles)
     fig, axes = plt.subplots(
@@ -392,32 +410,22 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, mins
 
                 elif sigmas[j] == 0:
                     # X is constant: rug plot along the Y axis
-                    ax.plot(
-                        np.full(len(y), x[0]), y,
-                        "|", color="black", markersize=6
-                    )
+                    ynew,xnew = trimming(xlimmin[i],xlimmax[i],y, x)
+                    ax.plot( xnew,ynew ,  "_", color="black", markersize=6 )
 
                 elif sigmas[i] == 0:
                     # Y is constant: rug plot along the X axis
-                    ax.plot(
-                        x, np.full(len(x), y[0]),
-                        "_", color="black", markersize=6
-                    )
+                    xnew,ynew = trimming(xlimmin[j],xlimmax[j],x, y)
+                    ax.plot( xnew,ynew ,  "|", color="black", markersize=6 )
 
                 else:
                     if hist2d:
-                        H, xedges, yedges = np.histogram2d(x[valid], y[valid], 40)
-                        H = np.ma.masked_equal(H, 1)
-                        mesh = ax.pcolormesh(
-                            xedges, yedges, H.T,
-                            cmap="Greys",
-                            shading="flat",
-                            edgecolors="none",
-                            linewidth=0
-                        )
+                        counts, xedges, yedges, im = ax.hist2d(x, y, bins=40, cmap='Greys', shading="flat",edgecolors="none",cmin=0)
+                        xcenters = (xedges[:-1] + xedges[1:]) / 2
+                        ycenters = (yedges[:-1] + yedges[1:]) / 2
+                        ax.contour(xcenters, ycenters, counts.T, levels=[0.5], colors='black', linewidths=0.3)
 
                     if hexbin:
-                        ax.scatter(x[valid], y[valid], c='black', s=8, alpha=0.6)
                         ax.hexbin(
                             x[valid], y[valid],
                             gridsize=40,
@@ -432,7 +440,7 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, mins
                 if valid.sum() > 1 and sigmas[i] > 0 and sigmas[j] > 0:
                     r = np.corrcoef(x[valid], y[valid])[0, 1]
                     ax.text(
-                        0.95, 0.95, f"$R^2 = {r**2:.3f}$",
+                        0.7, 0.95, f"$R^2 = {r**2:.3f}$",
                         transform=ax.transAxes,
                         ha="right", va="top", fontsize=ticklabelfontsize
                     )
@@ -476,7 +484,7 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, mins
     )
 
     if png:
-        fig.savefig( os.path.join(output_dir, filename + ".png" ), bbox_inches="tight" )
+        fig.savefig( os.path.join(output_dir, filename + ".png" ), bbox_inches="tight", dpi=pngdpi )
     if pdf:
         fig.savefig( os.path.join(output_dir, filename + ".pdf" ), bbox_inches="tight" )
 
