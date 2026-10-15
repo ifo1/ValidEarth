@@ -2,7 +2,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-from colouredstrings import error, red
+from colouredstrings import error, red, highlight
 
 Nsigma = 3
 
@@ -23,6 +23,8 @@ def find_matching_rocks(refrocks, inputrocks, verbose = False):
 
     for inp in inputrocks:
 
+        if verbose: print ("Assessing " + highlight(inp.name))
+
         # get a list of all parameters for the given rock
         input_props = {
             p.parameter: p
@@ -34,6 +36,8 @@ def find_matching_rocks(refrocks, inputrocks, verbose = False):
 
         # for each reference rock
         for ref in refrocks:
+
+            if verbose: print ("Comparing with " + highlight(ref.lithology))
 
             ref_props = {
                 p.parameter: p
@@ -54,11 +58,6 @@ def find_matching_rocks(refrocks, inputrocks, verbose = False):
                 if rp is None:
                     continue
 
-                # Input interval
-                input_min = ip.min if np.isfinite(ip.min) else ip.mean
-                input_max = ip.max if np.isfinite(ip.max) else ip.mean
-                # print (parameter, input_min, input_max, ip.min, ip.mean, ip.max)
-
                 # Reference interval
                 if np.isfinite(rp.min):
                     ref_min = rp.min
@@ -78,15 +77,23 @@ def find_matching_rocks(refrocks, inputrocks, verbose = False):
                 if not np.isfinite(ref_min) or not np.isfinite(ref_max) :
                     continue
 
-                if input_min > ref_max or input_max < ref_min:
+                # Input interval
+                if np.isfinite(ip.min) and np.isfinite(ip.max):
+                    # both values are present: compare ranges
+                    ok = ip.min >= ref_min and ip.max <= ref_max
+                elif not np.isfinite(ip.min) and not np.isfinite(ip.max):
+                    ok = ref_min <= ip.mean <= ref_max
+                else:
+                    print (error() + "the inputs are not consistent: either a mean value, or max and min should be provided")
+
+                if verbose: print (ip.parameter, ref_min, ip.min, ip.max, ref_max, " is within ", ok)
+
+                if not ok:
                     # remove from the list if anything contradicts
                     if ref.lithology in matching:
                         if verbose: print (inp.name + ": removing " + ref.lithology + " based on the " + parameter + " from " + ref.citation)
                         matching.remove(ref.lithology)
-                    ok = False
                     break
-
-                ok = True
 
                 #print (inp.name + ": parameter " + parameter + " minmax " + str(input_min) + " " + str(input_max) + \
                 #    " vs " + ref.lithology + " [" + ref.citation + "] with minmax " + str(ref_min) + " " + str(ref_max) + ": " + str(ok))
@@ -349,26 +356,28 @@ def trimming(minval, maxval, vector, vector2):
     return newvector, newvector2
 
 
-def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, mins, maxs, png, pngdpi, pdf, hist2d, hexbin):
+def scatterplot_matrix(output_dir, rock, png, pngdpi, pdf, hist2d, hexbin):
 
-    n = len(titles)
+    xlimmin = []
+    xlimmax = []
+    # a separate plot for each parameter
+    for quantity in rock.properties:
+        d = (quantity.max - quantity.min)/10
+        if d == 0.0: d = quantity.mean/100.0
+        xlimmin.append(quantity.min-d) 
+        xlimmax.append(quantity.max+d) 
+
+    n = len(rock.properties)
     fig, axes = plt.subplots(
         n, n, figsize=(2.5 * n, 2.5 * n),
         squeeze=False
     )
 
-    fig.suptitle("Scatterplot Matrix for "+filename, fontsize=16, y=1.01)
+    fig.suptitle("Scatterplot Matrix for "+rock.name, fontsize=16, y=1.01)
 
     ticklabelfontsize=11
     axistitlefontsize=15
 
-    xlimmin = []
-    xlimmax = []
-    for i in range(n):
-        d = (maxs[i] - mins[i])/10
-        if d == 0.0: d = maxs[i]/100.0
-        xlimmin.append(mins[i]-d) 
-        xlimmax.append(maxs[i]+d) 
 
     for i in range(n):
         for j in range(n):
@@ -381,7 +390,7 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, mins
             ax.ticklabel_format(style="plain", axis="x", useOffset=False)
             ax.ticklabel_format(style="plain", axis="y", useOffset=False)
 
-            x = np.asarray(arrays[j], dtype=float)
+            x = np.asarray(rock.properties[j].values, dtype=float)
 
             if i == j:
                 ax.hist(
@@ -389,31 +398,31 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, mins
                     color="lightgray", edgecolor="black"
                 )
 
-                if sigmas[i] > 0:
-                    ax.axvline(means[i], color="black", linestyle="-")
+                if rock.properties[j].stdev > 0:
+                    ax.axvline(rock.properties[j].mean, color="black", linestyle="-")
                     for k in range(1,4):
-                        ax.axvline(means[i] + k * sigmas[i], color="black", linestyle="--", alpha=0.6)
-                        ax.axvline(means[i] - k * sigmas[i], color="black", linestyle="--", alpha=0.6)
+                        ax.axvline(rock.properties[j].mean + k * rock.properties[j].stdev, color="black", linestyle="--", alpha=0.6)
+                        ax.axvline(rock.properties[j].mean - k * rock.properties[j].stdev, color="black", linestyle="--", alpha=0.6)
 
                 ax.set_yticklabels([])
                 ax.set_xlim(xlimmin[j],xlimmax[j])
-                ax.set_xlabel(titles[i], fontsize=axistitlefontsize)
-                ax.set_ylabel(titles[i], fontsize=axistitlefontsize)
+                ax.set_xlabel(rock.properties[i].parameter, fontsize=axistitlefontsize)
+                ax.set_ylabel(rock.properties[i].parameter, fontsize=axistitlefontsize)
 
             else:
-                y = np.asarray(arrays[i], dtype=float)
+                y = np.asarray(rock.properties[i].values, dtype=float)
                 valid = np.isfinite(x) & np.isfinite(y)
 
-                if sigmas[j] == 0 and sigmas[i] == 0:
+                if rock.properties[j].stdev == 0 and rock.properties[i].stdev == 0:
                     # Both variables are constant: plot a single point
                     ax.scatter(x[0], y[0], color="black", s=30)
 
-                elif sigmas[j] == 0:
+                elif rock.properties[j].stdev == 0:
                     # X is constant: rug plot along the Y axis
                     ynew,xnew = trimming(xlimmin[i],xlimmax[i],y, x)
                     ax.plot( xnew,ynew ,  "_", color="black", markersize=6 )
 
-                elif sigmas[i] == 0:
+                elif rock.properties[i].stdev == 0:
                     # Y is constant: rug plot along the X axis
                     xnew,ynew = trimming(xlimmin[j],xlimmax[j],x, y)
                     ax.plot( xnew,ynew ,  "|", color="black", markersize=6 )
@@ -437,7 +446,7 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, mins
                     if not (hexbin or hist2d):
                         ax.scatter(x[valid], y[valid], c='black', s=8, alpha=0.6)
 
-                if valid.sum() > 1 and sigmas[i] > 0 and sigmas[j] > 0:
+                if valid.sum() > 1 and rock.properties[i].stdev > 0 and rock.properties[j].stdev > 0:
                     r = np.corrcoef(x[valid], y[valid])[0, 1]
                     ax.text(
                         0.7, 0.95, f"$R^2 = {r**2:.3f}$",
@@ -455,7 +464,7 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, mins
 
             # Variable titles along the top boundary
             if i == 0:
-                ax.set_title(titles[j], pad=6, fontsize=axistitlefontsize)
+                ax.set_title(rock.properties[j].parameter, pad=6, fontsize=axistitlefontsize)
                 ax.tick_params(axis="x", labeltop=True, direction="in", labelbottom=False, labelsize=ticklabelfontsize)
                 ax.xaxis.set_ticks_position("top")
 
@@ -466,10 +475,6 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, mins
             if j == n - 1:
                 ax.tick_params(axis="y", labelright=True, labelleft=False, labelsize=ticklabelfontsize)
                 ax.yaxis.set_ticks_position("both")
-
-                #if i != j:
-                    #ax.set_ylabel(titles[i], rotation=270, labelpad=12)
-                    #ax.yaxis.set_label_position("right")
 
             if i != j:
                 ax.tick_params(axis="both", which="both", direction="in", top=True, bottom=True, left=True, right=True, labelsize=ticklabelfontsize)
@@ -484,9 +489,9 @@ def scatterplot_matrix(output_dir, filename, titles, arrays, means, sigmas, mins
     )
 
     if png:
-        fig.savefig( os.path.join(output_dir, filename + ".png" ), bbox_inches="tight", dpi=pngdpi )
+        fig.savefig( os.path.join(output_dir, rock.name + ".png" ), bbox_inches="tight", dpi=pngdpi )
     if pdf:
-        fig.savefig( os.path.join(output_dir, filename + ".pdf" ), bbox_inches="tight" )
+        fig.savefig( os.path.join(output_dir, rock.name + ".pdf" ), bbox_inches="tight" )
 
 
 

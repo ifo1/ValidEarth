@@ -149,6 +149,7 @@ def read_rock_file(inputfile, getname = None):
     else:
         return rock
 
+inputrocks = []
 
 # if create histograms, run a simpler version 
 if args.histograms or args.scatterplots:
@@ -174,35 +175,22 @@ if args.histograms or args.scatterplots:
 
 
     for uniqrocktype in uniqrocktypes:
-        print ("Gathering statistics for: " + uniqrocktype)
+        print ("Gathering statistics for: " + highlight(uniqrocktype))
         rocks = read_rock_file(args.inputfile, uniqrocktype)
         print ("Lithology - parameter - min - max - mean - stdev")
-
-        property_collection = []
-        title_collection = []
-        stdev_collection = []
-        mean_collection = []
-        min_collection = []
-        max_collection = []
 
         # a separate plot for each parameter
         for quantity in rocks.properties:
             data = np.asarray(quantity.values)
-            # for scatterplot matrix
-            property_collection.append(data)
-            title_collection.append(quantity.parameter)
 
             # filter the data
             data = data[np.isfinite(data)]
-            minval = np.min(data)
-            min_collection.append(minval)
-            maxval = np.max(data)
-            max_collection.append(maxval)
-            mean = np.mean(data)
-            mean_collection.append(mean)
-            stdev = np.std(data)
-            stdev_collection.append(stdev)
-            print (uniqrocktype + " - " + quantity.parameter + " - " + str(minval) + " - " + str(maxval) + " - " + str(mean) + " - " + str(stdev ))
+            quantity.min = np.min(data)
+            quantity.max = np.max(data)
+            quantity.mean = np.mean(data)
+            quantity.stdev = np.std(data)
+            print (highlight(uniqrocktype) + " - " + highlight(quantity.parameter) + " - " + \
+                str(quantity.min) + " - " + str(quantity.max) + " - " + str(quantity.mean) + " - " + str(quantity.stdev))
 
             if (args.png or args.pdf) and args.histograms:
                 fig, ax = plt.subplots()
@@ -230,9 +218,9 @@ if args.histograms or args.scatterplots:
                 
 
         if (args.png or args.pdf) and args.scatterplots:
-            scatterplot_matrix(args.output, uniqrocktype, title_collection, property_collection, \
-                                mean_collection, stdev_collection, min_collection, max_collection, \
-                                args.png, args.pngdpi, args.pdf, args.hist2d, args.hexbin)
+            scatterplot_matrix(args.output, rocks, args.png, args.pngdpi, args.pdf, args.hist2d, args.hexbin)
+
+        inputrocks.append(rocks)
 
     if not (args.png or args.pdf):
         if args.histograms:
@@ -240,7 +228,6 @@ if args.histograms or args.scatterplots:
         if args.scatterplots:
             print (yellow("Attention! ValidRock does not produce any scatterplot matrices as no output format was specified"))
 
-    exit()
 
 
 # read reference models
@@ -274,22 +261,10 @@ with open(args.file_refmodels) as myfile:
 
 # read data file
 print ("Reading rock properties from the input file")
-inputrocks = read_rock_file(args.inputfile)
+if not inputrocks: inputrocks = read_rock_file(args.inputfile)
 
 find_matching_rocks(refrocks, inputrocks, args.detailed)
 
-
-#if args.aggregate:
-#    aggregatedrocks = []
-#    for rock in inputrocks:
-#        if aggregatedrocks and any([aggrock.name == rock.name for aggrock in aggregatedrocks]):
-#            for lithology in rock.matching:
-#                if lithology not in aggrock.lithologies:
-#                    aggrock.lithologies.append(lithology)
-#        else:
-
-
-    
 
 for rock in inputrocks:
     if rock.matching:
