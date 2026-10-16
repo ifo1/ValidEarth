@@ -1,112 +1,206 @@
-import os
 import numpy as np
+from collections import defaultdict
 import matplotlib.pyplot as plt
+import os.path
 
-from colouredstrings import error, red, highlight
+from colouredstrings import error, highlight
 
-Nsigma = 3
+Nsigma = 1
 
-def find_matching_rocks(refrocks, inputrocks, verbose = False):
+
+def find_matching_rocks(refrocks, inputrocks, verbose=False):
     """
-    For each input rock, find reference lithologies for which all
-    available input property bounds are contained within the
-    corresponding reference property bounds.
+    Match input rocks against reference lithologies.
 
-    Input rocks are identified by .name.
-    Reference rocks are identified by .lithology.
+    A lithology matches an input rock when:
+      1. At least one input property can be compared with reference data.
+      2. For every input property available in the reference data,
+         at least one reference entry contains the input interval.
+      3. Reference entries with no corresponding input property are ignored.
+
+    Stores:
+        inp.matching:
+            List of matching lithology names.
+
+        inp.matching_citations:
+            Dictionary:
+            {lithology: {parameter: [matching citations]}}
 
     Returns:
-        dict: {input_rock_name: [matching_lithologies]}
+        Dictionary mapping input rock names to matching lithologies.
     """
+
+    # Group reference samples by lithology, preserving their original order.
+    refs_by_lithology = defaultdict(list)
+
+    for ref in refrocks:
+        refs_by_lithology[ref.lithology].append(ref)
 
     matches = {}
 
+    def finite(value):
+        try:
+            return value is not None and np.isfinite(value)
+        except (TypeError, ValueError):
+            return False
+
+    def reference_interval(prop):
+        """Return the reference interval, or None if unavailable."""
+
+        if finite(prop.min):
+            lower = prop.min
+        elif finite(prop.mean) and finite(prop.stdev):
+            lower = prop.mean - Nsigma * prop.stdev
+        elif finite(prop.mean):
+            lower = prop.mean
+        else:
+            return None
+
+        if finite(prop.max):
+            upper = prop.max
+        elif finite(prop.mean) and finite(prop.stdev):
+            upper = prop.mean + Nsigma * prop.stdev
+        elif finite(prop.mean):
+            upper = prop.mean
+        else:
+            return None
+
+        if lower > upper:
+            return None
+
+        return lower, upper
+
+    def input_interval(prop):
+        """Return the input interval, or None if unavailable/inconsistent."""
+
+        has_min = finite(prop.min)
+        has_max = finite(prop.max)
+
+        if has_min and has_max:
+            if prop.min > prop.max:
+                return None
+            return prop.min, prop.max
+
+        if not has_min and not has_max and finite(prop.mean):
+            return prop.mean, prop.mean
+
+        return None
+
     for inp in inputrocks:
 
-        if verbose: print ("Assessing " + highlight(inp.name))
+        if verbose:
+            print("Assessing " + highlight(inp.name))
 
-        # get a list of all parameters for the given rock
+        # Keep every input property with a usable value or interval.
         input_props = {
             p.parameter: p
             for p in inp.properties
-            if p.mean is not None
+            if (
+                finite(p.mean)
+                or finite(p.min)
+                or finite(p.max)
+            )
         }
 
-        matching = []
+        matching_lithologies = []
+        matching_citations = {}
 
-        # for each reference rock
-        for ref in refrocks:
+        for lithology, refs in refs_by_lithology.items():
 
-            if verbose: print ("Comparing with " + highlight(ref.lithology))
+            # Preserve the original genesis compatibility check.
+            compatible_refs = [
+                ref for ref in refs
+                if not (
+                    ref.genesis and inp.genesis
+                    and not any(g in inp.genesis for g in ref.genesis)
+                )
+            ]
 
-            ref_props = {
-                p.parameter: p
-                for p in ref.properties
-            }
+            if not compatible_refs:
+                continue
 
-            # check that the rock type matches
-            if ref.genesis and inp.genesis:
-                if not any(map(lambda v: v in inp.genesis, ref.genesis)):
-                    continue
+            # Gather all reference entries for each input parameter.
+            citations_by_parameter = {}
+            failed = False
+            compared_parameters = 0
 
-            ok = False
-            # for each physical property of the input rocks
             for parameter, ip in input_props.items():
 
-                rp = ref_props.get(parameter)
+                ip_interval = input_interval(ip)
 
-                if rp is None:
-                    continue
-
-                # Reference interval
-                if np.isfinite(rp.min):
-                    ref_min = rp.min
-                elif np.isfinite(rp.stdev):
-                    ref_min = rp.mean - Nsigma * rp.stdev
-                else:
-                    ref_min = rp.mean
-
-                if np.isfinite(rp.max):
-                    ref_max = rp.max
-                elif np.isfinite(rp.stdev):
-                    ref_max = rp.mean + Nsigma * rp.stdev
-                else:
-                    ref_max = rp.mean
-
-                # At least part of the interval is within the bounds
-                if not np.isfinite(ref_min) or not np.isfinite(ref_max) :
-                    continue
-
-                # Input interval
-                if np.isfinite(ip.min) and np.isfinite(ip.max):
-                    # both values are present: compare ranges
-                    ok = ip.min >= ref_min and ip.max <= ref_max
-                elif not np.isfinite(ip.min) and not np.isfinite(ip.max):
-                    ok = ref_min <= ip.mean <= ref_max
-                else:
-                    print (error() + "the inputs are not consistent: either a mean value, or max and min should be provided")
-
-                if verbose: print (ip.parameter, ref_min, ip.min, ip.max, ref_max, " is within ", ok)
-
-                if not ok:
-                    # remove from the list if anything contradicts
-                    if ref.lithology in matching:
-                        if verbose: print (inp.name + ": removing " + ref.lithology + " based on the " + parameter + " from " + ref.citation)
-                        matching.remove(ref.lithology)
+                if ip_interval is None:
+                    if verbose:
+                        print(error() + "  Invalid or incomplete input interval for " + parameter)
+                    failed = True
                     break
 
-                #print (inp.name + ": parameter " + parameter + " minmax " + str(input_min) + " " + str(input_max) + \
-                #    " vs " + ref.lithology + " [" + ref.citation + "] with minmax " + str(ref_min) + " " + str(ref_max) + ": " + str(ok))
+                # A parameter may occur in several reference samples.
+                reference_entries = []
 
-            if ok:
-                if ref.lithology not in matching:
-                    matching.append(ref.lithology)
-        if not matching:
-            print (error() + "Cannot find a reference sample matching rock '" + red(inp.name) + "' with the following properties: ", end='')
-            for prop in inp.properties:
-                print(str(prop.parameter) + " = " + str(prop.mean) + " ", end='')
-            print('')
-        inp.matching = matching
+                for ref in compatible_refs:
+                    for rp in ref.properties:
+                        if rp.parameter == parameter:
+                            interval = reference_interval(rp)
+                            if interval is not None:
+                                reference_entries.append(
+                                    (ref, rp, interval)
+                                )
+
+                # No usable reference data for this property:
+                # it cannot be used to accept or reject the lithology.
+                if not reference_entries:
+                    continue
+
+                compared_parameters += 1
+                ip_min, ip_max = ip_interval
+
+                # Keep ALL reference citations whose intervals fully
+                # contain the input interval.
+                matching_entries = [
+                    (ref, rp)
+                    for ref, rp, (ref_min, ref_max)
+                    in reference_entries
+                    if ip_min >= ref_min and ip_max <= ref_max
+                ]
+
+                if verbose:
+                    ref_min = min(interval[0] for _, _, interval in reference_entries)
+                    ref_max = max(interval[1] for _, _, interval in reference_entries)
+                    print(highlight(inp.name) + " " + parameter + " from " + str(ip_min) + " to " + str(ip_max) + 
+                        f" --- matching {len(matching_entries)}/{len(reference_entries)} references for " + 
+                        highlight(lithology) + f" with range from {ref_min} to {ref_max}"
+                    )
+
+                # Reference data exist, but none contains this property:
+                # reject the entire lithology, regardless of other matches.
+                if not matching_entries:
+                    failed = True
+                    break
+
+                citations_by_parameter[parameter] = list(dict.fromkeys(
+                    ref.citation
+                    for ref, rp in matching_entries
+                    if ref.citation is not None
+                ))
+
+            # Require at least one comparable parameter.
+            if not failed and compared_parameters > 0:
+                matching_lithologies.append(lithology)
+                matching_citations[lithology] = citations_by_parameter
+
+        inp.matching = matching_lithologies
+        inp.matching_citations = matching_citations
+
+        matches[inp.name] = matching_lithologies
+
+        if verbose:
+            for litho in matching_lithologies:
+                print(highlight(inp.name) + " is matching " + highlight(litho) + " according to " , end='')
+                for k, v in inp.matching_citations[litho].items():
+                    print (k + " (" + " ".join(v) + ") ", end='')
+                print ('')
+
+    return matches
 
 
 def plot_rock_properties( refrocks, inputrocks, output_dir="rock_plots", show_all = False):
@@ -290,7 +384,9 @@ def plot_rock_properties( refrocks, inputrocks, output_dir="rock_plots", show_al
                 ax.axhline(
                     ip.max,
                     linestyle="-",
+                    color='black',
                     linewidth=1,
+                    label=f"{inp.name}: min/max",
                 )
 
             # ----------------------------------------------------------

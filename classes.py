@@ -822,12 +822,6 @@ class pressuredepth:
         return linear_interp(pressure, self.pressures, self.depths)
 
 
-class rockaggregation():
-    def __init__ (self, name):
-        self.name = name
-        self.lithologies = []
-
-
 class rockproperty():
     def __init__ (self, name):
         self.parameter = name

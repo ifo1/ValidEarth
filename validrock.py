@@ -13,7 +13,7 @@ from colouredstrings import error, warning, highlight, green, red, yellow
 from rockcompare import find_matching_rocks, plot_rock_properties, scatterplot_matrix
 
 # local classes
-from classes import rocktype, rockproperty, rockaggregation
+from classes import rocktype, rockproperty
 
 # read command line arguments
 
@@ -177,7 +177,7 @@ if args.histograms or args.scatterplots:
     for uniqrocktype in uniqrocktypes:
         print ("Gathering statistics for: " + highlight(uniqrocktype))
         rocks = read_rock_file(args.inputfile, uniqrocktype)
-        print ("Lithology - parameter - min - max - mean - stdev")
+        print ("Lithology       - parameter  -        min -        max -       mean -      stdev")
 
         # a separate plot for each parameter
         for quantity in rocks.properties:
@@ -189,8 +189,9 @@ if args.histograms or args.scatterplots:
             quantity.max = np.max(data)
             quantity.mean = np.mean(data)
             quantity.stdev = np.std(data)
-            print (highlight(uniqrocktype) + " - " + highlight(quantity.parameter) + " - " + \
-                str(quantity.min) + " - " + str(quantity.max) + " - " + str(quantity.mean) + " - " + str(quantity.stdev))
+            print (highlight(uniqrocktype.ljust(15)) + " - " + highlight(quantity.parameter.ljust(10)) + " - " + \
+                str(round(quantity.min,2)).rjust(10) + " - " + str(round(quantity.max,2)).rjust(10) + " - " + \
+                str(round(quantity.mean,2)).rjust(10) + " - " + str(round(quantity.stdev,2)).rjust(10))
 
             if (args.png or args.pdf) and args.histograms:
                 fig, ax = plt.subplots()
