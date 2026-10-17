@@ -585,9 +585,9 @@ def scatterplot_matrix(output_dir, rock, png, pngdpi, pdf, hist2d, hexbin):
     )
 
     if png:
-        fig.savefig( os.path.join(output_dir, rock.name + ".png" ), bbox_inches="tight", dpi=pngdpi )
+        fig.savefig( os.path.join(output_dir, rock.name + "_scatterplot.png" ), bbox_inches="tight", dpi=pngdpi )
     if pdf:
-        fig.savefig( os.path.join(output_dir, rock.name + ".pdf" ), bbox_inches="tight" )
+        fig.savefig( os.path.join(output_dir, rock.name + "_scatterplot.pdf" ), bbox_inches="tight" )
 
 
 

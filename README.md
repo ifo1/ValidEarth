@@ -128,6 +128,8 @@ Its expected output is stored in examples/examplerock1.log
 
 ## ValidRock Histograms and Scatterplot Matrices (SPLOM)
 
+This mode allows to group the rocks by name (it should be the same) and to analyse them as sets, rather than individual records. This mode is activated by specific command line flags (look below); however, ValidRock needs **-pdf** or **-png** flags to actually produce plots.
+
 ValidRock allow to plot histograms and scatterplot matrices of rock properties in automated mode using command line flags **-histogram** and **-scatterplot**. It automatically searches for all distinct rock names and treats all the records sharing the same **name** as samples from the same distribution. ValidRock creates figures for every physical property for each rock type in the preferred file format.
 
 For presentation purposes, it might be convinient to stack the figures for each rock type together. It can be done (for example) by using:
